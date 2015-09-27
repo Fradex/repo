@@ -1,0 +1,51 @@
+﻿@using Scheduler.Models
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>@ViewData["Title"]</title>
+    <link href='@Url.Content("~/content/login.css")' rel="stylesheet" type="text/css"/>
+    <link href='@Url.Content("~/content/bootstrap.min.css")' rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+    @{
+        AuthenticationResult authResult = (ViewData["result"] != null)
+                                              ? (AuthenticationResult)ViewData["result"]
+                                              : new AuthenticationResult { UserName = "", Error = "" };
+    }
+    <div class="wrapper">
+        <div class="container">
+            <div class="header">
+                <span class="logo"></span>
+                <span class="title"></span>
+                <span data-title="@ViewData["Title"]"></span>
+            </div>
+            <form id="onboard_form" class="form-signin" method="post" action="">
+                <div class="content">
+                    <div class="form-group form-group-sm has-feedback">
+                        <label for="login">Логин</label>
+                        <input id="login" type="text" placeholder="Введите логин..." class="form-control"/>
+                    </div>
+                    <div class="form-group form-group-sm has-feedback">
+                        <label for="password">Пароль</label>
+                        <input id="password" type="password" placeholder="Введите пароль..." class="form-control"/>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success">Войти</button>
+                <button type="submit" class="btn btn-primary">Восстановить пароль</button>
+                <div class="errorMessage" @if (string.IsNullOrEmpty(authResult.Error)) { @: style="visibility: hidden"
+                                          }>
+                    @(string.IsNullOrEmpty(authResult.Error) ? "-" : authResult.Error)
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
