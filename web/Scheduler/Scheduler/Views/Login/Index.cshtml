@@ -10,11 +10,16 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>@ViewData["Title"]</title>
+    
+    <link href='@Url.Content("~/content/bootstrap.min.css")' rel="stylesheet" type="text/css"/>
     <link href='@Url.Content("~/content/login.css")' rel="stylesheet" type="text/css"/>
-    <link href='@Url.Content("~/content/bootstrap.min.css")' rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/scripts/ext-all-debug.js")" type="text/javascript" charset="utf-8"></script>
+    <script src="@Url.Content("~/scripts/locale-ru.js")" type="text/javascript" charset="utf-8"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 </head>
 <body>
-
+    <link href="@Url.Content("~/content/theme-neptune/resources/theme-neptune-all.css")" type="text/css" rel="stylesheet"/>
+    <script src="@Url.Content("~/content/theme-neptune/theme-neptune.js")" type="text/javascript" charset="utf-8"></script>
     @{
         AuthenticationResult authResult = (ViewData["result"] != null)
                                               ? (AuthenticationResult)ViewData["result"]
