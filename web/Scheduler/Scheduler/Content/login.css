@@ -12,13 +12,6 @@ body {
     margin: 0;
     padding: 0;
     font-family: Arial, Verdana, Helvetica;
-    background-color: green;
-    background-image: url(../Content/img/scheduler.png), -moz-linear-gradient(top, green, #91c4e5);
-    background-image: url(../Content/img/scheduler.png), -webkit-gradient(linear, left top, left bottom, color-stop(0%,green), color-stop(100%,greenyellow));
-    background-image: url(../Content/img/scheduler.png), -webkit-linear-gradient(top, green, #91c4e5);
-    background-image: url(../Content/img/scheduler.png), -o-linear-gradient(top, green, #91c4e5);
-    background-image: url(../Content/img/scheduler.png), -ms-linear-gradient(top, green, #91c4e5);
-    background-image: url(../Content/img/scheduler.png), linear-gradient(top, green, #91c4e5);
     background-position: right bottom;
     background-repeat: no-repeat;
 }

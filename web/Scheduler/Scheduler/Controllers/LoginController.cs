@@ -12,7 +12,13 @@ namespace Scheduler.Controllers
         public ActionResult Index()
         {
             ViewData["Title"] = "Scheduler";
+            return RedirectToAction("Ext", "Main");
             return View();
+        }
+
+        public RedirectResult Redirect()
+        {
+            return Redirect("/Main/Ext");
         }
     }
 }

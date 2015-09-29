@@ -10,16 +10,13 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>@ViewData["Title"]</title>
-    
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js" type="text/javascript" charset="utf-8"></script>
     <link href='@Url.Content("~/content/bootstrap.min.css")' rel="stylesheet" type="text/css"/>
     <link href='@Url.Content("~/content/login.css")' rel="stylesheet" type="text/css"/>
-    <script src="@Url.Content("~/scripts/ext-all-debug.js")" type="text/javascript" charset="utf-8"></script>
-    <script src="@Url.Content("~/scripts/locale-ru.js")" type="text/javascript" charset="utf-8"></script>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 </head>
 <body>
-    <link href="@Url.Content("~/content/theme-neptune/resources/theme-neptune-all.css")" type="text/css" rel="stylesheet"/>
-    <script src="@Url.Content("~/content/theme-neptune/theme-neptune.js")" type="text/javascript" charset="utf-8"></script>
     @{
         AuthenticationResult authResult = (ViewData["result"] != null)
                                               ? (AuthenticationResult)ViewData["result"]
@@ -40,10 +37,10 @@
                     </div>
                     <div class="form-group form-group-sm has-feedback">
                         <label for="password">Пароль</label>
-                        <input id="password" type="password" placeholder="Введите пароль..." class="form-control"/>
+                        <input id="password" type="password"  placeholder="Введите пароль..." value="@Html.ViewData["password"] " class="form-control"/>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-success">Войти</button>
+                <button type="submit" class="btn btn-success" onclick="window.location.href('@Url.Action("Redirect","Login")')" >Войти</button>
                 <button type="submit" class="btn btn-primary">Восстановить пароль</button>
                 <div class="errorMessage" @if (string.IsNullOrEmpty(authResult.Error)) { @: style="visibility: hidden"
                                           }>
