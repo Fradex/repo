@@ -1,7 +1,7 @@
-﻿
+﻿using System.ComponentModel.DataAnnotations;
 using System.Dynamic;
 
-namespace Scheduler.Models
+namespace Scheduler.Models.Autorization
 {
     /// <summary>
     /// Результат аутентификации
@@ -34,5 +34,65 @@ namespace Scheduler.Models
         /// 
         /// </summary>
         public ExpandoObject UserData { get; set; }
+    }
+
+
+    public class ExternalLoginConfirmationViewModel
+    {
+        [Required]
+        [Display(Name = "Имя пользователя")]
+        public string UserName { get; set; }
+    }
+
+    public class ManageUserViewModel
+    {
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "Текущий пароль")]
+        public string OldPassword { get; set; }
+
+        [Required]
+        [StringLength(100, ErrorMessage = "Пароль {0} не должен быть меньше {2} символов", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = "Новый пароль")]
+        public string NewPassword { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Подтвердите пароль")]
+        [Compare("NewPassword", ErrorMessage = "Пароли не совпадают")]
+        public string ConfirmPassword { get; set; }
+    }
+
+    public class LoginViewModel
+    {
+        [Required]
+        [Display(Name = "Имя пользователя")]
+        public string UserName { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "Пароль")]
+        public string Password { get; set; }
+
+        [Display(Name = "Напомнить?")]
+        public bool RememberMe { get; set; }
+    }
+
+    public class RegisterViewModel
+    {
+        [Required]
+        [Display(Name = "ТИмя пользователя")]
+        public string UserName { get; set; }
+
+        [Required]
+        [StringLength(100, ErrorMessage = "Пароль {0} не должен быть меньше {2} символов", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = "Пароль")]
+        public string Password { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Подтвердите пароль")]
+        [Compare("Password", ErrorMessage = "Пароли не совпадают")]
+        public string ConfirmPassword { get; set; }
     }
 }

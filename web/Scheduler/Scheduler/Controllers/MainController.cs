@@ -9,7 +9,7 @@ namespace Scheduler.Controllers
     public class MainController : Controller
     {
         // GET: Main
-        public ActionResult Ext()
+        public ActionResult Index()
         {
             return View();
         }
