@@ -1,31 +1,42 @@
 ﻿using System;
+using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using MobileScheduler.Classes;
+using MobileScheduler.Entities;
+using Newtonsoft.Json;
 
 namespace MobileScheduler
 {
-    [Activity(Label = "MobileScheduler", MainLauncher = true, Icon = "@drawable/icon")]
+    [Activity(MainLauncher = true, Icon = "@drawable/icon")]
     public class MainActivity : Activity
     {
-        int count = 1;
-
         protected override void OnCreate(Bundle bundle)
         {
+            SetTitle(Resource.String.ApplicationName);
             base.OnCreate(bundle);
-
-            // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
 
-            // Get our button from the layout resource,
-            // and attach an event to it
-            Button button = FindViewById<Button>(Resource.Id.MyButton);
+            var loginButton = FindViewById<Button>(Resource.Id.BtnLogin);
+            loginButton.Click += Login;
+        }
 
-            button.Click += delegate { button.Text = string.Format("{0} clicks!", count++); };
+        protected async void Login(object obj, EventArgs args)
+        {
+            var progressDialog = new ProgressDialog(this);
+            progressDialog.SetProgressStyle(ProgressDialogStyle.Spinner);
+            progressDialog.SetMessage(Resources.GetString(Resource.String.SigningIn));
+            progressDialog.Show();
+
+            var response = await WebRequestHelper.FetchWebResult<Login>("http://api.openweathermap.org/data/2.5/weather?q=Kazan");
+            progressDialog.Hide();
+            StartActivity(typeof(ScheduleActivity));
         }
     }
 }
-

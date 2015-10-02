@@ -2,18 +2,12 @@ Ext.application({
     requires: ['Ext.container.Viewport'],
     name: 'Main',
 
-    appFolder: 'app',
+    appFolder: 'Scripts/app',
+    controllers: [
+       'Main'
+    ],
 
-    launch: function () {
-        Ext.create('Ext.container.Viewport', {
-            layout: 'fit',
-            items: [
-                {
-                    xtype: 'panel',
-                    title: 'Users',
-                    html: 'List of users will go here'
-                }
-            ]
-        });
+    launch: function() {
+        Ext.create('Main.viewport.Portal');
     }
 });

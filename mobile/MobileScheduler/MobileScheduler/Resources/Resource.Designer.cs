@@ -28,6 +28,22 @@ namespace MobileScheduler
 		{
 		}
 		
+		public partial class Array
+		{
+			
+			// aapt resource value: 0x7f050000
+			public const int ScheduleArray = 2131034112;
+			
+			static Array()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Array()
+			{
+			}
+		}
+		
 		public partial class Attribute
 		{
 			
@@ -60,8 +76,17 @@ namespace MobileScheduler
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f050000
-			public const int MyButton = 2131034112;
+			// aapt resource value: 0x7f060003
+			public const int BtnLogin = 2131099651;
+			
+			// aapt resource value: 0x7f060002
+			public const int editText1 = 2131099650;
+			
+			// aapt resource value: 0x7f060000
+			public const int relativeLayout1 = 2131099648;
+			
+			// aapt resource value: 0x7f060001
+			public const int textView1 = 2131099649;
 			
 			static Id()
 			{
@@ -79,6 +104,9 @@ namespace MobileScheduler
 			// aapt resource value: 0x7f030000
 			public const int Main = 2130903040;
 			
+			// aapt resource value: 0x7f030001
+			public const int MainMenu = 2130903041;
+			
 			static Layout()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
@@ -95,8 +123,23 @@ namespace MobileScheduler
 			// aapt resource value: 0x7f040001
 			public const int ApplicationName = 2130968577;
 			
+			// aapt resource value: 0x7f040003
+			public const int Login = 2130968579;
+			
+			// aapt resource value: 0x7f040002
+			public const int MainMenu = 2130968578;
+			
+			// aapt resource value: 0x7f040005
+			public const int Name = 2130968581;
+			
+			// aapt resource value: 0x7f040006
+			public const int Password = 2130968582;
+			
 			// aapt resource value: 0x7f040000
-			public const int Hello = 2130968576;
+			public const int Schedule = 2130968576;
+			
+			// aapt resource value: 0x7f040004
+			public const int SigningIn = 2130968580;
 			
 			static String()
 			{

@@ -638,12 +638,10 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <EmbeddedResource Include="Scripts\app.js" />
-    <EmbeddedResource Include="Scripts\app\view\main\Main.js" />
-    <EmbeddedResource Include="Scripts\app\view\main\MainController.js" />
-    <EmbeddedResource Include="Scripts\app\view\main\MainModel.js" />
+    <Content Include="Scripts\app\controller\Main.js" />
+    <Content Include="Scripts\app\viewport\Portal.js" />
+    <Content Include="Scripts\app\view\main\Main.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Scripts\app\model\Readme.md" />
-    <Content Include="Scripts\app\Readme.md" />
     <Content Include="Scripts\app\store\Readme.md" />
     <Content Include="Content\style.scss" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -1223,6 +1221,13 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Scripts\app\model\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{d5901267-1a7a-4bc2-95c0-87862ca404bd}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

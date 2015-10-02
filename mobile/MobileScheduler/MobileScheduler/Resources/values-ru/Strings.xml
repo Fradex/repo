@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="ApplicationName">Расписдневник</string>
+  <string name="MainMenu">Главное меню</string>
+  <string name="Schedule">Расписание</string>
+  <string name="Login">Войти</string>
+  <string name="SigningIn">Выполняется вход...</string>
+
+  <string name="Name">Имя</string>
+  <string name="Password">Пароль</string>
+
+  <string-array name="ScheduleArray">
+    <item>Понедельник</item>
+    <item>Вторник</item>
+    <item>Невяка</item>
+  </string-array>
+</resources>
