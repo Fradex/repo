@@ -45,7 +45,7 @@ namespace MobileScheduler
             progressDialog.Show();
             try
             {
-                var userId = await WebRequestHelper.FetchWebResult<int?>($"/Login/ApiLogin?Name={name}&Password={password}");
+                var userId = await WebRequestHelper.FetchWebResult<string>($"/Login/ApiLogin?userName={name}&password={password}");
                 progressDialog.Hide();
 
                 if (userId != null)
