@@ -29,14 +29,39 @@ namespace MobileScheduler
 
         protected async void Login(object obj, EventArgs args)
         {
+            var name = FindViewById<EditText>(Resource.Id.EtName).Text;
+            var password = FindViewById<EditText>(Resource.Id.EtPassword).Text;
+
+            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password))
+            {
+                MessageHelper.ShowMessage(this, Resource.String.Warning, Resource.String.WrongInput);
+                return;
+            }
+
             var progressDialog = new ProgressDialog(this);
             progressDialog.SetProgressStyle(ProgressDialogStyle.Spinner);
             progressDialog.SetMessage(Resources.GetString(Resource.String.SigningIn));
+            progressDialog.SetCancelable(false);
             progressDialog.Show();
+            try
+            {
+                var userId = await WebRequestHelper.FetchWebResult<string>($"/Login/ApiLogin?userName={name}&password={password}");
+                progressDialog.Hide();
 
-            var response = await WebRequestHelper.FetchWebResult<Login>("http://api.openweathermap.org/data/2.5/weather?q=Kazan");
-            progressDialog.Hide();
-            StartActivity(typeof(ScheduleActivity));
+                if (userId != null)
+                {
+                    StartActivity(typeof(MainMenuActivity));
+                }
+                else
+                {
+                    MessageHelper.ShowMessage(this, Resource.String.Warning, Resource.String.WrongInput);
+                }
+            }
+            catch (Exception e)
+            {
+                progressDialog.Hide();
+                MessageHelper.ShowMessage(this, Resource.String.Warning, Resource.String.ServerUnavailable);
+            }
         }
     }
 }

@@ -4,8 +4,43 @@
     ViewBag.Title = "Вход";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="centered"><h2>@ViewBag.Title.</h2></div>
-<div class="row">
+
+
+
+<section class="container">
+    <div class="login">
+        <h1>Что на сегодня?</h1>
+
+        @using (Html.BeginForm("Index", "Login", new {ReturnUrl = ViewBag.ReturnUrl}, FormMethod.Post, new {role = "form"}))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+            <p>
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @placeholder = "Логин" })
+                @Html.ValidationMessageFor(m => m.UserName)
+            </p>
+            <p>
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Пароль" })
+                @Html.ValidationMessageFor(m => m.Password)
+            </p>
+            <p class="remember_me">
+                <label>
+                    <input type="checkbox" name="remember_me" id="remember_me">
+                    Запомнить на этом компьютере
+                </label>
+            </p>
+            <p class="submit"><input type="submit" name="commit" value="Войти">
+            </p>
+        }
+    </div>
+    <div class="login-help">
+        <p>@Html.ActionLink("Зарегистрироваться", "Register") если у вас еще нет аккаунта.
+        </p>
+    </div>
+</section>
+
+
+@*<div class="row middle">
 
     <div class="col-md-4">
     </div>
@@ -18,35 +53,35 @@
             {
                 @Html.AntiForgeryToken()
                 <div class="centered"><h4>Хотите узнать что на сегодня запланированно?</h4></div>
-                    <hr />
-                    @Html.ValidationSummary(true)
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.UserName, new { @class = "col-md-4 control-label" })
-                        <div class="col-md-8">
-                            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(m => m.UserName)
-                        </div>
+                <hr />
+                @Html.ValidationSummary(true)
+                <div class="form-group">
+                    @Html.LabelFor(m => m.UserName, new { @class = "col-md-4 control-label" })
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.UserName)
                     </div>
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.Password, new { @class = "col-md-4 control-label" })
-                        <div class="col-md-8">
-                            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(m => m.Password)
-                        </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Password, new { @class = "col-md-4 control-label" })
+                    <div class="col-md-8">
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Password)
                     </div>
-                    <div class="form-group">
-                        <div class="centered">
-                            @Html.CheckBoxFor(m => m.RememberMe)
-                            @Html.LabelFor(m => m.RememberMe)
-                        </div>
+                </div>
+                <div class="form-group">
+                    <div class="centered">
+                        @Html.CheckBoxFor(m => m.RememberMe)
+                        @Html.LabelFor(m => m.RememberMe)
+                    </div>
 
-                    </div>
-                    <div class="form-group centered">
-                        <input type="submit" value="Войти" class="btn btn-default" />
-                    </div>
-                    <p class="centered">
-                        @Html.ActionLink("Зарегистрироваться", "Register") Если у вас еще нет аккаунта.
-                    </p>
+                </div>
+                <div class="form-group centered">
+                    <input type="submit" value="Войти" class="btn btn-default" />
+                </div>
+                <p class="centered">
+                    @Html.ActionLink("Зарегистрироваться", "Register") если у вас еще нет аккаунта.
+                </p>
             }
         </section>
     </div>
@@ -54,4 +89,4 @@
         <section id="socialLoginForm"></section>
     </div>
 
-</div>
+</div>*@

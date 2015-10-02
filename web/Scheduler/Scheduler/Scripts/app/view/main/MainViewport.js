@@ -17,10 +17,10 @@
                     cls: 'main_bottom_body',
                     height: 23,
                     items: [
-                        '<div class="btn-toolbar" role="toolbar">Отчетный период:</span>',
+                        '<div class="btn-toolbar" role="toolbar">Что-то можно написать:</span>',
                         {
                             xtype: 'tbtext',
-                            text: '[Отчетный период]',
+                            text: 'Какой-то техт',
                             name: 'curPeriod',
                             cls: 'btn-group',
                             width: 300
@@ -31,7 +31,7 @@
                         },
                         {
                             xtype: 'tbtext',
-                            text: '[Версия]',
+                            text: '[Версия программы]',
                             name: 'curVersion',
                             cls: 'btn-group',
                             width: 150

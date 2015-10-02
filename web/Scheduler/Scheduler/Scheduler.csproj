@@ -172,10 +172,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\bootstrap.css" />
-    <EmbeddedResource Include="Content\bootstrap.min.css" />
-    <EmbeddedResource Include="Content\Site.css" />
-    <EmbeddedResource Include="Content\login.css" />
+    <Content Include="Content\bootstrap.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\bootstrap.min.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Site.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\login.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\ext-theme-neptune\ext-theme-neptune-all-debug.css" />
     <Content Include="Content\ext-theme-neptune\ext-theme-neptune-all-rtl-debug.css" />
     <Content Include="Content\ext-theme-neptune\ext-theme-neptune-all-rtl-debug_01.css" />
@@ -634,6 +642,8 @@
     <Content Include="Content\img\bg.jpg" />
     <Content Include="Content\img\scheduler.png" />
     <Content Include="Content\img\white.png" />
+    <Content Include="Content\style.css" />
+    <Content Include="Content\style.scss" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <EmbeddedResource Include="Scripts\app.js" />
@@ -1228,8 +1238,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Autorization\AuthenticationResult.cs" />
     <Compile Include="Models\Autorization\ApplicationUser.cs" />
+    <Compile Include="Models\Autorization\AuthenticationResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
