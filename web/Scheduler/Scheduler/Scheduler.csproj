@@ -24,6 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,11 +44,81 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.4.1.9004, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dotless.Core, Version=1.4.0.0, Culture=neutral, PublicKeyToken=96b446c9e63eae34, processorArchitecture=MSIL">
+      <HintPath>..\packages\dotless.1.4.0.0\lib\dotless.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.2.1.0\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Google, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Google.3.0.1\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.2.1.0\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Owin.Extensions, Version=0.8.5.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.Extensions.0.8.5\lib\net40\Owin.Extensions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Owin.Types, Version=0.8.5.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.Types.0.8.5\lib\net40\Owin.Types.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -57,6 +128,14 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.2\lib\net40\System.Web.Optimization.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Optimization.Less, Version=1.3.0.0, Culture=neutral, PublicKeyToken=9b7581e0240fe480, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Web.Optimization.Less.1.3.4\lib\net40\System.Web.Optimization.Less.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
@@ -64,6 +143,10 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Web.Razor">
@@ -89,19 +172,1043 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Content\bootstrap.css" />
+    <EmbeddedResource Include="Content\bootstrap.min.css" />
+    <EmbeddedResource Include="Content\Site.css" />
+    <EmbeddedResource Include="Content\login.css" />
+    <Content Include="Content\ext-theme-neptune\ext-theme-neptune-all-debug.css" />
+    <Content Include="Content\ext-theme-neptune\ext-theme-neptune-all-rtl-debug.css" />
+    <Content Include="Content\ext-theme-neptune\ext-theme-neptune-all-rtl-debug_01.css" />
+    <Content Include="Content\ext-theme-neptune\ext-theme-neptune-all-rtl-debug_02.css" />
+    <Content Include="Content\ext-theme-neptune\ext-theme-neptune-all-rtl.css" />
+    <Content Include="Content\ext-theme-neptune\ext-theme-neptune-all-rtl_01.css" />
+    <Content Include="Content\ext-theme-neptune\ext-theme-neptune-all-rtl_02.css" />
+    <Content Include="Content\ext-theme-neptune\ext-theme-neptune-all.css" />
+    <Content Include="Content\ext-theme-neptune\images\btn-group\btn-group-default-framed-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn-group\btn-group-default-framed-notitle-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn-group\btn-group-default-framed-notitle-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn-group\btn-group-default-framed-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-large-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-large-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-large-disabled-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-large-disabled-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-large-disabled-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-large-disabled-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-large-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-large-focus-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-large-focus-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-large-focus-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-large-focus-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-large-over-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-large-over-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-large-over-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-large-over-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-large-pressed-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-large-pressed-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-large-pressed-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-large-pressed-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-large-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-medium-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-medium-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-medium-disabled-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-medium-disabled-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-medium-disabled-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-medium-disabled-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-medium-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-medium-focus-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-medium-focus-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-medium-focus-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-medium-focus-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-medium-over-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-medium-over-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-medium-over-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-medium-over-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-medium-pressed-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-medium-pressed-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-medium-pressed-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-medium-pressed-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-medium-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-small-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-small-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-small-disabled-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-small-disabled-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-small-disabled-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-small-disabled-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-small-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-small-focus-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-small-focus-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-small-focus-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-small-focus-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-small-over-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-small-over-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-small-over-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-small-over-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-small-pressed-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-small-pressed-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-small-pressed-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-small-pressed-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-small-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-large-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-large-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-large-disabled-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-large-disabled-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-large-disabled-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-large-disabled-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-large-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-large-focus-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-large-focus-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-large-focus-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-large-focus-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-large-over-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-large-over-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-large-over-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-large-over-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-large-pressed-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-large-pressed-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-large-pressed-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-large-pressed-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-large-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-medium-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-medium-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-medium-disabled-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-medium-disabled-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-medium-disabled-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-medium-disabled-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-medium-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-medium-focus-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-medium-focus-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-medium-focus-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-medium-focus-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-medium-over-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-medium-over-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-medium-over-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-medium-over-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-medium-pressed-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-medium-pressed-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-medium-pressed-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-medium-pressed-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-medium-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-small-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-small-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-small-disabled-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-small-disabled-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-small-disabled-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-small-disabled-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-small-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-small-focus-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-small-focus-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-small-focus-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-small-focus-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-small-over-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-small-over-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-small-over-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-small-over-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-small-pressed-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-small-pressed-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-small-pressed-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-small-pressed-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-default-toolbar-small-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-large-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-large-disabled-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-large-disabled-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-large-disabled-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-large-disabled-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-large-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-large-focus-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-large-focus-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-large-focus-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-large-focus-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-large-over-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-large-over-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-large-over-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-large-over-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-large-pressed-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-large-pressed-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-large-pressed-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-large-pressed-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-medium-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-medium-disabled-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-medium-disabled-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-medium-disabled-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-medium-disabled-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-medium-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-medium-focus-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-medium-focus-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-medium-focus-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-medium-focus-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-medium-over-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-medium-over-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-medium-over-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-medium-over-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-medium-pressed-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-medium-pressed-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-medium-pressed-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-medium-pressed-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-small-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-small-disabled-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-small-disabled-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-small-disabled-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-small-disabled-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-small-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-small-focus-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-small-focus-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-small-focus-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-small-focus-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-small-over-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-small-over-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-small-over-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-small-over-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-small-pressed-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-small-pressed-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-small-pressed-fbg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\btn\btn-plain-toolbar-small-pressed-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-large-arrow-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-large-arrow.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-large-s-arrow-b-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-large-s-arrow-b.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-large-s-arrow-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-large-s-arrow.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-medium-arrow-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-medium-arrow.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-medium-s-arrow-b-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-medium-s-arrow-b.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-medium-s-arrow-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-medium-s-arrow.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-small-arrow-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-small-arrow.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-small-s-arrow-b-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-small-s-arrow-b.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-small-s-arrow-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-small-s-arrow.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-toolbar-large-arrow-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-toolbar-large-arrow.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-toolbar-large-s-arrow-b-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-toolbar-large-s-arrow-b.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-toolbar-large-s-arrow-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-toolbar-large-s-arrow.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-toolbar-medium-arrow-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-toolbar-medium-arrow.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-toolbar-medium-s-arrow-b-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-toolbar-medium-s-arrow-b.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-toolbar-medium-s-arrow-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-toolbar-medium-s-arrow.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-toolbar-small-arrow-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-toolbar-small-arrow.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-toolbar-small-s-arrow-b-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-toolbar-small-s-arrow-b.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-toolbar-small-s-arrow-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\default-toolbar-small-s-arrow.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\plain-toolbar-large-arrow-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\plain-toolbar-large-arrow.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\plain-toolbar-large-s-arrow-b-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\plain-toolbar-large-s-arrow-b.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\plain-toolbar-large-s-arrow-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\plain-toolbar-large-s-arrow.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\plain-toolbar-medium-arrow-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\plain-toolbar-medium-arrow.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\plain-toolbar-medium-s-arrow-b-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\plain-toolbar-medium-s-arrow-b.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\plain-toolbar-medium-s-arrow-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\plain-toolbar-medium-s-arrow.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\plain-toolbar-small-arrow-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\plain-toolbar-small-arrow.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\plain-toolbar-small-s-arrow-b-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\plain-toolbar-small-s-arrow-b.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\plain-toolbar-small-s-arrow-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\button\plain-toolbar-small-s-arrow.png" />
+    <Content Include="Content\ext-theme-neptune\images\datepicker\arrow-left.png" />
+    <Content Include="Content\ext-theme-neptune\images\datepicker\arrow-right.png" />
+    <Content Include="Content\ext-theme-neptune\images\datepicker\month-arrow.png" />
+    <Content Include="Content\ext-theme-neptune\images\dd\drop-add.png" />
+    <Content Include="Content\ext-theme-neptune\images\dd\drop-no.png" />
+    <Content Include="Content\ext-theme-neptune\images\dd\drop-yes.png" />
+    <Content Include="Content\ext-theme-neptune\images\editor\tb-sprite.png" />
+    <Content Include="Content\ext-theme-neptune\images\fieldset\collapse-tool.png" />
+    <Content Include="Content\ext-theme-neptune\images\form\checkbox.png" />
+    <Content Include="Content\ext-theme-neptune\images\form\clear-trigger-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\form\clear-trigger.png" />
+    <Content Include="Content\ext-theme-neptune\images\form\date-trigger-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\form\date-trigger.png" />
+    <Content Include="Content\ext-theme-neptune\images\form\exclamation.png" />
+    <Content Include="Content\ext-theme-neptune\images\form\radio.png" />
+    <Content Include="Content\ext-theme-neptune\images\form\search-trigger-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\form\search-trigger.png" />
+    <Content Include="Content\ext-theme-neptune\images\form\spinner-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\form\spinner.png" />
+    <Content Include="Content\ext-theme-neptune\images\form\trigger-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\form\trigger.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid-row-editor-buttons\grid-row-editor-buttons-default-bottom-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\grid-row-editor-buttons\grid-row-editor-buttons-default-bottom-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\grid-row-editor-buttons\grid-row-editor-buttons-default-top-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\grid-row-editor-buttons\grid-row-editor-buttons-default-top-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\grid\col-move-bottom.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\col-move-top.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\columns.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\dd-insert-arrow-left.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\dd-insert-arrow-right.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\dirty-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\dirty.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\drop-no.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\drop-yes.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\group-by.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\group-collapse.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\group-expand-sprite.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\group-expand.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\hd-pop.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\hmenu-asc.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\hmenu-desc.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\hmenu-lock.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\hmenu-unlock.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\loading.gif" />
+    <Content Include="Content\ext-theme-neptune\images\grid\page-first.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\page-last.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\page-next.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\page-prev.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\pick-button.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\refresh.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\sort_asc.png" />
+    <Content Include="Content\ext-theme-neptune\images\grid\sort_desc.png" />
+    <Content Include="Content\ext-theme-neptune\images\loadmask\loading.gif" />
+    <Content Include="Content\ext-theme-neptune\images\menu\checked.png" />
+    <Content Include="Content\ext-theme-neptune\images\menu\group-checked.png" />
+    <Content Include="Content\ext-theme-neptune\images\menu\menu-item-active-bg.gif" />
+    <Content Include="Content\ext-theme-neptune\images\menu\menu-parent-left.png" />
+    <Content Include="Content\ext-theme-neptune\images\menu\menu-parent.png" />
+    <Content Include="Content\ext-theme-neptune\images\menu\scroll-bottom.png" />
+    <Content Include="Content\ext-theme-neptune\images\menu\scroll-top.png" />
+    <Content Include="Content\ext-theme-neptune\images\menu\unchecked.png" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-default-framed-bottom-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-default-framed-bottom-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-default-framed-collapsed-bottom-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-default-framed-collapsed-bottom-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-default-framed-collapsed-left-corners-rtl.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-default-framed-collapsed-left-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-default-framed-collapsed-left-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-default-framed-collapsed-right-corners-rtl.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-default-framed-collapsed-right-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-default-framed-collapsed-right-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-default-framed-collapsed-top-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-default-framed-collapsed-top-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-default-framed-left-corners-rtl.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-default-framed-left-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-default-framed-left-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-default-framed-right-corners-rtl.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-default-framed-right-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-default-framed-right-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-default-framed-top-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-default-framed-top-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-light-framed-bottom-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-light-framed-bottom-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-light-framed-collapsed-bottom-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-light-framed-collapsed-bottom-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-light-framed-collapsed-left-corners-rtl.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-light-framed-collapsed-left-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-light-framed-collapsed-left-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-light-framed-collapsed-right-corners-rtl.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-light-framed-collapsed-right-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-light-framed-collapsed-right-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-light-framed-collapsed-top-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-light-framed-collapsed-top-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-light-framed-left-corners-rtl.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-light-framed-left-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-light-framed-left-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-light-framed-right-corners-rtl.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-light-framed-right-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-light-framed-right-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-light-framed-top-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel-header\panel-header-light-framed-top-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel\panel-default-framed-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel\panel-default-framed-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel\panel-light-framed-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\panel\panel-light-framed-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\shared\icon-error.png" />
+    <Content Include="Content\ext-theme-neptune\images\shared\icon-info.png" />
+    <Content Include="Content\ext-theme-neptune\images\shared\icon-question.png" />
+    <Content Include="Content\ext-theme-neptune\images\shared\icon-warning.png" />
+    <Content Include="Content\ext-theme-neptune\images\sizer\e-handle.png" />
+    <Content Include="Content\ext-theme-neptune\images\sizer\ne-handle.png" />
+    <Content Include="Content\ext-theme-neptune\images\sizer\nw-handle.png" />
+    <Content Include="Content\ext-theme-neptune\images\sizer\s-handle.png" />
+    <Content Include="Content\ext-theme-neptune\images\sizer\se-handle.png" />
+    <Content Include="Content\ext-theme-neptune\images\sizer\sw-handle.png" />
+    <Content Include="Content\ext-theme-neptune\images\slider\slider-bg.png" />
+    <Content Include="Content\ext-theme-neptune\images\slider\slider-thumb.png" />
+    <Content Include="Content\ext-theme-neptune\images\slider\slider-v-bg.png" />
+    <Content Include="Content\ext-theme-neptune\images\slider\slider-v-thumb.png" />
+    <Content Include="Content\ext-theme-neptune\images\tab-bar\default-plain-scroll-bottom.png" />
+    <Content Include="Content\ext-theme-neptune\images\tab-bar\default-plain-scroll-left.png" />
+    <Content Include="Content\ext-theme-neptune\images\tab-bar\default-plain-scroll-right.png" />
+    <Content Include="Content\ext-theme-neptune\images\tab-bar\default-plain-scroll-top.png" />
+    <Content Include="Content\ext-theme-neptune\images\tab-bar\default-scroll-bottom.png" />
+    <Content Include="Content\ext-theme-neptune\images\tab-bar\default-scroll-left.png" />
+    <Content Include="Content\ext-theme-neptune\images\tab-bar\default-scroll-right.png" />
+    <Content Include="Content\ext-theme-neptune\images\tab-bar\default-scroll-top.png" />
+    <Content Include="Content\ext-theme-neptune\images\tab\tab-default-bottom-active-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tab\tab-default-bottom-active-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tab\tab-default-bottom-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tab\tab-default-bottom-disabled-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tab\tab-default-bottom-disabled-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tab\tab-default-bottom-over-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tab\tab-default-bottom-over-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tab\tab-default-bottom-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tab\tab-default-close.png" />
+    <Content Include="Content\ext-theme-neptune\images\tab\tab-default-top-active-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tab\tab-default-top-active-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tab\tab-default-top-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tab\tab-default-top-disabled-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tab\tab-default-top-disabled-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tab\tab-default-top-over-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tab\tab-default-top-over-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tab\tab-default-top-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tip\tip-default-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tip\tip-default-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tip\tip-form-invalid-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tip\tip-form-invalid-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\toolbar\more.png" />
+    <Content Include="Content\ext-theme-neptune\images\toolbar\scroll-left.png" />
+    <Content Include="Content\ext-theme-neptune\images\toolbar\scroll-right.png" />
+    <Content Include="Content\ext-theme-neptune\images\tools\tool-sprites-dark.png" />
+    <Content Include="Content\ext-theme-neptune\images\tools\tool-sprites.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\arrows-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\arrows.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\drop-above.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\drop-add.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tree\drop-append.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\drop-below.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\drop-between.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\drop-no.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tree\drop-over.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tree\drop-under.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tree\drop-yes.gif" />
+    <Content Include="Content\ext-theme-neptune\images\tree\elbow-end-minus-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\elbow-end-minus.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\elbow-end-plus-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\elbow-end-plus.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\elbow-end-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\elbow-end.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\elbow-line-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\elbow-line.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\elbow-minus-nl-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\elbow-minus-nl.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\elbow-minus-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\elbow-minus.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\elbow-plus-nl-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\elbow-plus-nl.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\elbow-plus-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\elbow-plus.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\elbow-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\elbow.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\folder-open-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\folder-open.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\folder-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\folder.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\leaf-rtl.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\leaf.png" />
+    <Content Include="Content\ext-theme-neptune\images\tree\loading.gif" />
+    <Content Include="Content\ext-theme-neptune\images\util\splitter\mini-bottom.png" />
+    <Content Include="Content\ext-theme-neptune\images\util\splitter\mini-left.png" />
+    <Content Include="Content\ext-theme-neptune\images\util\splitter\mini-right.png" />
+    <Content Include="Content\ext-theme-neptune\images\util\splitter\mini-top.png" />
+    <Content Include="Content\ext-theme-neptune\images\window-header\window-header-default-bottom-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window-header\window-header-default-bottom-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window-header\window-header-default-collapsed-bottom-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window-header\window-header-default-collapsed-bottom-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window-header\window-header-default-collapsed-left-corners-rtl.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window-header\window-header-default-collapsed-left-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window-header\window-header-default-collapsed-left-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window-header\window-header-default-collapsed-right-corners-rtl.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window-header\window-header-default-collapsed-right-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window-header\window-header-default-collapsed-right-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window-header\window-header-default-collapsed-top-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window-header\window-header-default-collapsed-top-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window-header\window-header-default-left-corners-rtl.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window-header\window-header-default-left-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window-header\window-header-default-left-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window-header\window-header-default-right-corners-rtl.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window-header\window-header-default-right-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window-header\window-header-default-right-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window-header\window-header-default-top-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window-header\window-header-default-top-sides.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window\window-default-corners.gif" />
+    <Content Include="Content\ext-theme-neptune\images\window\window-default-sides.gif" />
+    <Content Include="Content\img\bg.jpg" />
+    <Content Include="Content\img\scheduler.png" />
+    <Content Include="Content\img\white.png" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <EmbeddedResource Include="Scripts\app.js" />
+    <Content Include="Scripts\app\controller\Main.js" />
+    <Content Include="Scripts\app\view\main\Main.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\app\store\Readme.md" />
+    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\ext\ext-all-debug-w-comments.js" />
+    <Content Include="Scripts\ext\ext-all-debug.js" />
+    <Content Include="Scripts\ext\ext-all-dev.js" />
+    <Content Include="Scripts\ext\ext-all-rtl-debug-w-comments.js" />
+    <Content Include="Scripts\ext\ext-all-rtl-debug.js" />
+    <Content Include="Scripts\ext\ext-all-rtl-dev.js" />
+    <Content Include="Scripts\ext\ext-all-rtl.js" />
+    <Content Include="Scripts\ext\ext-all.js" />
+    <Content Include="Scripts\ext\ext-debug.js" />
+    <Content Include="Scripts\ext\ext-dev.js" />
+    <Content Include="Scripts\ext\ext-theme-neptune.js" />
+    <Content Include="Scripts\ext\ext.js" />
+    <Content Include="Scripts\ext\src\AbstractComponent.js" />
+    <Content Include="Scripts\ext\src\AbstractManager.js" />
+    <Content Include="Scripts\ext\src\AbstractPlugin.js" />
+    <Content Include="Scripts\ext\src\Action.js" />
+    <Content Include="Scripts\ext\src\Ajax.js" />
+    <Content Include="Scripts\ext\src\app\Application.js" />
+    <Content Include="Scripts\ext\src\app\Controller.js" />
+    <Content Include="Scripts\ext\src\app\domain\Component.js" />
+    <Content Include="Scripts\ext\src\app\domain\Controller.js" />
+    <Content Include="Scripts\ext\src\app\domain\Direct.js" />
+    <Content Include="Scripts\ext\src\app\domain\Global.js" />
+    <Content Include="Scripts\ext\src\app\domain\Store.js" />
+    <Content Include="Scripts\ext\src\app\EventBus.js" />
+    <Content Include="Scripts\ext\src\app\EventDomain.js" />
+    <Content Include="Scripts\ext\src\button\Button.js" />
+    <Content Include="Scripts\ext\src\button\Cycle.js" />
+    <Content Include="Scripts\ext\src\button\Manager.js" />
+    <Content Include="Scripts\ext\src\button\Split.js" />
+    <Content Include="Scripts\ext\src\chart\axis\Abstract.js" />
+    <Content Include="Scripts\ext\src\chart\axis\Axis.js" />
+    <Content Include="Scripts\ext\src\chart\axis\Category.js" />
+    <Content Include="Scripts\ext\src\chart\axis\Gauge.js" />
+    <Content Include="Scripts\ext\src\chart\axis\Numeric.js" />
+    <Content Include="Scripts\ext\src\chart\axis\Radial.js" />
+    <Content Include="Scripts\ext\src\chart\axis\Time.js" />
+    <Content Include="Scripts\ext\src\chart\Callout.js" />
+    <Content Include="Scripts\ext\src\chart\Chart.js" />
+    <Content Include="Scripts\ext\src\chart\Highlight.js" />
+    <Content Include="Scripts\ext\src\chart\Label.js" />
+    <Content Include="Scripts\ext\src\chart\Legend.js" />
+    <Content Include="Scripts\ext\src\chart\LegendItem.js" />
+    <Content Include="Scripts\ext\src\chart\Mask.js" />
+    <Content Include="Scripts\ext\src\chart\MaskLayer.js" />
+    <Content Include="Scripts\ext\src\chart\Navigation.js" />
+    <Content Include="Scripts\ext\src\chart\series\Area.js" />
+    <Content Include="Scripts\ext\src\chart\series\Bar.js" />
+    <Content Include="Scripts\ext\src\chart\series\Cartesian.js" />
+    <Content Include="Scripts\ext\src\chart\series\Column.js" />
+    <Content Include="Scripts\ext\src\chart\series\Gauge.js" />
+    <Content Include="Scripts\ext\src\chart\series\Line.js" />
+    <Content Include="Scripts\ext\src\chart\series\Pie.js" />
+    <Content Include="Scripts\ext\src\chart\series\Radar.js" />
+    <Content Include="Scripts\ext\src\chart\series\Scatter.js" />
+    <Content Include="Scripts\ext\src\chart\series\Series.js" />
+    <Content Include="Scripts\ext\src\chart\Shape.js" />
+    <Content Include="Scripts\ext\src\chart\theme\Base.js" />
+    <Content Include="Scripts\ext\src\chart\theme\Theme.js" />
+    <Content Include="Scripts\ext\src\chart\Tip.js" />
+    <Content Include="Scripts\ext\src\chart\TipSurface.js" />
+    <Content Include="Scripts\ext\src\class\Base.js" />
+    <Content Include="Scripts\ext\src\class\Class.js" />
+    <Content Include="Scripts\ext\src\class\ClassManager.js" />
+    <Content Include="Scripts\ext\src\class\Loader.js" />
+    <Content Include="Scripts\ext\src\Component.js" />
+    <Content Include="Scripts\ext\src\ComponentLoader.js" />
+    <Content Include="Scripts\ext\src\ComponentManager.js" />
+    <Content Include="Scripts\ext\src\ComponentQuery.js" />
+    <Content Include="Scripts\ext\src\container\AbstractContainer.js" />
+    <Content Include="Scripts\ext\src\container\ButtonGroup.js" />
+    <Content Include="Scripts\ext\src\container\Container.js" />
+    <Content Include="Scripts\ext\src\container\DockingContainer.js" />
+    <Content Include="Scripts\ext\src\container\Monitor.js" />
+    <Content Include="Scripts\ext\src\container\Viewport.js" />
+    <Content Include="Scripts\ext\src\data\AbstractStore.js" />
+    <Content Include="Scripts\ext\src\data\amf\Encoder.js" />
+    <Content Include="Scripts\ext\src\data\amf\Packet.js" />
+    <Content Include="Scripts\ext\src\data\amf\Proxy.js" />
+    <Content Include="Scripts\ext\src\data\amf\Reader.js" />
+    <Content Include="Scripts\ext\src\data\amf\RemotingMessage.js" />
+    <Content Include="Scripts\ext\src\data\amf\XmlDecoder.js" />
+    <Content Include="Scripts\ext\src\data\amf\XmlEncoder.js" />
+    <Content Include="Scripts\ext\src\data\ArrayStore.js" />
+    <Content Include="Scripts\ext\src\data\association\Association.js" />
+    <Content Include="Scripts\ext\src\data\association\BelongsTo.js" />
+    <Content Include="Scripts\ext\src\data\association\HasMany.js" />
+    <Content Include="Scripts\ext\src\data\association\HasOne.js" />
+    <Content Include="Scripts\ext\src\data\Batch.js" />
+    <Content Include="Scripts\ext\src\data\BufferStore.js" />
+    <Content Include="Scripts\ext\src\data\Connection.js" />
+    <Content Include="Scripts\ext\src\data\DirectStore.js" />
+    <Content Include="Scripts\ext\src\data\Errors.js" />
+    <Content Include="Scripts\ext\src\data\Field.js" />
+    <Content Include="Scripts\ext\src\data\flash\BinaryXhr.js" />
+    <Content Include="Scripts\ext\src\data\Group.js" />
+    <Content Include="Scripts\ext\src\data\IdGenerator.js" />
+    <Content Include="Scripts\ext\src\data\JsonP.js" />
+    <Content Include="Scripts\ext\src\data\JsonPStore.js" />
+    <Content Include="Scripts\ext\src\data\JsonStore.js" />
+    <Content Include="Scripts\ext\src\data\Model.js" />
+    <Content Include="Scripts\ext\src\data\NodeInterface.js" />
+    <Content Include="Scripts\ext\src\data\NodeStore.js" />
+    <Content Include="Scripts\ext\src\data\Operation.js" />
+    <Content Include="Scripts\ext\src\data\PageMap.js" />
+    <Content Include="Scripts\ext\src\data\proxy\Ajax.js" />
+    <Content Include="Scripts\ext\src\data\proxy\Client.js" />
+    <Content Include="Scripts\ext\src\data\proxy\Direct.js" />
+    <Content Include="Scripts\ext\src\data\proxy\JsonP.js" />
+    <Content Include="Scripts\ext\src\data\proxy\LocalStorage.js" />
+    <Content Include="Scripts\ext\src\data\proxy\Memory.js" />
+    <Content Include="Scripts\ext\src\data\proxy\Proxy.js" />
+    <Content Include="Scripts\ext\src\data\proxy\Rest.js" />
+    <Content Include="Scripts\ext\src\data\proxy\Server.js" />
+    <Content Include="Scripts\ext\src\data\proxy\SessionStorage.js" />
+    <Content Include="Scripts\ext\src\data\proxy\WebStorage.js" />
+    <Content Include="Scripts\ext\src\data\reader\Array.js" />
+    <Content Include="Scripts\ext\src\data\reader\Json.js" />
+    <Content Include="Scripts\ext\src\data\reader\Reader.js" />
+    <Content Include="Scripts\ext\src\data\reader\Xml.js" />
+    <Content Include="Scripts\ext\src\data\Request.js" />
+    <Content Include="Scripts\ext\src\data\ResultSet.js" />
+    <Content Include="Scripts\ext\src\data\SequentialIdGenerator.js" />
+    <Content Include="Scripts\ext\src\data\soap\Proxy.js" />
+    <Content Include="Scripts\ext\src\data\soap\Reader.js" />
+    <Content Include="Scripts\ext\src\data\SortTypes.js" />
+    <Content Include="Scripts\ext\src\data\Store.js" />
+    <Content Include="Scripts\ext\src\data\StoreManager.js" />
+    <Content Include="Scripts\ext\src\data\Tree.js" />
+    <Content Include="Scripts\ext\src\data\TreeModel.js" />
+    <Content Include="Scripts\ext\src\data\TreeStore.js" />
+    <Content Include="Scripts\ext\src\data\Types.js" />
+    <Content Include="Scripts\ext\src\data\UuidGenerator.js" />
+    <Content Include="Scripts\ext\src\data\validations.js" />
+    <Content Include="Scripts\ext\src\data\writer\Json.js" />
+    <Content Include="Scripts\ext\src\data\writer\Writer.js" />
+    <Content Include="Scripts\ext\src\data\writer\Xml.js" />
+    <Content Include="Scripts\ext\src\data\XmlStore.js" />
+    <Content Include="Scripts\ext\src\dd\DD.js" />
+    <Content Include="Scripts\ext\src\dd\DDProxy.js" />
+    <Content Include="Scripts\ext\src\dd\DDTarget.js" />
+    <Content Include="Scripts\ext\src\dd\DragDrop.js" />
+    <Content Include="Scripts\ext\src\dd\DragDropManager.js" />
+    <Content Include="Scripts\ext\src\dd\DragSource.js" />
+    <Content Include="Scripts\ext\src\dd\DragTracker.js" />
+    <Content Include="Scripts\ext\src\dd\DragZone.js" />
+    <Content Include="Scripts\ext\src\dd\DropTarget.js" />
+    <Content Include="Scripts\ext\src\dd\DropZone.js" />
+    <Content Include="Scripts\ext\src\dd\Registry.js" />
+    <Content Include="Scripts\ext\src\dd\ScrollManager.js" />
+    <Content Include="Scripts\ext\src\dd\StatusProxy.js" />
+    <Content Include="Scripts\ext\src\diag\layout\Context.js" />
+    <Content Include="Scripts\ext\src\diag\layout\ContextItem.js" />
+    <Content Include="Scripts\ext\src\direct\AmfRemotingProvider.js" />
+    <Content Include="Scripts\ext\src\direct\Event.js" />
+    <Content Include="Scripts\ext\src\direct\ExceptionEvent.js" />
+    <Content Include="Scripts\ext\src\direct\JsonProvider.js" />
+    <Content Include="Scripts\ext\src\direct\Manager.js" />
+    <Content Include="Scripts\ext\src\direct\PollingProvider.js" />
+    <Content Include="Scripts\ext\src\direct\Provider.js" />
+    <Content Include="Scripts\ext\src\direct\RemotingEvent.js" />
+    <Content Include="Scripts\ext\src\direct\RemotingMethod.js" />
+    <Content Include="Scripts\ext\src\direct\RemotingProvider.js" />
+    <Content Include="Scripts\ext\src\direct\Transaction.js" />
+    <Content Include="Scripts\ext\src\dom\AbstractElement.js" />
+    <Content Include="Scripts\ext\src\dom\AbstractElement_insertion.js" />
+    <Content Include="Scripts\ext\src\dom\AbstractElement_static.js" />
+    <Content Include="Scripts\ext\src\dom\AbstractElement_style.js" />
+    <Content Include="Scripts\ext\src\dom\AbstractElement_traversal.js" />
+    <Content Include="Scripts\ext\src\dom\AbstractHelper.js" />
+    <Content Include="Scripts\ext\src\dom\AbstractQuery.js" />
+    <Content Include="Scripts\ext\src\dom\CompositeElement.js" />
+    <Content Include="Scripts\ext\src\dom\CompositeElementLite.js" />
+    <Content Include="Scripts\ext\src\dom\Element.js" />
+    <Content Include="Scripts\ext\src\dom\Element_anim.js" />
+    <Content Include="Scripts\ext\src\dom\Element_dd.js" />
+    <Content Include="Scripts\ext\src\dom\Element_fx.js" />
+    <Content Include="Scripts\ext\src\dom\Element_position.js" />
+    <Content Include="Scripts\ext\src\dom\Element_scroll.js" />
+    <Content Include="Scripts\ext\src\dom\Element_style.js" />
+    <Content Include="Scripts\ext\src\dom\Helper.js" />
+    <Content Include="Scripts\ext\src\dom\Layer.js" />
+    <Content Include="Scripts\ext\src\dom\Query.js" />
+    <Content Include="Scripts\ext\src\draw\Color.js" />
+    <Content Include="Scripts\ext\src\draw\Component.js" />
+    <Content Include="Scripts\ext\src\draw\CompositeSprite.js" />
+    <Content Include="Scripts\ext\src\draw\Draw.js" />
+    <Content Include="Scripts\ext\src\draw\engine\ImageExporter.js" />
+    <Content Include="Scripts\ext\src\draw\engine\Svg.js" />
+    <Content Include="Scripts\ext\src\draw\engine\SvgExporter.js" />
+    <Content Include="Scripts\ext\src\draw\engine\Vml.js" />
+    <Content Include="Scripts\ext\src\draw\Matrix.js" />
+    <Content Include="Scripts\ext\src\draw\Sprite.js" />
+    <Content Include="Scripts\ext\src\draw\SpriteDD.js" />
+    <Content Include="Scripts\ext\src\draw\Surface.js" />
+    <Content Include="Scripts\ext\src\draw\Text.js" />
+    <Content Include="Scripts\ext\src\Editor.js" />
+    <Content Include="Scripts\ext\src\ElementLoader.js" />
+    <Content Include="Scripts\ext\src\enums.js" />
+    <Content Include="Scripts\ext\src\EventManager.js" />
+    <Content Include="Scripts\ext\src\EventObject.js" />
+    <Content Include="Scripts\ext\src\Ext-more.js" />
+    <Content Include="Scripts\ext\src\Ext.js" />
+    <Content Include="Scripts\ext\src\flash\Component.js" />
+    <Content Include="Scripts\ext\src\FocusManager.js" />
+    <Content Include="Scripts\ext\src\form\action\Action.js" />
+    <Content Include="Scripts\ext\src\form\action\DirectLoad.js" />
+    <Content Include="Scripts\ext\src\form\action\DirectSubmit.js" />
+    <Content Include="Scripts\ext\src\form\action\Load.js" />
+    <Content Include="Scripts\ext\src\form\action\StandardSubmit.js" />
+    <Content Include="Scripts\ext\src\form\action\Submit.js" />
+    <Content Include="Scripts\ext\src\form\Basic.js" />
+    <Content Include="Scripts\ext\src\form\CheckboxGroup.js" />
+    <Content Include="Scripts\ext\src\form\CheckboxManager.js" />
+    <Content Include="Scripts\ext\src\form\FieldAncestor.js" />
+    <Content Include="Scripts\ext\src\form\FieldContainer.js" />
+    <Content Include="Scripts\ext\src\form\FieldSet.js" />
+    <Content Include="Scripts\ext\src\form\field\Base.js" />
+    <Content Include="Scripts\ext\src\form\field\Checkbox.js" />
+    <Content Include="Scripts\ext\src\form\field\ComboBox.js" />
+    <Content Include="Scripts\ext\src\form\field\Date.js" />
+    <Content Include="Scripts\ext\src\form\field\Display.js" />
+    <Content Include="Scripts\ext\src\form\field\Field.js" />
+    <Content Include="Scripts\ext\src\form\field\File.js" />
+    <Content Include="Scripts\ext\src\form\field\FileButton.js" />
+    <Content Include="Scripts\ext\src\form\field\Hidden.js" />
+    <Content Include="Scripts\ext\src\form\field\HtmlEditor.js" />
+    <Content Include="Scripts\ext\src\form\field\Number.js" />
+    <Content Include="Scripts\ext\src\form\field\Picker.js" />
+    <Content Include="Scripts\ext\src\form\field\Radio.js" />
+    <Content Include="Scripts\ext\src\form\field\Spinner.js" />
+    <Content Include="Scripts\ext\src\form\field\Text.js" />
+    <Content Include="Scripts\ext\src\form\field\TextArea.js" />
+    <Content Include="Scripts\ext\src\form\field\Time.js" />
+    <Content Include="Scripts\ext\src\form\field\Trigger.js" />
+    <Content Include="Scripts\ext\src\form\field\VTypes.js" />
+    <Content Include="Scripts\ext\src\form\Label.js" />
+    <Content Include="Scripts\ext\src\form\Labelable.js" />
+    <Content Include="Scripts\ext\src\form\Panel.js" />
+    <Content Include="Scripts\ext\src\form\RadioGroup.js" />
+    <Content Include="Scripts\ext\src\form\RadioManager.js" />
+    <Content Include="Scripts\ext\src\fx\Anim.js" />
+    <Content Include="Scripts\ext\src\fx\Animator.js" />
+    <Content Include="Scripts\ext\src\fx\CubicBezier.js" />
+    <Content Include="Scripts\ext\src\fx\Easing.js" />
+    <Content Include="Scripts\ext\src\fx\Manager.js" />
+    <Content Include="Scripts\ext\src\fx\PropertyHandler.js" />
+    <Content Include="Scripts\ext\src\fx\Queue.js" />
+    <Content Include="Scripts\ext\src\fx\target\Component.js" />
+    <Content Include="Scripts\ext\src\fx\target\CompositeElement.js" />
+    <Content Include="Scripts\ext\src\fx\target\CompositeElementCSS.js" />
+    <Content Include="Scripts\ext\src\fx\target\CompositeSprite.js" />
+    <Content Include="Scripts\ext\src\fx\target\Element.js" />
+    <Content Include="Scripts\ext\src\fx\target\ElementCSS.js" />
+    <Content Include="Scripts\ext\src\fx\target\Sprite.js" />
+    <Content Include="Scripts\ext\src\fx\target\Target.js" />
+    <Content Include="Scripts\ext\src\grid\CellContext.js" />
+    <Content Include="Scripts\ext\src\grid\CellEditor.js" />
+    <Content Include="Scripts\ext\src\grid\ColumnComponentLayout.js" />
+    <Content Include="Scripts\ext\src\grid\ColumnLayout.js" />
+    <Content Include="Scripts\ext\src\grid\ColumnManager.js" />
+    <Content Include="Scripts\ext\src\grid\column\Action.js" />
+    <Content Include="Scripts\ext\src\grid\column\Boolean.js" />
+    <Content Include="Scripts\ext\src\grid\column\Check.js" />
+    <Content Include="Scripts\ext\src\grid\column\Column.js" />
+    <Content Include="Scripts\ext\src\grid\column\Date.js" />
+    <Content Include="Scripts\ext\src\grid\column\Number.js" />
+    <Content Include="Scripts\ext\src\grid\column\RowNumberer.js" />
+    <Content Include="Scripts\ext\src\grid\column\Template.js" />
+    <Content Include="Scripts\ext\src\grid\feature\AbstractSummary.js" />
+    <Content Include="Scripts\ext\src\grid\feature\Feature.js" />
+    <Content Include="Scripts\ext\src\grid\feature\Grouping.js" />
+    <Content Include="Scripts\ext\src\grid\feature\GroupingSummary.js" />
+    <Content Include="Scripts\ext\src\grid\feature\GroupStore.js" />
+    <Content Include="Scripts\ext\src\grid\feature\RowBody.js" />
+    <Content Include="Scripts\ext\src\grid\feature\RowWrap.js" />
+    <Content Include="Scripts\ext\src\grid\feature\Summary.js" />
+    <Content Include="Scripts\ext\src\grid\header\Container.js" />
+    <Content Include="Scripts\ext\src\grid\header\DragZone.js" />
+    <Content Include="Scripts\ext\src\grid\header\DropZone.js" />
+    <Content Include="Scripts\ext\src\grid\locking\HeaderContainer.js" />
+    <Content Include="Scripts\ext\src\grid\locking\Lockable.js" />
+    <Content Include="Scripts\ext\src\grid\locking\View.js" />
+    <Content Include="Scripts\ext\src\grid\Panel.js" />
+    <Content Include="Scripts\ext\src\grid\plugin\BufferedRenderer.js" />
+    <Content Include="Scripts\ext\src\grid\plugin\BufferedRendererTableView.js" />
+    <Content Include="Scripts\ext\src\grid\plugin\BufferedRendererTreeView.js" />
+    <Content Include="Scripts\ext\src\grid\plugin\CellEditing.js" />
+    <Content Include="Scripts\ext\src\grid\plugin\DivRenderer.js" />
+    <Content Include="Scripts\ext\src\grid\plugin\DragDrop.js" />
+    <Content Include="Scripts\ext\src\grid\plugin\Editing.js" />
+    <Content Include="Scripts\ext\src\grid\plugin\HeaderReorderer.js" />
+    <Content Include="Scripts\ext\src\grid\plugin\HeaderResizer.js" />
+    <Content Include="Scripts\ext\src\grid\plugin\RowEditing.js" />
+    <Content Include="Scripts\ext\src\grid\plugin\RowExpander.js" />
+    <Content Include="Scripts\ext\src\grid\property\Grid.js" />
+    <Content Include="Scripts\ext\src\grid\property\HeaderContainer.js" />
+    <Content Include="Scripts\ext\src\grid\property\Property.js" />
+    <Content Include="Scripts\ext\src\grid\property\Store.js" />
+    <Content Include="Scripts\ext\src\grid\RowEditor.js" />
+    <Content Include="Scripts\ext\src\grid\RowEditorButtons.js" />
+    <Content Include="Scripts\ext\src\grid\Scroller.js" />
+    <Content Include="Scripts\ext\src\grid\View.js" />
+    <Content Include="Scripts\ext\src\grid\ViewDropZone.js" />
+    <Content Include="Scripts\ext\src\Img.js" />
+    <Content Include="Scripts\ext\src\lang\Array.js" />
+    <Content Include="Scripts\ext\src\lang\Date.js" />
+    <Content Include="Scripts\ext\src\lang\Error.js" />
+    <Content Include="Scripts\ext\src\lang\Function.js" />
+    <Content Include="Scripts\ext\src\lang\Number.js" />
+    <Content Include="Scripts\ext\src\lang\Object.js" />
+    <Content Include="Scripts\ext\src\lang\String.js" />
+    <Content Include="Scripts\ext\src\layout\ClassList.js" />
+    <Content Include="Scripts\ext\src\layout\component\Auto.js" />
+    <Content Include="Scripts\ext\src\layout\component\Body.js" />
+    <Content Include="Scripts\ext\src\layout\component\BoundList.js" />
+    <Content Include="Scripts\ext\src\layout\component\Button.js" />
+    <Content Include="Scripts\ext\src\layout\component\Component.js" />
+    <Content Include="Scripts\ext\src\layout\component\Dock.js" />
+    <Content Include="Scripts\ext\src\layout\component\Draw.js" />
+    <Content Include="Scripts\ext\src\layout\component\FieldSet.js" />
+    <Content Include="Scripts\ext\src\layout\component\field\ComboBox.js" />
+    <Content Include="Scripts\ext\src\layout\component\field\Field.js" />
+    <Content Include="Scripts\ext\src\layout\component\field\FieldContainer.js" />
+    <Content Include="Scripts\ext\src\layout\component\field\HtmlEditor.js" />
+    <Content Include="Scripts\ext\src\layout\component\field\Slider.js" />
+    <Content Include="Scripts\ext\src\layout\component\field\Text.js" />
+    <Content Include="Scripts\ext\src\layout\component\field\TextArea.js" />
+    <Content Include="Scripts\ext\src\layout\component\field\Trigger.js" />
+    <Content Include="Scripts\ext\src\layout\component\ProgressBar.js" />
+    <Content Include="Scripts\ext\src\layout\container\Absolute.js" />
+    <Content Include="Scripts\ext\src\layout\container\Accordion.js" />
+    <Content Include="Scripts\ext\src\layout\container\Anchor.js" />
+    <Content Include="Scripts\ext\src\layout\container\Auto.js" />
+    <Content Include="Scripts\ext\src\layout\container\Border.js" />
+    <Content Include="Scripts\ext\src\layout\container\border\Region.js" />
+    <Content Include="Scripts\ext\src\layout\container\Box.js" />
+    <Content Include="Scripts\ext\src\layout\container\boxOverflow\Menu.js" />
+    <Content Include="Scripts\ext\src\layout\container\boxOverflow\None.js" />
+    <Content Include="Scripts\ext\src\layout\container\boxOverflow\Scroller.js" />
+    <Content Include="Scripts\ext\src\layout\container\Card.js" />
+    <Content Include="Scripts\ext\src\layout\container\CheckboxGroup.js" />
+    <Content Include="Scripts\ext\src\layout\container\Column.js" />
+    <Content Include="Scripts\ext\src\layout\container\Container.js" />
+    <Content Include="Scripts\ext\src\layout\container\Editor.js" />
+    <Content Include="Scripts\ext\src\layout\container\Fit.js" />
+    <Content Include="Scripts\ext\src\layout\container\Form.js" />
+    <Content Include="Scripts\ext\src\layout\container\HBox.js" />
+    <Content Include="Scripts\ext\src\layout\container\Table.js" />
+    <Content Include="Scripts\ext\src\layout\container\VBox.js" />
+    <Content Include="Scripts\ext\src\layout\Context.js" />
+    <Content Include="Scripts\ext\src\layout\ContextItem.js" />
+    <Content Include="Scripts\ext\src\layout\Layout.js" />
+    <Content Include="Scripts\ext\src\layout\SizeModel.js" />
+    <Content Include="Scripts\ext\src\layout\SizePolicy.js" />
+    <Content Include="Scripts\ext\src\LoadMask.js" />
+    <Content Include="Scripts\ext\src\menu\CheckItem.js" />
+    <Content Include="Scripts\ext\src\menu\ColorPicker.js" />
+    <Content Include="Scripts\ext\src\menu\DatePicker.js" />
+    <Content Include="Scripts\ext\src\menu\Item.js" />
+    <Content Include="Scripts\ext\src\menu\KeyNav.js" />
+    <Content Include="Scripts\ext\src\menu\Manager.js" />
+    <Content Include="Scripts\ext\src\menu\Menu.js" />
+    <Content Include="Scripts\ext\src\menu\Separator.js" />
+    <Content Include="Scripts\ext\src\misc\JSON.js" />
+    <Content Include="Scripts\ext\src\ModelManager.js" />
+    <Content Include="Scripts\ext\src\panel\AbstractPanel.js" />
+    <Content Include="Scripts\ext\src\panel\DD.js" />
+    <Content Include="Scripts\ext\src\panel\Header.js" />
+    <Content Include="Scripts\ext\src\panel\Panel.js" />
+    <Content Include="Scripts\ext\src\panel\Proxy.js" />
+    <Content Include="Scripts\ext\src\panel\Table.js" />
+    <Content Include="Scripts\ext\src\panel\Tool.js" />
+    <Content Include="Scripts\ext\src\perf\Accumulator.js" />
+    <Content Include="Scripts\ext\src\perf\Monitor.js" />
+    <Content Include="Scripts\ext\src\picker\Color.js" />
+    <Content Include="Scripts\ext\src\picker\Date.js" />
+    <Content Include="Scripts\ext\src\picker\Month.js" />
+    <Content Include="Scripts\ext\src\picker\Time.js" />
+    <Content Include="Scripts\ext\src\PluginManager.js" />
+    <Content Include="Scripts\ext\src\ProgressBar.js" />
+    <Content Include="Scripts\ext\src\Queryable.js" />
+    <Content Include="Scripts\ext\src\resizer\BorderSplitter.js" />
+    <Content Include="Scripts\ext\src\resizer\BorderSplitterTracker.js" />
+    <Content Include="Scripts\ext\src\resizer\Handle.js" />
+    <Content Include="Scripts\ext\src\resizer\Resizer.js" />
+    <Content Include="Scripts\ext\src\resizer\ResizeTracker.js" />
+    <Content Include="Scripts\ext\src\resizer\Splitter.js" />
+    <Content Include="Scripts\ext\src\resizer\SplitterTracker.js" />
+    <Content Include="Scripts\ext\src\rtl\AbstractComponent.js" />
+    <Content Include="Scripts\ext\src\rtl\button\Button.js" />
+    <Content Include="Scripts\ext\src\rtl\chart\axis\Axis.js" />
+    <Content Include="Scripts\ext\src\rtl\chart\axis\Gauge.js" />
+    <Content Include="Scripts\ext\src\rtl\chart\Chart.js" />
+    <Content Include="Scripts\ext\src\rtl\chart\Legend.js" />
+    <Content Include="Scripts\ext\src\rtl\chart\LegendItem.js" />
+    <Content Include="Scripts\ext\src\rtl\chart\series\Cartesian.js" />
+    <Content Include="Scripts\ext\src\rtl\chart\series\Gauge.js" />
+    <Content Include="Scripts\ext\src\rtl\dd\DD.js" />
+    <Content Include="Scripts\ext\src\rtl\dom\Element_anim.js" />
+    <Content Include="Scripts\ext\src\rtl\dom\Element_insertion.js" />
+    <Content Include="Scripts\ext\src\rtl\dom\Element_position.js" />
+    <Content Include="Scripts\ext\src\rtl\dom\Element_scroll.js" />
+    <Content Include="Scripts\ext\src\rtl\dom\Element_static.js" />
+    <Content Include="Scripts\ext\src\rtl\dom\Layer.js" />
+    <Content Include="Scripts\ext\src\rtl\draw\Component.js" />
+    <Content Include="Scripts\ext\src\rtl\draw\Sprite.js" />
+    <Content Include="Scripts\ext\src\rtl\EventObjectImpl.js" />
+    <Content Include="Scripts\ext\src\rtl\form\field\Checkbox.js" />
+    <Content Include="Scripts\ext\src\rtl\form\field\File.js" />
+    <Content Include="Scripts\ext\src\rtl\form\field\Spinner.js" />
+    <Content Include="Scripts\ext\src\rtl\form\field\Trigger.js" />
+    <Content Include="Scripts\ext\src\rtl\grid\CellEditor.js" />
+    <Content Include="Scripts\ext\src\rtl\grid\column\Column.js" />
+    <Content Include="Scripts\ext\src\rtl\grid\feature\Summary.js" />
+    <Content Include="Scripts\ext\src\rtl\grid\plugin\HeaderResizer.js" />
+    <Content Include="Scripts\ext\src\rtl\grid\plugin\RowEditing.js" />
+    <Content Include="Scripts\ext\src\rtl\grid\RowEditor.js" />
+    <Content Include="Scripts\ext\src\rtl\layout\component\Dock.js" />
+    <Content Include="Scripts\ext\src\rtl\layout\component\field\Text.js" />
+    <Content Include="Scripts\ext\src\rtl\layout\component\field\Trigger.js" />
+    <Content Include="Scripts\ext\src\rtl\layout\container\Absolute.js" />
+    <Content Include="Scripts\ext\src\rtl\layout\container\Border.js" />
+    <Content Include="Scripts\ext\src\rtl\layout\container\Box.js" />
+    <Content Include="Scripts\ext\src\rtl\layout\container\boxOverflow\Menu.js" />
+    <Content Include="Scripts\ext\src\rtl\layout\container\boxOverflow\Scroller.js" />
+    <Content Include="Scripts\ext\src\rtl\layout\container\CheckboxGroup.js" />
+    <Content Include="Scripts\ext\src\rtl\layout\container\Column.js" />
+    <Content Include="Scripts\ext\src\rtl\layout\container\HBox.js" />
+    <Content Include="Scripts\ext\src\rtl\layout\container\VBox.js" />
+    <Content Include="Scripts\ext\src\rtl\layout\ContextItem.js" />
+    <Content Include="Scripts\ext\src\rtl\panel\Header.js" />
+    <Content Include="Scripts\ext\src\rtl\panel\Panel.js" />
+    <Content Include="Scripts\ext\src\rtl\resizer\BorderSplitterTracker.js" />
+    <Content Include="Scripts\ext\src\rtl\resizer\ResizeTracker.js" />
+    <Content Include="Scripts\ext\src\rtl\resizer\SplitterTracker.js" />
+    <Content Include="Scripts\ext\src\rtl\selection\CellModel.js" />
+    <Content Include="Scripts\ext\src\rtl\selection\TreeModel.js" />
+    <Content Include="Scripts\ext\src\rtl\slider\Multi.js" />
+    <Content Include="Scripts\ext\src\rtl\tab\Bar.js" />
+    <Content Include="Scripts\ext\src\rtl\tip\QuickTipManager.js" />
+    <Content Include="Scripts\ext\src\rtl\tree\Column.js" />
+    <Content Include="Scripts\ext\src\rtl\util\Floating.js" />
+    <Content Include="Scripts\ext\src\rtl\util\Renderable.js" />
+    <Content Include="Scripts\ext\src\rtl\view\Table.js" />
+    <Content Include="Scripts\ext\src\selection\CellModel.js" />
+    <Content Include="Scripts\ext\src\selection\CheckboxModel.js" />
+    <Content Include="Scripts\ext\src\selection\DataViewModel.js" />
+    <Content Include="Scripts\ext\src\selection\Model.js" />
+    <Content Include="Scripts\ext\src\selection\RowModel.js" />
+    <Content Include="Scripts\ext\src\selection\TreeModel.js" />
+    <Content Include="Scripts\ext\src\Shadow.js" />
+    <Content Include="Scripts\ext\src\ShadowPool.js" />
+    <Content Include="Scripts\ext\src\slider\Multi.js" />
+    <Content Include="Scripts\ext\src\slider\Single.js" />
+    <Content Include="Scripts\ext\src\slider\Thumb.js" />
+    <Content Include="Scripts\ext\src\slider\Tip.js" />
+    <Content Include="Scripts\ext\src\state\CookieProvider.js" />
+    <Content Include="Scripts\ext\src\state\LocalStorageProvider.js" />
+    <Content Include="Scripts\ext\src\state\Manager.js" />
+    <Content Include="Scripts\ext\src\state\Provider.js" />
+    <Content Include="Scripts\ext\src\state\Stateful.js" />
+    <Content Include="Scripts\ext\src\Support.js" />
+    <Content Include="Scripts\ext\src\tab\Bar.js" />
+    <Content Include="Scripts\ext\src\tab\Panel.js" />
+    <Content Include="Scripts\ext\src\tab\Tab.js" />
+    <Content Include="Scripts\ext\src\Template.js" />
+    <Content Include="Scripts\ext\src\tip\QuickTip.js" />
+    <Content Include="Scripts\ext\src\tip\QuickTipManager.js" />
+    <Content Include="Scripts\ext\src\tip\Tip.js" />
+    <Content Include="Scripts\ext\src\tip\ToolTip.js" />
+    <Content Include="Scripts\ext\src\toolbar\Fill.js" />
+    <Content Include="Scripts\ext\src\toolbar\Item.js" />
+    <Content Include="Scripts\ext\src\toolbar\Paging.js" />
+    <Content Include="Scripts\ext\src\toolbar\Separator.js" />
+    <Content Include="Scripts\ext\src\toolbar\Spacer.js" />
+    <Content Include="Scripts\ext\src\toolbar\TextItem.js" />
+    <Content Include="Scripts\ext\src\toolbar\Toolbar.js" />
+    <Content Include="Scripts\ext\src\tree\Column.js" />
+    <Content Include="Scripts\ext\src\tree\Panel.js" />
+    <Content Include="Scripts\ext\src\tree\plugin\TreeViewDragDrop.js" />
+    <Content Include="Scripts\ext\src\tree\View.js" />
+    <Content Include="Scripts\ext\src\tree\ViewDragZone.js" />
+    <Content Include="Scripts\ext\src\tree\ViewDropZone.js" />
+    <Content Include="Scripts\ext\src\util\AbstractMixedCollection.js" />
+    <Content Include="Scripts\ext\src\util\Animate.js" />
+    <Content Include="Scripts\ext\src\util\Bindable.js" />
+    <Content Include="Scripts\ext\src\util\ClickRepeater.js" />
+    <Content Include="Scripts\ext\src\util\ComponentDragger.js" />
+    <Content Include="Scripts\ext\src\util\Cookies.js" />
+    <Content Include="Scripts\ext\src\util\CSS.js" />
+    <Content Include="Scripts\ext\src\util\DelayedTask.js" />
+    <Content Include="Scripts\ext\src\util\ElementContainer.js" />
+    <Content Include="Scripts\ext\src\util\Event.js" />
+    <Content Include="Scripts\ext\src\util\Filter.js" />
+    <Content Include="Scripts\ext\src\util\Floating.js" />
+    <Content Include="Scripts\ext\src\util\Format.js" />
+    <Content Include="Scripts\ext\src\util\Grouper.js" />
+    <Content Include="Scripts\ext\src\util\HashMap.js" />
+    <Content Include="Scripts\ext\src\util\History.js" />
+    <Content Include="Scripts\ext\src\util\Inflector.js" />
+    <Content Include="Scripts\ext\src\util\KeyMap.js" />
+    <Content Include="Scripts\ext\src\util\KeyNav.js" />
+    <Content Include="Scripts\ext\src\util\LocalStorage.js" />
+    <Content Include="Scripts\ext\src\util\LruCache.js" />
+    <Content Include="Scripts\ext\src\util\Memento.js" />
+    <Content Include="Scripts\ext\src\util\MixedCollection.js" />
+    <Content Include="Scripts\ext\src\util\Observable.js" />
+    <Content Include="Scripts\ext\src\util\Offset.js" />
+    <Content Include="Scripts\ext\src\util\Point.js" />
+    <Content Include="Scripts\ext\src\util\Positionable.js" />
+    <Content Include="Scripts\ext\src\util\ProtoElement.js" />
+    <Content Include="Scripts\ext\src\util\Queue.js" />
+    <Content Include="Scripts\ext\src\util\Region.js" />
+    <Content Include="Scripts\ext\src\util\Renderable.js" />
+    <Content Include="Scripts\ext\src\util\Sortable.js" />
+    <Content Include="Scripts\ext\src\util\Sorter.js" />
+    <Content Include="Scripts\ext\src\util\TaskManager.js" />
+    <Content Include="Scripts\ext\src\util\TaskRunner.js" />
+    <Content Include="Scripts\ext\src\util\TextMetrics.js" />
+    <Content Include="Scripts\ext\src\version\Version.js" />
+    <Content Include="Scripts\ext\src\view\AbstractView.js" />
+    <Content Include="Scripts\ext\src\view\BoundList.js" />
+    <Content Include="Scripts\ext\src\view\BoundListKeyNav.js" />
+    <Content Include="Scripts\ext\src\view\DragZone.js" />
+    <Content Include="Scripts\ext\src\view\DropZone.js" />
+    <Content Include="Scripts\ext\src\view\NodeCache.js" />
+    <Content Include="Scripts\ext\src\view\Table.js" />
+    <Content Include="Scripts\ext\src\view\TableLayout.js" />
+    <Content Include="Scripts\ext\src\view\View.js" />
+    <Content Include="Scripts\ext\src\window\MessageBox.js" />
+    <Content Include="Scripts\ext\src\window\Window.js" />
+    <Content Include="Scripts\ext\src\XTemplate.js" />
+    <Content Include="Scripts\ext\src\XTemplateCompiler.js" />
+    <Content Include="Scripts\ext\src\XTemplateParser.js" />
+    <Content Include="Scripts\ext\src\ZIndexManager.js" />
+    <Content Include="Scripts\jquery-1.10.2.js" />
+    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Views\Login\Register.cshtml" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\MainController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Autorization\AuthenticationResult.cs" />
+    <Compile Include="Models\Autorization\ApplicationUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
     <Content Include="packages.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Login\Index.cshtml" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <Content Include="Views\Main\Index.cshtml" />
+    <Content Include="Scripts\Readme.md" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -111,8 +1218,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Controllers\" />
-    <Folder Include="Models\" />
+    <Folder Include="Scripts\app\model\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

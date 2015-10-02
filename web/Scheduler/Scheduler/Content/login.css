@@ -1,0 +1,86 @@
+﻿html {
+    outline: 0;
+    border: 0;
+    vertical-align: baseline;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Verdana, Helvetica;
+    background-position: right bottom;
+    background-repeat: no-repeat;
+}
+
+a:focus {
+    outline: none;
+}
+
+button::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
+input[type="file"] > input[type="button"]::-moz-focus-inner {
+    border: none;
+}
+
+
+.centered {
+    text-align:center;
+    align-content:center;
+    align-items:center;
+    align-self:center;
+}
+
+.wrapper {
+    width: 403px;
+    height: 300px;
+    display: block;
+    position: relative;
+    margin: -160px 0 0 -160px;
+    top: 50%;
+    left: 50%;
+    padding: 5px;
+}
+
+.container {
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    background: url(../Content/img/white.png) 0 0 transparent;
+    -webkit-box-shadow: 0 1px 1px 0 black;
+    -moz-box-shadow: 0 1px 1px 0 black;
+    box-shadow: 0 1px 1px 0 black;
+}
+
+
+.content {
+    width: 350px;
+    margin: 0 auto;
+    padding: 15px 5px 5px 0;
+}
+
+
+    .content input:focus {
+        outline: none;
+    }
+
+.errorMessage {
+    font-size: 13px;
+    text-align: center;
+    color: #D90000;
+}
+
+.footer {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.control-label{
+    margin-left:-50px;
+}
