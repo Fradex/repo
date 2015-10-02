@@ -34,18 +34,8 @@ namespace Scheduler.Controllers
         }
 
         public UserManager<ApplicationUser> UserManager { get; }
-        // GET: Login
-        public ActionResult Index()
-        {
-            ViewData["Title"] = "Scheduler";
-            //return RedirectToAction("Ext", "Main");
-            return View();
-        }
-
-        public RedirectResult Redirect()
-        {
-            return Redirect("/Main/Ext");
-        }
+       
+        
         [AllowAnonymous]
         public ActionResult Index(string returnUrl)
         {
@@ -69,7 +59,7 @@ namespace Scheduler.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Invalid username or password.");
+                    ModelState.AddModelError("", "Не верные логин или пароль!");
                 }
             }
 
@@ -85,22 +75,51 @@ namespace Scheduler.Controllers
             }
             else
             {
-                return this.RedirectToAction("Index", "Main");
+                return this.RedirectToAction("Ext", "Main");
             }
         }
 
-        //public ActionResult Manage(ManageMessageId? message)
-        //{
-        //    this.ViewBag.StatusMessage =
-        //        message == ManageMessageId.ChangePasswordSuccess ? "Ваш пароль был изменен."
-        //        : message == ManageMessageId.SetPasswordSuccess ? "Ваш пароль установлен."
-        //        : message == ManageMessageId.RemoveLoginSuccess ? "Ваш пароль удален."
-        //        : message == ManageMessageId.Error ? "Произошла ошибка."
-        //        : "";
-        //    this.ViewBag.HasLocalPassword = this.HasPassword();
-        //    this.ViewBag.ReturnUrl = this.Url.Action("Manage");
-        //    return this.View();
-        //}
+
+        [AllowAnonymous]
+        public ActionResult Register()
+        {
+            return View();
+        }
+
+       
+        //
+        // POST: /Account/Register
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Register(RegisterViewModel model)
+        {
+            if (this.ModelState.IsValid)
+            {
+                var user = new ApplicationUser() { UserName = model.UserName };
+                var result = await this.UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    await this.SignInAsync(user, isPersistent: false);
+                    return this.RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    this.AddErrors(result);
+                }
+            }
+
+            // If we got this far, something failed, redisplay form
+            return this.View(model);
+        }
+
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                this.ModelState.AddModelError("", error);
+            }
+        }
 
         private async Task SignInAsync(ApplicationUser user, bool isPersistent)
         {
