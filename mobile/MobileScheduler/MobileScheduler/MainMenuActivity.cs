@@ -5,7 +5,7 @@ using Android.Widget;
 namespace MobileScheduler
 {
     [Activity]
-    public class ScheduleActivity : ListActivity
+    public class MainMenuActivity : ListActivity
     {
         protected override void OnCreate(Bundle bundle)
         {

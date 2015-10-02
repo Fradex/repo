@@ -66,15 +66,12 @@ namespace Scheduler.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
-
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
+        
         public async Task<ActionResult> ApiLogin(string userName, string password)
         {
             var user = await UserManager.FindAsync(userName, password);
             // If we got this far, something failed, redisplay form
-            return Json(user?.Id);
+            return Json(user?.Id, JsonRequestBehavior.AllowGet);
         }
 
 

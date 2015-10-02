@@ -5,6 +5,9 @@
   <string name="Schedule">Расписание</string>
   <string name="Login">Войти</string>
   <string name="SigningIn">Выполняется вход...</string>
+  <string name="Warning">Внимание</string>
+  <string name="WrongInput">Указаны некорректные данные</string>
+  <string name="ServerUnavailable">Сервер недоступен</string>
 
   <string name="Name">Имя</string>
   <string name="Password">Пароль</string>

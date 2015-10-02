@@ -76,11 +76,14 @@ namespace MobileScheduler
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f060003
-			public const int BtnLogin = 2131099651;
+			// aapt resource value: 0x7f060004
+			public const int BtnLogin = 2131099652;
 			
 			// aapt resource value: 0x7f060002
-			public const int editText1 = 2131099650;
+			public const int EtName = 2131099650;
+			
+			// aapt resource value: 0x7f060003
+			public const int EtPassword = 2131099651;
 			
 			// aapt resource value: 0x7f060000
 			public const int relativeLayout1 = 2131099648;
@@ -129,17 +132,26 @@ namespace MobileScheduler
 			// aapt resource value: 0x7f040002
 			public const int MainMenu = 2130968578;
 			
-			// aapt resource value: 0x7f040005
-			public const int Name = 2130968581;
+			// aapt resource value: 0x7f040008
+			public const int Name = 2130968584;
 			
-			// aapt resource value: 0x7f040006
-			public const int Password = 2130968582;
+			// aapt resource value: 0x7f040009
+			public const int Password = 2130968585;
 			
 			// aapt resource value: 0x7f040000
 			public const int Schedule = 2130968576;
 			
+			// aapt resource value: 0x7f040007
+			public const int ServerUnavailable = 2130968583;
+			
 			// aapt resource value: 0x7f040004
 			public const int SigningIn = 2130968580;
+			
+			// aapt resource value: 0x7f040005
+			public const int Warning = 2130968581;
+			
+			// aapt resource value: 0x7f040006
+			public const int WrongInput = 2130968582;
 			
 			static String()
 			{
