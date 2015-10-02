@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
+using Model;
 using Scheduler.Models.Autorization;
 
 namespace Scheduler.Controllers
@@ -34,8 +35,8 @@ namespace Scheduler.Controllers
         }
 
         public UserManager<ApplicationUser> UserManager { get; }
-       
-        
+
+
         [AllowAnonymous]
         public ActionResult Index(string returnUrl)
         {
@@ -67,6 +68,17 @@ namespace Scheduler.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ApiLogin(string userName, string password)
+        {
+            var user = await UserManager.FindAsync(userName, password);
+            // If we got this far, something failed, redisplay form
+            return Json(user?.Id);
+        }
+
+
         private ActionResult RedirectToLocal(string returnUrl)
         {
             if (this.Url.IsLocalUrl(returnUrl))
@@ -75,7 +87,7 @@ namespace Scheduler.Controllers
             }
             else
             {
-                return this.RedirectToAction("Ext", "Main");
+                return this.RedirectToAction("Index", "Main");
             }
         }
 
@@ -86,7 +98,7 @@ namespace Scheduler.Controllers
             return View();
         }
 
-       
+
         //
         // POST: /Account/Register
         [HttpPost]
@@ -101,7 +113,7 @@ namespace Scheduler.Controllers
                 if (result.Succeeded)
                 {
                     await this.SignInAsync(user, isPersistent: false);
-                    return this.RedirectToAction("Index", "Home");
+                    return this.RedirectToAction("Index", "Main");
                 }
                 else
                 {
