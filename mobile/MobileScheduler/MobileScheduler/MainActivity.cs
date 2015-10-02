@@ -46,6 +46,7 @@ namespace MobileScheduler
             try
             {
                 var userId = await WebRequestHelper.FetchWebResult<int?>($"/Login/ApiLogin?Name={name}&Password={password}");
+                progressDialog.Hide();
 
                 if (userId != null)
                 {
@@ -58,12 +59,8 @@ namespace MobileScheduler
             }
             catch (Exception e)
             {
-                MessageHelper.ShowMessage(this, Resource.String.Warning, Resource.String.ServerUnavailable);
-                throw;
-            }
-            finally
-            {
                 progressDialog.Hide();
+                MessageHelper.ShowMessage(this, Resource.String.Warning, Resource.String.ServerUnavailable);
             }
         }
     }
