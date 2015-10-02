@@ -14,8 +14,8 @@ namespace MobileScheduler.Classes
             request.ContentType = "application/json";
             request.Method = "GET";
 
-            using (WebResponse response = request.GetResponse())
-            using (Stream stream = await Task.Run(() => response.GetResponseStream()))
+            using (WebResponse response = await Task.Run(() => request.GetResponse()))
+            using (Stream stream = response.GetResponseStream())
             using (StreamReader reader = new StreamReader(stream))
             {
                 var responseString = reader.ReadToEnd();
