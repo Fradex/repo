@@ -7,7 +7,6 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
-using Model;
 using Scheduler.Models.Autorization;
 
 namespace Scheduler.Controllers
@@ -67,15 +66,12 @@ namespace Scheduler.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
-
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
+        
         public async Task<ActionResult> ApiLogin(string userName, string password)
         {
             var user = await UserManager.FindAsync(userName, password);
             // If we got this far, something failed, redisplay form
-            return Json(user?.Id);
+            return Json(user?.Id, JsonRequestBehavior.AllowGet);
         }
 
 
