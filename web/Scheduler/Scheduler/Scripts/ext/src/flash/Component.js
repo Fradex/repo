@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * A simple Component for displaying an Adobe Flash SWF movie. The movie will be sized and can participate
  * in layout like any other Component.
@@ -118,25 +135,13 @@ Ext.define('Ext.flash.Component', {
     expressInstall: false,
 
     /**
-     * @property {Ext.dom.Element} swf
+     * @property {Ext.Element} swf
      * A reference to the object or embed element into which the SWF file is loaded. Only
      * populated after the component is rendered and the SWF has been successfully embedded.
      */
 
     // Have to create a placeholder div with the swfId, which SWFObject will replace with the object/embed element.
     renderTpl: ['<div id="{swfId}" role="presentation"></div>'],
-
-    /**
-     * @event success
-     * Fired when the Flash movie has been successfully embedded
-     * @param {Ext.flash.Component} this
-     */
-
-    /**
-     * @event failure
-     * Fired when the Flash movie embedding fails
-     * @param {Ext.flash.Component} this
-     */
 
     initComponent: function() {
         // <debug>
@@ -149,6 +154,21 @@ Ext.define('Ext.flash.Component', {
         // </debug>
 
         this.callParent();
+        this.addEvents(
+            /**
+             * @event success
+             * Fired when the Flash movie has been successfully embedded
+             * @param {Ext.flash.Component} this
+             */
+            'success',
+
+            /**
+             * @event failure
+             * Fired when the Flash movie embedding fails
+             * @param {Ext.flash.Component} this
+             */
+            'failure'
+        );
     },
     
     beforeRender: function(){
@@ -186,7 +206,7 @@ Ext.define('Ext.flash.Component', {
             flashVars,
             flashParams,
             me.flashAttributes,
-            me.swfCallback.bind(me)
+            Ext.bind(me.swfCallback, me)
         );
     },
 
@@ -237,7 +257,7 @@ Ext.define('Ext.flash.Component', {
         /**
          * @property {String}
          * The url for installing flash if it doesn't exist. This should be set to a local resource.
-         * See [http://get.adobe.com/flashplayer/](http://get.adobe.com/flashplayer/) for details.
+         * See http://www.adobe.com/devnet/flashplayer/articles/express_install.html for details.
          * @static
          */
         EXPRESS_INSTALL_URL: 'http:/' + '/swfobject.googlecode.com/svn/trunk/swfobject/expressInstall.swf'

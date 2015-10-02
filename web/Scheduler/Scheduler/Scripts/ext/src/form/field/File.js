@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * @docauthor Jason Johnston <jason@sencha.com>
  *
@@ -52,29 +69,12 @@
  *     });
  */
 Ext.define('Ext.form.field.File', {
-    extend: 'Ext.form.field.Text',
+    extend: 'Ext.form.field.Trigger',
     alias: ['widget.filefield', 'widget.fileuploadfield'],
     alternateClassName: ['Ext.form.FileUploadField', 'Ext.ux.form.FileUploadField', 'Ext.form.File'],
     requires: [
-        'Ext.form.field.FileButton',
-        'Ext.form.trigger.Component'
+        'Ext.form.field.FileButton'
     ],
-    
-    needArrowKeys: false,
-
-    triggers: {
-        filebutton: {
-            type: 'component',
-            hideOnReadOnly: false,
-            // Most form fields prevent the default browser action on mousedown of the trigger.
-            // This is intended to prevent the field's input element from losing focus when
-            // the trigger is clicked.  File fields disable this behavior because:
-            // 1. The input element does not receive focus when the field is focused. The button does.
-            // 2. Preventing the default action of touchstart (translated from mousedown
-            // on mobile browsers) prevents the browser's file dialog from opening.
-            preventMouseDown: false
-        }
-    },
 
     //<locale>
     /**
@@ -108,7 +108,7 @@ Ext.define('Ext.form.field.File', {
 
     /**
      * @cfg {Object} buttonConfig
-     * Specify optional custom button {@link Ext.button.Button} config (eg. iconCls, text) for the upload button
+     * A standard {@link Ext.button.Button} config object.
      */
 
     /**
@@ -120,7 +120,7 @@ Ext.define('Ext.form.field.File', {
      */
 
     /**
-     * @property {Ext.dom.Element} fileInputEl
+     * @property {Ext.Element} fileInputEl
      * A reference to the invisible file input element created for this upload field. Only populated after this
      * component is rendered.
      */
@@ -134,20 +134,12 @@ Ext.define('Ext.form.field.File', {
 
     // private
     extraFieldBodyCls: Ext.baseCSSPrefix + 'form-file-wrap',
-    // private
-    inputCls: Ext.baseCSSPrefix + 'form-text-file',
 
     /**
-     * @cfg {Boolean} [readOnly=true]
+     * @cfg {Boolean} readOnly
      * Unlike with other form fields, the readOnly config defaults to true in File field.
      */
     readOnly: true,
-
-    /**
-     * @cfg {Boolean} editable
-     * @inheritdoc
-     */
-    editable: false,
 
     submitValue: false,
 
@@ -157,73 +149,49 @@ Ext.define('Ext.form.field.File', {
      */
     triggerNoEditCls: '',
 
-    // @private
-    // Extract the file element, button outer element, and button active element.
+    // private
+    componentLayout: 'triggerfield',
+
+    // private. Extract the file element, button outer element, and button active element.
     childEls: ['browseButtonWrap'],
 
-    // @private
-    applyTriggers: function(triggers) {
-        var me = this,
-            triggerCfg = (triggers || {}).filebutton;
-
-        if (triggerCfg) {
-            triggerCfg.component = Ext.apply({
-                xtype: 'filebutton',
-                ownerCt: me,
-                id: me.id + '-button',
-                ui: me.ui,
-                disabled: me.disabled,
-                text: me.buttonText,
-                style: me.buttonOnly ? '' : me.getButtonMarginProp() + me.buttonMargin + 'px',
-                inputName: me.getName(),
-                listeners: {
-                    scope: me,
-                    change: me.onFileChange
-                }
-            }, me.buttonConfig);
-
-            return me.callParent([triggers]);
-        }
-        // <debug>
-        else {
-            Ext.Error.raise(me.$className + ' requires a valid trigger config containing "filebutton" specification');
-        }
-        // </debug>
-    },
-    
-    getSubTplData: function(fieldData) {
-        var data = this.callParent([fieldData]);
-        
-        // Input field itself should not be focusable since it's always decorative;
-        // however the input element is naturally focusable (and tabbable) so we have to
-        // deactivate it by setting its tabIndex to -1.
-        data.tabIdx = -1;
-        
-        return data;
-    },
-
-    // @private
+    // private
     onRender: function() {
         var me = this,
-            inputEl, button, buttonEl, trigger;
+            id = me.id,
+            inputEl;
 
         me.callParent(arguments);
 
         inputEl = me.inputEl;
         inputEl.dom.name = ''; //name goes on the fileInput, not the text input
 
-        trigger = me.getTrigger('filebutton');
-        button = me.button = trigger.component;
-        me.fileInputEl = button.fileInputEl;
-        buttonEl = button.el;
+        // render the button here. This isn't ideal, however it will be 
+        // rendered before layouts are resumed, also we modify the DOM
+        // below anyway
+        me.button = new Ext.form.field.FileButton(Ext.apply({
+            renderTo: id + '-browseButtonWrap',
+            ownerCt: me,
+            ownerLayout: me.componentLayout,
+            id: id + '-button',
+            ui: me.ui,
+            disabled: me.disabled,
+            text: me.buttonText,
+            style: me.buttonOnly ? '' : me.getButtonMarginProp() + me.buttonMargin + 'px',
+            inputName: me.getName(),
+            listeners: {
+                scope: me,
+                change: me.onFileChange
+            }
+        }, me.buttonConfig));
+        me.fileInputEl = me.button.fileInputEl;
 
         if (me.buttonOnly) {
-            me.inputWrap.setDisplayed(false);
-            me.shrinkWrap = 3;
+            me.inputCell.setDisplayed(false);
         }
 
-        // Ensure the trigger element is sized correctly upon render
-        trigger.el.setWidth(buttonEl.getWidth() + buttonEl.getMargin('lr'));
+        // Ensure the trigger cell is sized correctly upon render
+        me.browseButtonWrap.dom.style.width = (me.browseButtonWrap.dom.lastChild.offsetWidth + me.button.getEl().getMargin('lr')) + 'px';
         if (Ext.isIE) {
             me.button.getEl().repaint();
         }
@@ -233,7 +201,7 @@ Ext.define('Ext.form.field.File', {
      * Gets the markup to be inserted into the subTplMarkup.
      */
     getTriggerMarkup: function() {
-        return '<td id="' + this.id + '-browseButtonWrap" data-ref="browseButtonWrap" role="presentation"></td>';
+        return '<td id="' + this.id + '-browseButtonWrap" role="presentation"></td>';
     },
 
     /**
@@ -291,11 +259,9 @@ Ext.define('Ext.form.field.File', {
         this.button.enable();
     },
 
-    /**
-     * @method
-     * @inheritdoc
-     */
-    isFileUpload: Ext.returnTrue,
+    isFileUpload: function() {
+        return true;
+    },
 
     extractFileInput: function() {
         var me = this,
@@ -309,7 +275,7 @@ Ext.define('Ext.form.field.File', {
             // All other unrendered fields provide a value.
             fileInput = document.createElement('input');
             fileInput.type = 'file';
-            fileInput.className = Ext.baseCSSPrefix + 'hidden-display';
+            fileInput.className = Ext.baseCSSPrefix + 'hide-display';
             fileInput.name = me.getName();
         }
         return fileInput;
@@ -326,17 +292,12 @@ Ext.define('Ext.form.field.File', {
     },
 
     onDestroy: function(){
-        this.fileInputEl = this.button = null;
+        Ext.destroyMembers(this, 'button');
+        delete this.fileInputEl;
         this.callParent();
     },
 
     getButtonMarginProp: function() {
         return 'margin-left:';
-    },
-    
-    privates: {
-        getFocusEl: function() {
-            return this.button;
-        }
     }
 });

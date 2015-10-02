@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * @private
  */
@@ -40,21 +57,15 @@ Ext.define('Ext.view.DragZone', {
         }
         me.callParent([el]);
 
-        me.ddel = document.createElement('div');
-        me.ddel.className = Ext.baseCSSPrefix + 'grid-dd-wrap';
+        me.ddel = Ext.get(document.createElement('div'));
+        me.ddel.addCls(Ext.baseCSSPrefix + 'grid-dd-wrap');
     },
 
     init: function(id, sGroup, config) {
-        var me = this,
-            // TODO: does multi-input device IE handle this correctly?
-            triggerEvent = Ext.supports.touchScroll ? 'itemlongpress' : 'itemmousedown',
-            eventSpec = {
-                scope: me
-            };
-
-        eventSpec[triggerEvent] = me.onItemMouseDown;
+        var me = this;
+        
         me.initTarget(id, sGroup, config);
-        me.view.mon(me.view, eventSpec);
+        me.view.on('itemmousedown', me.onItemMouseDown, me);
     },
 
     onValidDrop: function(target, e, id) {
@@ -75,18 +86,8 @@ Ext.define('Ext.view.DragZone', {
         }
     },
 
-    /**
-     * @protected
-     * Template method called upon mousedown. May be overridden in subclasses, or configured
-     * into an instance.
-     *
-     * Return `true` to prevent drag start.
-     * @param {Ext.event.Event} e The mousedown event.
-     * @param {Ext.data.Model} record The record mousedowned upon.
-     * @param {HTMLElement} item The grid row mousedowned upon.
-     * @param {Number} index The row number mousedowned upon.
-     */
-    isPreventDrag: function(e, record, item, index) {
+    // private template method
+    isPreventDrag: function(e) {
         return false;
     },
 
@@ -97,7 +98,7 @@ Ext.define('Ext.view.DragZone', {
         if (item) {
             return {
                 copy: view.copy || (view.allowCopy && e.ctrlKey),
-                event: e,
+                event: new Ext.EventObjectImpl(e),
                 view: view,
                 ddel: this.ddel,
                 item: item,
@@ -121,15 +122,15 @@ Ext.define('Ext.view.DragZone', {
         }
         data.records = selectionModel.getSelection();
 
-        Ext.fly(me.ddel).setHtml(me.getDragText());
-        me.proxy.update(me.ddel);
+        me.ddel.update(me.getDragText());
+        me.proxy.update(me.ddel.dom);
         me.onStartDrag(x, y);
         return true;
     },
 
     getDragText: function() {
         var count = this.dragData.records.length;
-        return Ext.String.format(this.dragText, count, count === 1 ? '' : 's');
+        return Ext.String.format(this.dragText, count, count == 1 ? '' : 's');
     },
 
     getRepairXY : function(e, data){

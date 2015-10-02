@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * Private utility class for Ext.resizer.Resizer.
  * @private
@@ -65,29 +82,26 @@ Ext.define('Ext.resizer.ResizeTracker', {
 
     /**
      * @private
-     * Returns the object that will be resized instead of the true target on every mousemove event.
-     * If dynamic is false, this will be a proxy, otherwise it will be null target.
+     * Returns the object that will be resized on every mousemove event.
+     * If dynamic is false, this will be a proxy, otherwise it will be our actual target.
      */
-    getProxy: function() {
-        var me = this;
-
-        if (!me.dynamic && !me.proxy) {
-            me.proxy = me.createProxy(me.target || me.el);
-
-            // Only hide proxy at end if we create one dynamically
-            // When a wrapped resizer is used it passes the wrapping el in as the proxy.
-            me.hideProxy = true;
+    getDynamicTarget: function() {
+        var me = this,
+            target = me.target;
+            
+        if (me.dynamic) {
+            return target;
+        } else if (!me.proxy) {
+            me.proxy = me.createProxy(target);
         }
-        if (me.proxy) {
-            me.proxy.show();
-            return me.proxy;
-        }
+        me.proxy.show();
+        return me.proxy;
     },
 
     /**
      * Create a proxy for this resizer
-     * @param {Ext.Component/Ext.dom.Element} target The target
-     * @return {Ext.dom.Element} A proxy element
+     * @param {Ext.Component/Ext.Element} target The target
+     * @return {Ext.Element} A proxy element
      */
     createProxy: function(target){
         var proxy,
@@ -113,7 +127,10 @@ Ext.define('Ext.resizer.ResizeTracker', {
 
         // If we are using a proxy, ensure it is sized.
         if (!this.dynamic) {
-            this.resize(this.startBox);
+            this.resize(this.startBox, {
+                horizontal: 'none',
+                vertical: 'none'
+            });
         }
     },
 
@@ -137,6 +154,8 @@ Ext.define('Ext.resizer.ResizeTracker', {
             adjustX = 0,
             adjustY = 0,
             dragRatio,
+            horizDir = offset[0] < 0 ? 'right' : 'left',
+            vertDir = offset[1] < 0 ? 'down' : 'up',
             oppositeCorner,
             axis, // 1 = x, 2 = y, 3 = x and y.
             newBox,
@@ -203,7 +222,7 @@ Ext.define('Ext.resizer.ResizeTracker', {
         // Snap value between stops according to configured increments
         snappedWidth = Ext.Number.snap(newBox.width, me.widthIncrement);
         snappedHeight = Ext.Number.snap(newBox.height, me.heightIncrement);
-        if (snappedWidth !== newBox.width || snappedHeight !== newBox.height){
+        if (snappedWidth != newBox.width || snappedHeight != newBox.height){
             switch (region) {
                 case 'northeast':
                     newBox.y -= snappedHeight - newBox.height;
@@ -256,12 +275,12 @@ Ext.define('Ext.resizer.ResizeTracker', {
             newWidth = Math.min(Math.max(me.minWidth, newBox.height * ratio), me.maxWidth);
 
             // X axis: width-only change, height must obey
-            if (axis === 1) {
+            if (axis == 1) {
                 newBox.height = newHeight;
             }
 
             // Y axis: height-only change, width must obey
-            else if (axis === 2) {
+            else if (axis == 2) {
                 newBox.width = newWidth;
             }
 
@@ -279,54 +298,48 @@ Ext.define('Ext.resizer.ResizeTracker', {
                 }
 
                 // Handle dragging start coordinates
-                if (region === 'northeast') {
+                if (region == 'northeast') {
                     newBox.y = box.y - (newBox.height - box.height);
-                } else if (region === 'northwest') {
+                } else if (region == 'northwest') {
                     newBox.y = box.y - (newBox.height - box.height);
                     newBox.x = box.x - (newBox.width - box.width);
-                } else if (region === 'southwest') {
+                } else if (region == 'southwest') {
                     newBox.x = box.x - (newBox.width - box.width);
                 }
             }
         }
 
-        // Keep track of whether position needs changing
-        me.setPosition = newBox.x !== me.startBox.x || newBox.y !== me.startBox.y;
-        me.resize(newBox, atEnd);
+        if (heightAdjust === 0) {
+            vertDir = 'none';
+        }
+        if (widthAdjust === 0) {
+            horizDir = 'none';
+        }
+        me.resize(newBox, {
+            horizontal: horizDir,
+            vertical: vertDir
+        }, atEnd);
     },
 
-    resize: function(box, atEnd) {
+    getResizeTarget: function(atEnd) {
+        return atEnd ? this.target : this.getDynamicTarget();
+    },
+
+    resize: function(box, direction, atEnd) {
         var me = this,
-            target,
-            setPosition = me.setPosition;
+            target = me.getResizeTarget(atEnd);
 
-        // We are live resizing the target, or at the end: Size the target
-        if (me.dynamic || (!me.dynamic && atEnd)) {
-            // Resize the target
-            if (setPosition) {
-                me.target.setBox(box);
-            } else {
-                me.target.setSize(box.width, box.height);
-            }
+        target.setBox(box);
 
-        }
-
-        // In the middle of a resize - just resize the proxy
-        if (!atEnd) {
-            target = me.getProxy();
-            if (target && target !== me.target) {
-                if (setPosition || me.hideProxy) {
-                    target.setBox(box);
-                } else {
-                    target.setSize(box.width, box.height);
-                }
-            }
+        // update the originalTarget if it was wrapped, and the target passed in was the wrap el.
+        if (me.originalTarget && (me.dynamic || atEnd)) {
+            me.originalTarget.setBox(box);
         }
     },
 
     onEnd: function(e) {
         this.updateDimensions(e, true);
-        if (this.proxy && this.hideProxy) {
+        if (this.proxy) {
             this.proxy.hide();
         }
     },

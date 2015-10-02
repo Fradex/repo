@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * Manages context information during a layout.
  *
@@ -257,17 +274,17 @@
  * by the ownerCt's box layout to determine the size of the children.
  *
  * The various forms of interdependence between a container and its children are described by
- * each components' {@link Ext.Component#getSizeModel size model}.
+ * each components' {@link Ext.AbstractComponent#getSizeModel size model}.
  *
  * To facilitate this collaboration, the following pairs of properties are published to the
  * component's {@link Ext.layout.ContextItem ContextItem}:
  *
  *  - width/height: These hold the final size of the component. The layout indicated by the
- *    {@link Ext.Component#getSizeModel size model} is responsible for setting these.
+ *    {@link Ext.AbstractComponent#getSizeModel size model} is responsible for setting these.
  *  - contentWidth/contentHeight: These hold size information published by the container
  *    layout or from DOM measurement. These describe the content only. These values are
  *    used by the component layout to determine the outer width/height when that component
- *    is {@link Ext.Component#shrinkWrap shrink-wrapped}. They are also used to
+ *    is {@link Ext.AbstractComponent#shrinkWrap shrink-wrapped}. They are also used to
  *    determine overflow. All container layouts must publish these values for dimensions
  *    that are shrink-wrapped. If a component has raw content (not container items), the
  *    componentLayout must publish these values instead.
@@ -276,9 +293,6 @@
  */
 Ext.define('Ext.layout.Context', {
     requires: [
-        //<debug>
-        'Ext.perf.Monitor',
-        //</debug>
         'Ext.util.Queue',
         'Ext.layout.ContextItem',
         'Ext.layout.Layout',
@@ -382,7 +396,7 @@ Ext.define('Ext.layout.Context', {
                     for (k = 0; k < klen; ++k) {
                         entry = oldQueue[k];
                         temp = entry.item.target;
-                        if (temp != comp && !temp.up(comp)) {
+                        if (temp != comp && !temp.isDescendant(comp)) {
                             newQueue.push(entry);
                         }
                     }
@@ -613,55 +627,37 @@ Ext.define('Ext.layout.Context', {
     invalidate: function (components, full) {
         var me = this,
             isArray = !components.isComponent,
-            containerLayoutDone, ownerLayout,
+            containerLayoutDone,
             firstTime, i, comp, item, items, length, componentLayout, layout,
-            invalidateOptions, token, skipLayout;
+            invalidateOptions, token;
 
         for (i = 0, length = isArray ? components.length : 1; i < length; ++i) {
             comp = isArray ? components[i] : components;
 
             if (comp.rendered && !comp.hidden) {
-                ownerLayout = comp.ownerLayout;
+                item = me.getCmp(comp);
+                
+                // Layout optimizations had to be disabled because they break
+                // Dock layout behavior.
+//                 if (item.optOut) {
+//                     continue;
+//                 }
+
                 componentLayout = comp.componentLayout;
                 firstTime = !componentLayout.ownerContext;
-                skipLayout = false;
+                layout = (comp.isContainer && !comp.collapsed) ? comp.layout : null;
 
-                if ((!ownerLayout || !ownerLayout.needsItemSize) && comp.liquidLayout) {
-                    // our owning layout doesn't need us to run, and our componentLayout
-                    // wants to opt out because it uses liquid CSS layout.
-                    // We can skip invalidation for this component.
-                    skipLayout = true;
-                }
+                // Extract any invalidate() options for this item.
+                invalidateOptions = me.invalidateData[item.id];
+                delete me.invalidateData[item.id];
 
-                // if we are skipping layout, we can also skip creation of the context
-                // item, unless our owner layout needs it to set our size.
-                if (!skipLayout || (ownerLayout && ownerLayout.setsItemSize)) {
-                    item = me.getCmp(comp);
-
-                    // If the component has had no changes which necessitate a layout, do not lay it out.
-                    // Temporarily disabled because this breaks dock layout (see EXTJSIV-10251)
-//                    if (item.optOut) {
-//                        skipLayout = true;
-//                    }
-
-                    layout = (comp.isContainer && !comp.collapsed) ? comp.layout : null;
-
-                    // Extract any invalidate() options for this item.
-                    invalidateOptions = me.invalidateData[item.id];
-                    delete me.invalidateData[item.id];
-
-                    // We invalidate the contextItem's in a top-down manner so that SizeModel
-                    // info for containers is available to their children. This is a critical
-                    // optimization since sizeModel determination often requires knowing the
-                    // sizeModel of the ownerCt. If this weren't cached as we descend, this
-                    // would be an O(N^2) operation! (where N=number of components, or 300+/-
-                    // in Themes)
-                    token = item.init(full, invalidateOptions);
-                }
-
-                if (skipLayout) {
-                    continue;
-                }
+                // We invalidate the contextItem's in a top-down manner so that SizeModel
+                // info for containers is available to their children. This is a critical
+                // optimization since sizeModel determination often requires knowing the
+                // sizeModel of the ownerCt. If this weren't cached as we descend, this
+                // would be an O(N^2) operation! (where N=number of components, or 300+/-
+                // in Themes)
+                token = item.init(full, invalidateOptions);
 
                 if (invalidateOptions) {
                     me.processInvalidate(invalidateOptions, item, 'before');
@@ -673,7 +669,7 @@ Ext.define('Ext.layout.Context', {
                 if (componentLayout.beforeLayoutCycle) {
                     componentLayout.beforeLayoutCycle(item);
                 }
-
+                
                 if (layout && layout.beforeLayoutCycle) {
                     // allow the container layout take a peek as well. Table layout can
                     // influence its children's styling due to the interaction of nesting
@@ -707,15 +703,9 @@ Ext.define('Ext.layout.Context', {
                     containerLayoutDone = false;
                     layout.renderChildren();
 
-                    if (layout.needsItemSize || layout.activeItemCount) {
-                        // if the layout specified that it needs the layouts of its children
-                        // to run, or if the number of "liquid" child layouts is greater
-                        // than 0, we need to recurse into the children, since some or
-                        // all of them may need their layouts to run.
-                        items = layout.getVisibleItems();
-                        if (items.length) {
-                            me.invalidate(items, true);
-                        }
+                    items = layout.getVisibleItems();
+                    if (items.length) {
+                        me.invalidate(items, true);
                     }
                 }
 
@@ -744,18 +734,6 @@ Ext.define('Ext.layout.Context', {
         me.currentLayout = null;
     },
 
-    // Returns true is descendant is a descendant of ancestor
-    isDescendant: function(ancestor, descendant) {
-        if (ancestor.isContainer) {
-            for (var c = descendant.ownerCt; c; c = c.ownerCt) {
-                if (c === ancestor) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    },
-    
     layoutDone: function (layout) {
         var ownerContext = layout.ownerContext;
 
@@ -856,40 +834,6 @@ Ext.define('Ext.layout.Context', {
             me.currentLayout = prev;
         };
     },
-        
-    purgeInvalidates: function () {
-        var me = this,
-            newQueue = [],
-            oldQueue = me.invalidQueue,
-            oldLength = oldQueue.length,
-            oldIndex, newIndex, newEntry, newComp, oldEntry, oldComp, keep;
-        
-        for (oldIndex = 0; oldIndex < oldLength; ++oldIndex) {
-            oldEntry = oldQueue[oldIndex];
-            oldComp = oldEntry.item.target;
-            
-            keep = true;
-            for (newIndex = newQueue.length; newIndex--;) {
-                newEntry = newQueue[newIndex];
-                newComp = newEntry.item.target;
-                
-                if (oldComp.isLayoutChild(newComp)) {
-                    keep = false;
-                    break;
-                }
-                
-                if (newComp.isLayoutChild(oldComp)) {
-                    Ext.Array.erase(newQueue, newIndex, 1);
-                }
-            }
-            
-            if (keep) {
-                newQueue.push(oldEntry);
-            }
-        }
-        
-        me.invalidQueue = newQueue;
-    },
 
     /**
      * Queue a component (and its tree) to be invalidated on the next cycle.
@@ -921,7 +865,7 @@ Ext.define('Ext.layout.Context', {
             old = oldQueue[index];
             oldComp = old.item.target;
 
-            if (!comp.isFloating && comp.up(oldComp)) {
+            if (comp.isDescendant(oldComp)) {
                 return; // oldComp contains comp, so this invalidate is redundant
             }
 
@@ -954,7 +898,7 @@ Ext.define('Ext.layout.Context', {
                 return;
             }
 
-            if (!oldComp.isLayoutChild(comp)) {
+            if (!oldComp.isDescendant(comp)) {
                 newQueue.push(old); // comp does not contain oldComp
             }
             // else if (oldComp isDescendant of comp) skip
@@ -977,7 +921,7 @@ Ext.define('Ext.layout.Context', {
         }
 
         layout = comp.layout;
-        if (layout && !layout.pending && !layout.invalid && !layout.done && !comp.collapsed) {
+        if (layout && !layout.pending && !layout.invalid && !layout.done) {
             this.queueLayout(layout);
         }
     },
@@ -1083,8 +1027,7 @@ Ext.define('Ext.layout.Context', {
         var me = this,
             flushed = false,
             watchDog = 100;
-        
-        me.purgeInvalidates();
+
         me.flushInvalidates();
 
         me.state = 1;
@@ -1257,526 +1200,5 @@ Ext.define('Ext.layout.Context', {
 
             item = items[++i]; // this accomodation avoids making an array of 1
         }
-    },
-
-    //-------------------------------------------------------------------------
-    // Diagnostics
-
-    debugHooks: {
-        $enabled: false, // off by default
-
-        pageAnalyzerMode: true,
-
-        logOn: {
-            //boxParent: true,
-            //calculate: true,
-            //cancelComponent: true,
-            //cancelLayout: true,
-            //doInvalidate: true,
-            //flush: true,
-            //flushInvalidate: true,
-            //invalidate: true,
-            //initItem: true,
-            //layoutDone: true,
-            //queueLayout: true,
-            //resetLayout: true,
-            //runCycle: true,
-            //setProp: true,
-            0:0
-        },
-
-        //profileLayoutsByType: true,
-
-        //reportOnSuccess: true,
-
-        cancelComponent: function (comp) {
-            if (this.logOn.cancelComponent) {
-                Ext.log('cancelCmp: ', comp.id);
-            }
-            this.callParent(arguments);
-        },
-
-        cancelLayout: function (layout) {
-            if (this.logOn.cancelLayout) {
-                Ext.log('cancelLayout: ', this.getLayoutName(layout));
-            }
-            this.callParent(arguments);
-        },
-
-        callLayout: function (layout, methodName) {
-            var accum = this.accumByType[layout.type],
-                frame = accum && accum.enter();
-
-            this.callParent(arguments);
-
-            if (accum) {
-                frame.leave();
-            }
-        },
-
-        checkRemainingLayouts: function () {
-            var me       = this,
-                expected = 0,
-                key, layout;
-
-            for (key in me.layouts) {
-                layout = me.layouts[key];
-
-                if (me.layouts.hasOwnProperty(key) && layout.running) {
-                    ++expected;
-                }
-            }
-
-            if (me.remainingLayouts != expected) {
-                Ext.Error.raise({
-                    msg: 'Bookkeeping error me.remainingLayouts'
-                });
-            }
-        },
-
-        flush: function () {
-            if (this.logOn.flush) {
-                var items = this.flushQueue;
-                Ext.log('--- Flush ', items && items.getCount());
-            }
-
-            return this.callParent(arguments);
-        },
-
-        flushInvalidates: function () {
-            if (this.logOn.flushInvalidate) {
-                Ext.log('>> flushInvalidates');
-            }
-
-            var ret = this.callParent(arguments);
-
-            if (this.logOn.flushInvalidate) {
-                Ext.log('<< flushInvalidates');
-            }
-
-            return ret;
-        },
-
-        getCmp: function (target) {
-            var ret = this.callParent(arguments);
-            if (!ret.wrapsComponent) {
-                Ext.Error.raise({
-                    msg: target.id + ' is not a component'
-                });
-            }
-            return ret;
-        },
-
-        getEl: function (parent, target) {
-            var ret = this.callParent(arguments);
-            if (ret && ret.wrapsComponent) {
-                Ext.Error.raise({
-                    msg: parent.id + '/' + target.id + ' is a component (expected element)'
-                });
-            }
-            return ret;
-        },
-
-        getLayoutName: function (layout) {
-            return layout.owner.id + '<' + layout.type + '>';
-        },
-
-        layoutDone: function (layout) {
-            var me = this,
-                name = me.getLayoutName(layout);
-
-            if (me.logOn.layoutDone) {
-                Ext.log('layoutDone: ', name, ' ( ', me.remainingLayouts, ' running)');
-            }
-
-            if (!layout.running) {
-                Ext.Error.raise({
-                    msg: name + ' is already done'
-                });
-            }
-            if (!me.remainingLayouts) {
-                Ext.Error.raise({
-                    msg: name + ' finished but no layouts are running'
-                });
-            }
-
-            me.callParent(arguments);
-        },
-
-        layoutTreeHasFailures: function (layout, reported) {
-            var me = this;
-
-            function hasFailure (lo) {
-                var failure = !lo.done,
-                    key, childLayout;
-
-                if (lo.done) {
-                    for (key in me.layouts) {
-                        if (me.layouts.hasOwnProperty(key)) {
-                            childLayout = me.layouts[key];
-
-                            if (childLayout.owner.ownerLayout === lo) {
-                                if (hasFailure(childLayout)) {
-                                    failure = true;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                return failure;
-            }
-
-            if (hasFailure(layout)) {
-                return true;
-            }
-
-            function markReported (lo) {
-                var key, childLayout;
-
-                reported[lo.id] = 1;
-
-                for (key in me.layouts) {
-                    if (me.layouts.hasOwnProperty(key)) {
-                        childLayout = me.layouts[key];
-
-                        if (childLayout.owner.ownerLayout === lo) {
-                            markReported(childLayout);
-                        }
-                    }
-                }
-            }
-
-            markReported(layout);
-            return false;
-        },
-
-        queueLayout: function (layout) {
-            if (layout.done || layout.blockCount || layout.pending) {
-                Ext.Error.raise({
-                    msg: this.getLayoutName(layout) + ' should not be queued for layout'
-                });
-            }
-            if (this.logOn.queueLayout) {
-                Ext.log('Queue ', this.getLayoutName(layout));
-            }
-            return this.callParent(arguments);
-        },
-
-        reportLayoutResult: function (layout, reported) {
-            var me           = this,
-                owner        = layout.owner,
-                ownerContext = me.getCmp(owner),
-                blockedBy    = [],
-                triggeredBy  = [],
-                key, value, i, length, childLayout,
-                item, setBy, info;
-
-            reported[layout.id] = 1;
-
-            for (key in layout.blockedBy) {
-                if (layout.blockedBy.hasOwnProperty(key)) {
-                    blockedBy.push(layout.blockedBy[key]);
-                }
-            }
-            blockedBy.sort();
-
-            for (key in me.triggersByLayoutId[layout.id]) {
-                if (me.triggersByLayoutId[layout.id].hasOwnProperty(key)) {
-                    value = me.triggersByLayoutId[layout.id][key];
-                    triggeredBy.push({ name: key, info: value });
-                }
-            }
-            triggeredBy.sort(function (a, b) {
-                return a.name < b.name ? -1 : (b.name < a.name ? 1 : 0);
-            });
-
-            Ext.log({indent: 1}, (layout.done ? '++' : '--'), me.getLayoutName(layout),
-                (ownerContext.isBoxParent ? ' [isBoxParent]' : ''),
-                (ownerContext.boxChildren ? ' - boxChildren: ' + ownerContext.state.boxesMeasured + '/' + ownerContext.boxChildren.length : ''),
-                ownerContext.boxParent ? (' - boxParent: ' + ownerContext.boxParent.id) : '',
-                ' - size: ', ownerContext.widthModel.name, '/', ownerContext.heightModel.name);
-
-            if (!layout.done || me.reportOnSuccess) {
-                if (blockedBy.length) {
-                    ++Ext.log.indent;
-                    Ext.log({indent: 1}, 'blockedBy:  count=',layout.blockCount);
-
-                    length = blockedBy.length;
-                    for (i = 0; i < length; i++) {
-                        Ext.log(blockedBy[i]);
-                    }
-
-                    Ext.log.indent -= 2;
-                }
-                if (triggeredBy.length) {
-                    ++Ext.log.indent;
-                    Ext.log({indent: 1}, 'triggeredBy: count='+layout.triggerCount);
-
-                    length = triggeredBy.length;
-                    for (i = 0; i < length; i++) {
-                        info = value.info || value;
-                        item  = info.item;
-                        setBy = (item.setBy && item.setBy[info.name]) || '?';
-
-                        value = triggeredBy[i];
-
-                        Ext.log(
-                            value.name,
-                            ' (',
-                            item.props[info.name],
-                            ') dirty: ',
-                            (item.dirty ? !!item.dirty[info.name] : false),
-                            ', setBy: ',
-                            setBy
-                        );
-                    }
-
-                    Ext.log.indent -= 2;
-                }
-            }
-
-            for (key in me.layouts) {
-                if (me.layouts.hasOwnProperty(key)) {
-                    childLayout = me.layouts[key];
-
-                    if (!childLayout.done && childLayout.owner.ownerLayout === layout) {
-                        me.reportLayoutResult(childLayout, reported);
-                    }
-                }
-            }
-
-            for (key in me.layouts) {
-                if (me.layouts.hasOwnProperty(key)) {
-                    childLayout = me.layouts[key];
-
-                    if (childLayout.done && childLayout.owner.ownerLayout === layout) {
-                        me.reportLayoutResult(childLayout, reported);
-                    }
-                }
-            }
-
-            --Ext.log.indent;
-        },
-
-        resetLayout: function (layout) {
-            var me = this,
-                type = layout.type,
-                name = me.getLayoutName(layout),
-                accum = me.accumByType[type],
-                frame;
-
-            if (me.logOn.resetLayout) {
-                Ext.log('resetLayout: ', name, ' ( ', me.remainingLayouts, ' running)');
-            }
-
-            if (!me.state) { // if (first time ... before run)
-                if (!accum && me.profileLayoutsByType) {
-                    me.accumByType[type] = accum = Ext.Perf.get('layout_' + layout.type);
-                }
-                me.numByType[type] = (me.numByType[type] || 0) + 1;
-            }
-
-            frame = accum && accum.enter();
-            me.callParent(arguments);
-            if (accum) {
-                frame.leave();
-            }
-
-            me.checkRemainingLayouts();
-        },
-
-        round: function (t) {
-            return Math.round(t * 1000) / 1000;
-        },
-
-        run: function () {
-            var me = this,
-                ret, time, key, value, i, layout,
-                boxParent, children, n,
-                reported, unreported,
-                calcs, total,
-                calcsLength, calc;
-
-            me.accumByType = {};
-            me.calcsByType = {};
-            me.numByType = {};
-            me.timesByType = {};
-            me.triggersByLayoutId = {};
-
-            Ext.log.indentSize = 3;
-            Ext.log('==================== LAYOUT ====================');
-
-            time = Ext.perf.getTimestamp();
-            ret = me.callParent(arguments);
-            time = Ext.perf.getTimestamp() - time;
-
-            if (me.logOn.boxParent && me.boxParents) {
-                for (key in me.boxParents) {
-                    if (me.boxParents.hasOwnProperty(key)) {
-                        boxParent = me.boxParents[key];
-                        children  = boxParent.boxChildren;
-                        n         = children.length;
-
-                        Ext.log('boxParent: ', boxParent.id);
-                        for (i = 0; i < n; ++i) {
-                            Ext.log(' --> ', children[i].id);
-                        }
-                    }
-                }
-            }
-
-            if (ret) {
-                Ext.log('----------------- SUCCESS -----------------');
-            } else {
-                Ext.log(
-                    {level: 'error' },
-                    '----------------- FAILURE -----------------'
-                );
-            }
-
-            for (key in me.layouts) {
-                if (me.layouts.hasOwnProperty(key)) {
-                    layout = me.layouts[key];
-
-                    if (layout.running) {
-                        Ext.log.error('Layout left running: ', me.getLayoutName(layout));
-                    }
-                    if (layout.ownerContext) {
-                        Ext.log.error('Layout left connected: ', me.getLayoutName(layout));
-                    }
-                }
-            }
-
-            if (!ret || me.reportOnSuccess) {
-                reported = {};
-                unreported = 0;
-
-                for (key in me.layouts) {
-                    if (me.layouts.hasOwnProperty(key)) {
-                        layout = me.layouts[key];
-
-                        if (me.items[layout.owner.el.id].isTopLevel) {
-                            if (me.reportOnSuccess || me.layoutTreeHasFailures(layout, reported)) {
-                                me.reportLayoutResult(layout, reported);
-                            }
-                        }
-                    }
-                }
-
-                // Just in case we missed any layouts...
-                for (key in me.layouts) {
-                    if (me.layouts.hasOwnProperty(key)) {
-                        layout = me.layouts[key];
-
-                        if (!reported[layout.id]) {
-                            if (!unreported) {
-                                Ext.log('----- Unreported!! -----');
-                            }
-                            ++unreported;
-                            me.reportLayoutResult(layout, reported);
-                        }
-                    }
-                }
-            }
-
-            Ext.log('Cycles: ', me.cycleCount, ', Flushes: ', me.flushCount,
-                ', Calculates: ', me.calcCount, ' in ', me.round(time), ' msec');
-
-            Ext.log('Calculates by type:');
-            /*Ext.Object.each(me.numByType, function (type, total) {
-                Ext.log(type, ': ', total, ' in ', me.calcsByType[type], ' tries (',
-                    Math.round(me.calcsByType[type] / total * 10) / 10, 'x) at ',
-                    me.round(me.timesByType[type]), ' msec (avg ',
-                    me.round(me.timesByType[type] / me.calcsByType[type]), ' msec)');
-            });*/
-            calcs = [];
-            for (key in me.numByType) {
-                if (me.numByType.hasOwnProperty(key)) {
-                    total = me.numByType[key];
-
-                    calcs.push({
-                            type       : key,
-                            total      : total,
-                            calcs      : me.calcsByType[key],
-                            multiple   : Math.round(me.calcsByType[key] / total * 10) / 10,
-                            calcTime   : me.round(me.timesByType[key]),
-                            avgCalcTime: me.round(me.timesByType[key] / me.calcsByType[key])
-                        });
-                }
-            }
-
-
-            calcs.sort(function (a,b) {
-                return b.calcTime - a.calcTime;
-            });
-
-            calcsLength = calcs.length;
-            for (i=0; i<calcsLength; i++) {
-                calc = calcs[i];
-
-                Ext.log(
-                    calc.type,
-                    ': ',
-                    calc.total,
-                    ' in ',
-                    calc.calcs,
-                    ' tries (',
-                    calc.multiple,
-                    'x) at ',
-                    calc.calcTime,
-                    ' msec (avg ',
-                    calc.avgCalcTime,
-                    ' msec)'
-                );
-            }
-
-            return ret;
-        },
-
-        runCycle: function () {
-            if (this.logOn.runCycle) {
-                Ext.log('>>> Cycle ', this.cycleCount, ' (queue length: ', this.layoutQueue.length, ')');
-            }
-
-            return this.callParent(arguments);
-        },
-
-        runLayout: function (layout) {
-            var me = this,
-                type = layout.type,
-                accum = me.accumByType[type],
-                frame, ret, time;
-
-            if (me.logOn.calculate) {
-                Ext.log('-- calculate ', this.getLayoutName(layout));
-            }
-
-            frame = accum && accum.enter();
-
-            time = Ext.perf.getTimestamp();
-            ret = me.callParent(arguments);
-            time = Ext.perf.getTimestamp() - time;
-            if (accum) {
-                frame.leave();
-            }
-
-            me.calcsByType[type] = (me.calcsByType[type] || 0) + 1;
-            me.timesByType[type] = (me.timesByType[type] || 0) + time;
-
-            /*  add a / to the front of this line to enable layout completion logging
-            if (layout.done) {
-                var ownerContext = me.getCmp(layout.owner),
-                    props = ownerContext.props;
-
-                if (layout.isComponentLayout) {
-                    Ext.log('complete ', layout.owner.id, ':', type, ' w=',props.width, ' h=', props.height);
-                } else {
-                    Ext.log('complete ', layout.owner.id, ':', type, ' cw=',props.contentWidth, ' ch=', props.contentHeight);
-                }
-            }**/
-
-            return ret;
-        }
-    } // End Diagnostics
+    }
 });

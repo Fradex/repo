@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * A simple class that provides the basic implementation needed to make any element a drop target that can have
  * draggable items dropped onto it.  The drop has no effect until an implementation of notifyDrop is provided.
@@ -8,7 +25,7 @@ Ext.define('Ext.dd.DropTarget', {
 
     /**
      * Creates new DropTarget.
-     * @param {String/HTMLElement/Ext.dom.Element} el The container element or ID of it.
+     * @param {String/HTMLElement/Ext.Element} el The container element or ID of it.
      * @param {Object} config
      */
     constructor : function(el, config){
@@ -85,28 +102,24 @@ Ext.define('Ext.dd.DropTarget', {
 
     /**
      * The function a {@link Ext.dd.DragSource} calls once to notify this drop target that the source has been dragged
-     * out of the target without dropping. This default implementation simply removes the CSS class specified by
-     * `overClass` (if any) from the drop element.
+     * out of the target without dropping.  This default implementation simply removes the CSS class specified by
+     * overClass (if any) from the drop element.
      * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop target
      * @param {Event} e The event
      * @param {Object} data An object containing arbitrary data supplied by the drag source
      * @template
      */
     notifyOut : function(dd, e, data){
-        if (this.overClass){
+        if(this.overClass){
             this.el.removeCls(this.overClass);
         }
     },
 
     /**
      * The function a {@link Ext.dd.DragSource} calls once to notify this drop target that the dragged item has
-     * been dropped on it. This method removes any `overClass` and returns false, so you must provide an
+     * been dropped on it.  This method has no default implementation and returns false, so you must provide an
      * implementation that does something to process the drop event and returns true so that the drag source's
      * repair action does not run.
-     *
-     * You should `callParent` from an override of this method to ensure proper cleanup is
-     * performed.
-     *
      * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop target
      * @param {Event} e The event
      * @param {Object} data An object containing arbitrary data supplied by the drag source
@@ -114,15 +127,12 @@ Ext.define('Ext.dd.DropTarget', {
      * @template
      */
     notifyDrop : function(dd, e, data){
-        if (this.overClass){
-            this.el.removeCls(this.overClass);
-        }
         return false;
     },
 
     destroy : function(){
         this.callParent();
-        if (this.containerScroll) {
+        if(this.containerScroll){
             Ext.dd.ScrollManager.unregister(this.el);
         }
     }

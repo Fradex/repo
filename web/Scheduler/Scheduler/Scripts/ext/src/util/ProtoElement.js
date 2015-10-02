@@ -1,4 +1,21 @@
 /*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
+/*
  * The dirty implementation in this class is quite naive. The reasoning for this is that the dirty state
  * will only be used in very specific circumstances, specifically, after the render process has begun but
  * the component is not yet rendered to the DOM. As such, we want it to perform as quickly as possible
@@ -9,16 +26,17 @@
  * Manages certain element-like data prior to rendering. These values are passed
  * on to the render process. This is currently used to manage the "class" and "style" attributes
  * of a component's primary el as well as the bodyEl of panels. This allows things like
- * addBodyCls in Panel to share logic with addCls in Component.
+ * addBodyCls in Panel to share logic with addCls in AbstractComponent.
  * @private
  */
-Ext.define('Ext.util.ProtoElement', function () {
+Ext.define('Ext.util.ProtoElement', (function () {
     var splitWords = Ext.String.splitWords,
         toMap = Ext.Array.toMap;
 
     return {
+        
         isProtoEl: true,
-
+        
         /**
          * The property name for the className on the data object passed to {@link #writeTo}.
          */
@@ -28,7 +46,7 @@ Ext.define('Ext.util.ProtoElement', function () {
          * The property name for the style on the data object passed to {@link #writeTo}.
          */
         styleProp: 'style',
-
+        
         /**
          * The property name for the removed classes on the data object passed to {@link #writeTo}.
          */
@@ -36,37 +54,30 @@ Ext.define('Ext.util.ProtoElement', function () {
 
         /**
          * True if the style must be converted to text during {@link #writeTo}. When used to
-         * populate tpl data, this will be true. When used to populate {@link Ext.dom.Helper}
+         * populate tpl data, this will be true. When used to populate {@link Ext.DomHelper}
          * specs, this will be false (the default).
          */
         styleIsText: false,
 
         constructor: function (config) {
-            var me = this,
-                cls, style;
+            var me = this;
 
-            if (config) {
-                Ext.apply(me, config);
-                cls = me.cls;
-                style = me.style;
-                delete me.cls;
-            }
+            Ext.apply(me, config);
 
-            me.classList = cls ? splitWords(cls) : [];
-            me.classMap = cls ? toMap(me.classList) : {};
+            me.classList = splitWords(me.cls);
+            me.classMap = toMap(me.classList);
+            delete me.cls;
 
-            if (style) {
-                if (typeof style === 'string') {
-                    me.style = Ext.Element.parseStyles(style);
-                } else if (Ext.isFunction(style)) {
-                    me.styleFn = style;
-                    delete me.style;
-                } else {
-                    me.style = Ext.apply({}, style); // don't edit the given object
-                }
+            if (Ext.isFunction(me.style)) {
+                me.styleFn = me.style;
+                delete me.style;
+            } else if (typeof me.style == 'string') {
+                me.style = Ext.Element.parseStyles(me.style);
+            } else if (me.style) {
+                me.style = Ext.apply({}, me.style); // don't edit the given object
             }
         },
-
+        
         /**
          * Indicates that the current state of the object has been flushed to the DOM, so we need
          * to track any subsequent changes
@@ -85,10 +96,6 @@ Ext.define('Ext.util.ProtoElement', function () {
          * @return {Ext.util.ProtoElement} this
          */
         addCls: function (cls) {
-
-            if (!cls) {
-                return this;
-            }
             var me = this,
                 add = (typeof cls === 'string') ? splitWords(cls) : cls,
                 length = add.length,
@@ -211,7 +218,7 @@ Ext.define('Ext.util.ProtoElement', function () {
             if (style) {
                 to[me.styleProp] = me.styleIsText ? Ext.DomHelper.generateStyles(style, null, true) : style;
             }
-
+            
             if (removedClasses) {
                 removedClasses = Ext.Object.getKeys(removedClasses);
                 if (removedClasses.length) {
@@ -226,4 +233,4 @@ Ext.define('Ext.util.ProtoElement', function () {
             return to;
         }
     };
-});
+}()));

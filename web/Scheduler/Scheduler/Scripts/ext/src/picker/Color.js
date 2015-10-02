@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * Color picker provides a simple color palette for choosing colors. The picker can be rendered to any container. The
  * available default to a standard 40-color palette; this can be customized with the {@link #colors} config.
@@ -21,8 +38,6 @@ Ext.define('Ext.picker.Color', {
     requires: 'Ext.XTemplate',
     alias: 'widget.colorpicker',
     alternateClassName: 'Ext.ColorPalette',
-    
-    focusable: true,
 
     /**
      * @cfg {String} [componentCls='x-color-picker']
@@ -116,18 +131,20 @@ Ext.define('Ext.picker.Color', {
         '</tpl>'
     ],
 
-    /**
-     * @event select
-     * Fires when a color is selected
-     * @param {Ext.picker.Color} this
-     * @param {String} color The 6-digit color hex code (without the # symbol)
-     */
-
     // @private
     initComponent : function(){
         var me = this;
 
         me.callParent(arguments);
+        me.addEvents(
+            /**
+             * @event select
+             * Fires when a color is selected
+             * @param {Ext.picker.Color} this
+             * @param {String} color The 6-digit color hex code (without the # symbol)
+             */
+            'select'
+        );
 
         if (me.handler) {
             me.on('select', me.handler, me.scope, true);
@@ -152,7 +169,7 @@ Ext.define('Ext.picker.Color', {
 
         me.mon(me.el, clickEvent, me.handleClick, me, {delegate: 'a'});
         // always stop following the anchors
-        if (clickEvent !== 'click'){
+        if(clickEvent != 'click'){
             me.mon(me.el, 'click', Ext.emptyFn, me, {delegate: 'a', stopEvent: true});
         }
     },
@@ -171,13 +188,13 @@ Ext.define('Ext.picker.Color', {
     },
 
     // @private
-    handleClick : function(event){
+    handleClick : function(event, target){
         var me = this,
             color;
 
         event.stopEvent();
         if (!me.disabled) {
-            color = event.currentTarget.className.match(me.colorRe)[1];
+            color = target.className.match(me.colorRe)[1];
             me.select(color.toUpperCase());
         }
     },
@@ -192,7 +209,7 @@ Ext.define('Ext.picker.Color', {
         var me = this,
             selectedCls = me.selectedCls,
             value = me.value,
-            el, item;
+            el;
 
         color = color.replace('#', '');
         if (!me.rendered) {
@@ -205,11 +222,9 @@ Ext.define('Ext.picker.Color', {
             el = me.el;
 
             if (me.value) {
-                item = el.down('a.color-' + value, true);
-                Ext.fly(item).removeCls(selectedCls);
+                el.down('a.color-' + value).removeCls(selectedCls);
             }
-            item = el.down('a.color-' + color, true);
-            Ext.fly(item).addCls(selectedCls);
+            el.down('a.color-' + color).addCls(selectedCls);
             me.value = color;
             if (suppressEvent !== true) {
                 me.fireEvent('select', me, color);
@@ -226,8 +241,8 @@ Ext.define('Ext.picker.Color', {
             el;
             
         if (value && me.rendered) {
-            el = me.el.down('a.color-' + value, true);
-            Ext.fly(el).removeCls(me.selectedCls);
+            el = me.el.down('a.color-' + value);
+            el.removeCls(me.selectedCls);
         }
         me.value = null;  
     },

@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * Utility class for manipulating CSS rules
  * @singleton
@@ -29,28 +46,29 @@ Ext.define('Ext.util.CSS', function() {
          * @param {String} id An id to add to the stylesheet for later removal
          * @return {CSSStyleSheet}
          */
-        createStyleSheet: function (cssText, id) {
+        createStyleSheet : function(cssText, id) {
             var ss,
-                head = doc.getElementsByTagName('head')[0],
-                styleEl = doc.createElement('style');
+                head = doc.getElementsByTagName("head")[0],
+                styleEl = doc.createElement("style");
 
-            styleEl.setAttribute('type', 'text/css');
-
+            styleEl.setAttribute("type", "text/css");
             if (id) {
-               styleEl.setAttribute('id', id);
+               styleEl.setAttribute("id", id);
             }
 
-            // Feature detect old IE
-            ss = styleEl.styleSheet;
-            if (ss) {
-                head.appendChild(styleEl);
-                ss.cssText = cssText;
+            if (Ext.isIE) {
+               head.appendChild(styleEl);
+               ss = styleEl.styleSheet;
+               ss.cssText = cssText;
             } else {
-                styleEl.appendChild(doc.createTextNode(cssText));
+                try{
+                    styleEl.appendChild(doc.createTextNode(cssText));
+                } catch(e) {
+                   styleEl.cssText = cssText;
+                }
                 head.appendChild(styleEl);
-                ss = styleEl.sheet;
+                ss = styleEl.styleSheet ? styleEl.styleSheet : (styleEl.sheet || doc.styleSheets[doc.styleSheets.length-1]);
             }
-
             CSS.cacheStyleSheet(ss);
             return ss;
         },
@@ -80,6 +98,14 @@ Ext.define('Ext.util.CSS', function() {
             ss.setAttribute("id", id);
             ss.setAttribute("href", url);
             doc.getElementsByTagName("head")[0].appendChild(ss);
+        },
+
+        /**
+         * Refresh the rule cache if you have dynamically added stylesheets
+         * @return {Object} An object (hash) of rules indexed by selector
+         */
+        refreshCache : function() {
+            return CSS.getRules(true);
         },
 
         // @private
@@ -131,7 +157,7 @@ Ext.define('Ext.util.CSS', function() {
                         parentStyleSheet: styleSheet,
                         cssRule: cssRule
                     };
-                }
+                };
             }
         },
 
@@ -153,16 +179,12 @@ Ext.define('Ext.util.CSS', function() {
             return result;
         },
         
-        /**
-         * Refresh the rule cache if you have dynamically added stylesheets
-         * @return {Object} An object (hash) of rules indexed by selector
-         */
         refreshCache: function() {
             var ds = doc.styleSheets,
                 i = 0,
                 len = ds.length;
 
-            rules = CSS.rules = {};
+            rules = CSS.rules = {}
             for (; i < len; i++) {
                 try {
                     if (!ds[i].disabled) {
@@ -185,7 +207,7 @@ Ext.define('Ext.util.CSS', function() {
                 CSS.refreshCache();
             }
             if (!Ext.isArray(selector)) {
-                result = rules[selector.toLowerCase()];
+                result = rules[selector.toLowerCase()]
                 if (result && !rawCache) {
                     result = result.cssRule;
                 }
@@ -212,7 +234,7 @@ Ext.define('Ext.util.CSS', function() {
                 index = ruleSet.length;
 
             if (styleSheet.insertRule) {
-                styleSheet.insertRule(selector + ' {' + cssText + '}', index);
+                styleSheet.insertRule(selector + '{' + cssText + '}', index);
             } else {
                 styleSheet.addRule(selector, cssText||' ');
             }
@@ -233,7 +255,7 @@ Ext.define('Ext.util.CSS', function() {
                 rule = CSS.getRule(selector);
                 if (rule) {
                     // 2 arg form means cssText sent, so parse it and update each style
-                    if (arguments.length === 2) {
+                    if (arguments.length == 2) {
                         styles = Ext.Element.parseStyles(property);
                         for (property in styles) {
                             rule.style[property.replace(camelRe, camelFn)] = styles[property];

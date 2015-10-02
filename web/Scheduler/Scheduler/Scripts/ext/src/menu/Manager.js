@@ -1,59 +1,202 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
- * Provides a common registry groups of {@link Ext.menu.CheckItem}s.
- *
- * Since 5.1.0, this class no longer registers all menus in your applications.
- * To access all menus, use {@link Ext.ComponentQuery ComponentQuery}.
+ * Provides a common registry of all menus on a page.
  * @singleton
  */
 Ext.define('Ext.menu.Manager', {
     singleton: true,
-
+    requires: [
+        'Ext.util.MixedCollection',
+        'Ext.util.KeyMap'
+    ],
     alternateClassName: 'Ext.menu.MenuMgr',
 
     uses: ['Ext.menu.Menu'],
     
+    menuSelector: '.' + Ext.baseCSSPrefix + 'menu',
+
+    menus: {},
     groups: {},
+    attached: false,
+    lastShow: new Date(),
+
+    init: function() {
+        var me = this;
+        
+        me.active = new Ext.util.MixedCollection();
+        Ext.getDoc().addKeyListener(27, function() {
+            if (me.active.length > 0) {
+                me.hideAll();
+            }
+        }, me);
+    },
 
     /**
      * Hides all menus that are currently visible
      * @return {Boolean} success True if any active menus were hidden.
      */
     hideAll: function() {
-        var allMenus = Ext.ComponentQuery.query('menu[floating]:not([hidden])'),
-            len = allMenus.length,
-            i,
-            result = false;
+        var active = this.active,
+            menus, m, mLen;
 
-        for (i = 0; i < len; i++) {
-            allMenus[i].hide();
-            result = true;
+        if (active && active.length > 0) {
+            menus = Ext.Array.slice(active.items);
+            mLen  = menus.length;
+
+            for (m = 0; m < mLen; m++) {
+                menus[m].hide();
+            }
+
+            return true;
         }
-        return result;
+        return false;
+    },
+
+    onHide: function(m) {
+        var me = this,
+            active = me.active;
+        active.remove(m);
+        if (active.length < 1) {
+            Ext.getDoc().un('mousedown', me.onMouseDown, me);
+            me.attached = false;
+        }
+    },
+
+    onShow: function(m) {
+        var me = this,
+            active   = me.active,
+            attached = me.attached;
+
+        me.lastShow = new Date();
+        active.add(m);
+        if (!attached) {
+            Ext.getDoc().on('mousedown', me.onMouseDown, me, {
+                // On IE we have issues with the menu stealing focus at certain points
+                // during the head, so give it a short buffer
+                buffer: Ext.isIE9m ? 10 : undefined
+            });
+            me.attached = true;
+        }
+        m.toFront();
+    },
+
+    onBeforeHide: function(m) {
+        if (m.activeChild) {
+            m.activeChild.hide();
+        }
+        if (m.autoHideTimer) {
+            clearTimeout(m.autoHideTimer);
+            delete m.autoHideTimer;
+        }
+    },
+
+    onBeforeShow: function(m) {
+        var active = this.active,
+            parentMenu = m.parentMenu;
+            
+        active.remove(m);
+        if (!parentMenu && !m.allowOtherMenus) {
+            this.hideAll();
+        }
+        else if (parentMenu && parentMenu.activeChild && m != parentMenu.activeChild) {
+            parentMenu.activeChild.hide();
+        }
+    },
+
+    // @private
+    onMouseDown: function(e) {
+        var me = this,
+            active = me.active,
+            lastShow = me.lastShow,
+            doHide = true;
+
+        if (Ext.Date.getElapsed(lastShow) > 50 && active.length > 0 && !e.getTarget(me.menuSelector)) {
+            // Because we use a buffer in IE, the target may have been removed from the
+            // DOM by the time we get here, so the selector will never find the menu. In this
+            // case, it's safer to not hide than menus than to do so
+            if (Ext.isIE9m && !Ext.getDoc().contains(e.target)) {
+                doHide = false;
+            }
+            if (doHide) {
+                me.hideAll();
+            }
+        }
+    },
+
+    // @private
+    register: function(menu) {
+        var me = this;
+
+        if (!me.active) {
+            me.init();
+        }
+
+        if (menu.floating) {
+            me.menus[menu.id] = menu;
+            menu.on({
+                beforehide: me.onBeforeHide,
+                hide: me.onHide,
+                beforeshow: me.onBeforeShow,
+                show: me.onShow,
+                scope: me
+            });
+        }
     },
 
     /**
      * Returns a {@link Ext.menu.Menu} object
      * @param {String/Object} menu The string menu id, an existing menu object reference, or a Menu config that will
      * be used to generate and return a new Menu this.
-     * @param {Object} [config] A configuration to use when creating the menu.
      * @return {Ext.menu.Menu} The specified menu, or null if none are found
      */
-    get: function(menu, config) {
-        var result;
+    get: function(menu) {
+        var menus = this.menus;
         
-        if (typeof menu === 'string') { // menu id
-            result = Ext.getCmp(menu);
-            if (result instanceof Ext.menu.Menu) {
-                menu = result;
+        if (typeof menu == 'string') { // menu id
+            if (!menus) {  // not initialized, no menus to return
+                return null;
             }
+            return menus[menu];
+        } else if (menu.isMenu) {  // menu instance
+            return menu;
         } else if (Ext.isArray(menu)) { // array of menu items
-            config = Ext.apply({items:menu}, config);
-            menu = new Ext.menu.Menu(config);
-        } else if (!menu.isComponent) { // otherwise, must be a config
-            config = Ext.apply({}, menu, config);
-            menu = Ext.ComponentManager.create(config, 'menu');
+            return new Ext.menu.Menu({items:menu});
+        } else { // otherwise, must be a config
+            return Ext.ComponentManager.create(menu, 'menu');
         }
-        return menu;
+    },
+
+    // @private
+    unregister: function(menu) {
+        var me = this,
+            menus = me.menus,
+            active = me.active;
+
+        delete menus[menu.id];
+        active.remove(menu);
+        menu.un({
+            beforehide: me.onBeforeHide,
+            hide: me.onHide,
+            beforeshow: me.onBeforeShow,
+            show: me.onShow,
+            scope: me
+        });
     },
 
     // @private
@@ -91,7 +234,7 @@ Ext.define('Ext.menu.Manager', {
             ln = group.length;
             for (; i < ln; i++) {
                 curr = group[i];
-                if (curr !== menuItem) {
+                if (curr != menuItem) {
                     curr.setChecked(false);
                 }
             }

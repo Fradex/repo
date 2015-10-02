@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * Internal utility class that provides a unique cell context.
  * @private
@@ -17,7 +34,7 @@ Ext.define('Ext.grid.CellContext', {
     
     isEqual: function(other) {
         if (other) {
-            return this.record === other.record && this.column === other.column;
+            return this.record === other.record && this.columnHeader === other.columnHeader;
         }
         return false;
     },
@@ -26,21 +43,13 @@ Ext.define('Ext.grid.CellContext', {
     setPosition: function(row, col) {
         var me = this;
 
-        // We were passed {row: 1, column: 2, view: myView} or [2, 1]
+        // We were passed {row: 1, column: 2, view: myView}
         if (arguments.length === 1) {
-            // A [column, row] array passed
-            if (row.length) {
-                col = row[0];
-                col = row[1];
+            if (row.view) {
+                me.view = row.view;
             }
-            // An object containing {row: r, column: c}
-            else {
-                if (row.view) {
-                    me.view = row.view;
-                }
-                col = row.column;
-                row = row.row;
-            }
+            col = row.column;
+            row = row.row;
         }
 
         me.setRow(row);
@@ -48,85 +57,39 @@ Ext.define('Ext.grid.CellContext', {
         return me;
     },
 
-    setAll: function(view, recordIndex, columnIndex, record, columnHeader) {
-        var me = this;
-
-        me.view = view;
-        me.rowIdx = recordIndex;
-        me.colIdx = columnIndex;
-        me.record = record;
-        me.column = columnHeader;
-        return me;
-    },
-
     setRow: function(row) {
-        var me = this,
-            dataSource = me.view.dataSource;
-        
+        var me = this;
         if (row !== undefined) {
             // Row index passed
             if (typeof row === 'number') {
-                me.rowIdx = Math.max(Math.min(row, dataSource.getCount() - 1), 0);
-                me.record = dataSource.getAt(row);
+                me.row = Math.max(Math.min(row, me.view.dataSource.getCount() - 1), 0);
+                me.record = me.view.dataSource.getAt(row);
             }
             // row is a Record
             else if (row.isModel) {
                 me.record = row;
-                me.rowIdx = dataSource.indexOf(row);
+                me.row = me.view.indexOf(row);
             }
             // row is a grid row
             else if (row.tagName) {
                 me.record = me.view.getRecord(row);
-                me.rowIdx = dataSource.indexOf(me.record);
+                me.row = me.view.indexOf(me.record);
             }
         }
     },
     
     setColumn: function(col) {
         var me = this,
-                colMgr = me.view.getVisibleColumnManager();
-
-        // Maintainer:
-        // We MUST NOT update the context view with the column's view because this context
-        // may be for an Ext.locking.View which spans two grid views, and a column references
-        // its local grid view.
+            mgr = me.view.ownerCt.getColumnManager();
+            
         if (col !== undefined) {
             if (typeof col === 'number') {
-                me.colIdx = col;
-                me.column = colMgr.getHeaderAtIndex(col);
-            } else if (col.isHeader) {
                 me.column = col;
-                // Must use the Manager's indexOf because view may be a locking view
-                // And Column#getVisibleIndex returns the index of the column within its own header.
-                me.colIdx = colMgr.indexOf(col);
+                me.columnHeader = mgr.getHeaderAtIndex(col);
+            } else if (col.isHeader) {
+                me.columnHeader = col;
+                me.column = mgr.getHeaderIndex(col);
             }
         }
-    },
-
-    next: function() {
-        var me = this,
-            mgr = me.view.getVisibleColumnManager();
-
-        me.colIdx++;
-        if (me.colIdx === mgr.getColumns().length) {
-            me.setPosition(Math.min(me.rowIdx + 1, me.view.dataSource.getCount() - 1), me.colIdx);
-        } else {
-            me.setColumn(me.colIdx);
-        }
-    },
-
-    equal: function(other) {
-        return (other && other.isCellContext && other.view === this.view && other.record === this.record && other.column === this.column);
-    },
-
-    clone: function() {
-        var me = this,
-            result = new me.self(me.view);
-
-        result.rowIdx = me.rowIdx;
-        result.colIdx = me.colIdx;
-        result.record = me.record;
-        result.column = me.column;
-        return result;
     }
 });

@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * This layout implements the column arrangement for {@link Ext.form.CheckboxGroup} and {@link Ext.form.RadioGroup}.
  * It groups the component's sub-items into columns based on the component's
@@ -25,14 +42,15 @@ Ext.define('Ext.layout.container.CheckboxGroup', {
     ],
 
     renderTpl: [
-        '<table id="{ownerId}-innerCt" data-ref="innerCt" class="' + Ext.baseCSSPrefix + 'table-plain" cellpadding="0"',
-            'role="presentation" style="{tableStyle}"><tr role="presentation">',
+        '<table id="{ownerId}-innerCt" class="' + Ext.plainTableCls + '" cellpadding="0"',
+            'role="presentation" style="{tableStyle}">',
+            '<tbody role="presentation"><tr role="presentation">',
             '<tpl for="columns">',
                 '<td class="{parent.colCls}" valign="top" style="{style}" role="presentation">',
                     '{% this.renderColumn(out,parent,xindex-1) %}',
                 '</td>',
             '</tpl>',
-        '</tr></table>'
+        '</tr></tbody></table>'
     ],
 
     lastOwnerItemsGeneration : null,
@@ -302,7 +320,9 @@ Ext.define('Ext.layout.container.CheckboxGroup', {
     },
 
     // Always valid. beginLayout ensures the encapsulating elements of all children are in the correct place
-    isValidParent: Ext.returnTrue,
+    isValidParent: function() {
+        return true;
+    },
 
     setupRenderTpl: function (renderTpl) {
         this.callParent(arguments);
@@ -422,7 +442,7 @@ Ext.define('Ext.layout.container.CheckboxGroup', {
             exceedingColumnsCount = existingColumnsCount - itemsCount;
             row = me.rowEl;
             for (i = 0; i < exceedingColumnsCount; i++) {
-                row.last().destroy();
+                row.last().remove();
             }
         }
     },
@@ -438,8 +458,8 @@ Ext.define('Ext.layout.container.CheckboxGroup', {
         var me = this;
 
         me.configureItem(item);
-
         item.render(Ext.get(me.columnNodes[columnIndex]), rowIndex);
+        me.afterRenderItem(item);
     },
 
     /**

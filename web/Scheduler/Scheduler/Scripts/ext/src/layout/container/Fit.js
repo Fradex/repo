@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * This is a base class for layouts that contain a single item that automatically expands to fill the layout's
  * container. This class is intended to be extended or created via the layout:'fit'
@@ -40,6 +57,38 @@ Ext.define('Ext.layout.container.Fit', {
     targetCls: Ext.baseCSSPrefix + 'layout-fit',
     type: 'fit',
    
+    /**
+     * @cfg {Object} defaultMargins
+     * If the individual contained items do not have a margins property specified or margin specified via CSS, the
+     * default margins from this property will be applied to each item.
+     *
+     * This property may be specified as an object containing margins to apply in the format:
+     *
+     *     {
+     *         top: (top margin),
+     *         right: (right margin),
+     *         bottom: (bottom margin),
+     *         left: (left margin)
+     *     }
+     *
+     * This property may also be specified as a string containing space-separated, numeric margin values. The order of
+     * the sides associated with each value matches the way CSS processes margin values:
+     *
+     *   - If there is only one value, it applies to all sides.
+     *   - If there are two values, the top and bottom borders are set to the first value and the right and left are
+     *     set to the second.
+     *   - If there are three values, the top is set to the first value, the left and right are set to the second,
+     *     and the bottom is set to the third.
+     *   - If there are four values, they apply to the top, right, bottom, and left, respectively.
+     *
+     */
+    defaultMargins: {
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0
+    },
+
     manageMargins: true,
 
     sizePolicies: {
@@ -174,15 +223,10 @@ Ext.define('Ext.layout.container.Fit', {
             }
         }
 
-        // If length === 0, it means we either have no child items, or the children are hidden
-        if (length > 0) {
-            // Size the child items to the container (if non-shrinkWrap):
-            for (i = 0; i < length; ++i) {
-                info.index = i;
-                me.fitItem(childItems[i], info);
-            }
-        } else {
-            info.contentWidth = info.contentHeight = 0;
+        // Size the child items to the container (if non-shrinkWrap):
+        for (i = 0; i < length; ++i) {
+            info.index = i;
+            me.fitItem(childItems[i], info);
         }
         
         if (shrinkWrapHeight || shrinkWrapWidth) {
@@ -269,9 +313,6 @@ Ext.define('Ext.layout.container.Fit', {
             if (info.targetSize.gotWidth) {
                 ++info.got;
                 this.setItemWidth(itemContext, info);
-            } else {
-                // Too early to position
-                return;
             }
         }
 
@@ -296,9 +337,6 @@ Ext.define('Ext.layout.container.Fit', {
             if (info.targetSize.gotHeight) {
                 ++info.got;
                 this.setItemHeight(itemContext, info);
-            } else {
-                // Too early to position
-                return;
             }
         }
 

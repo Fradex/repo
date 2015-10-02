@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * This is a multi-pane, application-oriented UI layout style that supports multiple nested panels, automatic bars
  * between regions and built-in {@link Ext.panel.Panel#collapsible expanding and collapsing} of regions.
@@ -17,13 +34,13 @@
  *             xtype: 'panel',
  *             height: 100,
  *             split: true,         // enable resizing
- *             margin: '0 5 5 5'
+ *             margins: '0 5 5 5'
  *         },{
  *             // xtype: 'panel' implied by default
  *             title: 'West Region is collapsible',
  *             region:'west',
  *             xtype: 'panel',
- *             margin: '5 0 0 5',
+ *             margins: '5 0 0 5',
  *             width: 200,
  *             collapsible: true,   // make collapsible
  *             id: 'west-region-container',
@@ -33,7 +50,7 @@
  *             region: 'center',     // center region is required, no width/height specified
  *             xtype: 'panel',
  *             layout: 'fit',
- *             margin: '5 5 0 0'
+ *             margins: '5 5 0 0'
  *         }],
  *         renderTo: Ext.getBody()
  *     });
@@ -231,8 +248,6 @@ Ext.define('Ext.layout.container.Border', {
                 childContext.isVert = comp.isVert;
 
                 childContext.weight = comp.weight || me.regionWeights[region] || 0;
-                comp.weight = childContext.weight;
-                
                 regions[comp.id] = childContext;
 
                 if (comp.isCenter) {
@@ -303,20 +318,6 @@ Ext.define('Ext.layout.container.Border', {
             childContext, item, length, i, regions, collapseTarget,
             doShow, hidden, region;
 
-        //<debug>
-        // TODO: EXTJSIV-13015
-        if (ownerContext.heightModel.shrinkWrap) {
-            Ext.Error.raise("Border layout does not currently support shrinkWrap height. " +
-                "Please specify a height on component: " + me.owner.id +
-                ", or use a container layout that sets the component's height.");
-        }
-        if (ownerContext.widthModel.shrinkWrap) {
-            Ext.Error.raise("Border layout does not currently support shrinkWrap width. " +
-                "Please specify a width on component: " + me.owner.id +
-                ", or use a container layout that sets the component's width.");
-        }
-        //</debug>
-
         // We sync the visibility state of splitters with their region:
         if (pad) {
             if (type == 'string' || type == 'number') {
@@ -371,7 +372,7 @@ Ext.define('Ext.layout.container.Border', {
             collapseTarget = me.getSplitterTarget(childContext.target);
 
             if (collapseTarget) { // if (splitter)
-                region = regions[collapseTarget.id];
+                region = regions[collapseTarget.id]
                 if (!region) {
                         // if the region was hidden it will not be part of childItems, and
                         // so beginAxis() won't add it to the regions object, so we have
@@ -547,28 +548,6 @@ Ext.define('Ext.layout.container.Border', {
 
         childContext.layoutPos[axis.posProp] = pos;
     },
-    
-    eachItem: function (region, fn, scope) {
-        var me = this,
-            items = me.getLayoutItems(),
-            i = 0,
-            item;
-        
-        if (Ext.isFunction(region)) {
-            fn = region;
-            scope = fn;
-        }
-        
-        for (i; i < items.length; i++) {
-            item = items[i];
-            
-            if (!region || item.region === region) {
-                if (fn.call(scope, item) === false) {
-                    break;
-                }
-            }
-        }
-    },
 
     /**
      * Finishes the calculations on an axis. This basically just assigns the remaining
@@ -648,36 +627,7 @@ Ext.define('Ext.layout.container.Border', {
     getPlaceholder: function (comp) {
         return comp.getPlaceholder && comp.getPlaceholder();
     },
-    
-    getMaxWeight: function (region) {
-        return this.getMinMaxWeight(region);
-    },
-        
-    getMinWeight: function (region) {
-        return this.getMinMaxWeight(region, true);
-    },
-    
-    getMinMaxWeight: function (region, min) {
-        var me = this,
-            weight = null;
-        
-        me.eachItem(region, function (item) {
-            if (item.hasOwnProperty('weight')) {
-                if (weight === null) {
-                    weight = item.weight;
-                    
-                    return;
-                }
-                
-                if ((min && item.weight < weight) || item.weight > weight) {
-                    weight = item.weight;
-                }
-            }
-        }, this);
-        
-        return weight;
-    },
-    
+
     getSplitterTarget: function (splitter) {
         var collapseTarget = splitter.collapseTarget;
 
@@ -712,8 +662,7 @@ Ext.define('Ext.layout.container.Border', {
                 id: item.id + '-splitter',
                 hidden: hidden,
                 canResize: item.splitterResize !== false,
-                splitterFor: item,
-                synthetic: true // not user-defined
+                splitterFor: item
             }, splitterCfg),
             at = index + ((region === 'south' || region === 'east') ? 0 : 1);
 
@@ -723,32 +672,7 @@ Ext.define('Ext.layout.container.Border', {
 
         item.splitter = this.owner.add(at, splitter);
     },
-    
-    getMoveAfterIndex: function (after) {
-        var index = this.callParent(arguments);
-        
-        if (after.splitter) {
-            index++;
-        }
-        
-        return index;
-    },
-    
-    moveItemBefore: function (item, before) {
-        var owner = this.owner,
-            beforeRegion;
-            
-        if (before && before.splitter) {
-            beforeRegion = before.region;
 
-            if (beforeRegion === 'south' || beforeRegion === 'east') {
-                before = before.splitter;
-            }
-        }
-          
-        return this.callParent([item, before]);
-    },
-    
     /**
      * Called when a region (actually when any component) is added to the container. The
      * region is decorated with some helpful properties (isCenter, isHorz, isVert) and its
@@ -759,7 +683,6 @@ Ext.define('Ext.layout.container.Border', {
         var me = this,
             placeholderFor = item.placeholderFor,
             region = item.region,
-            isCenter,
             split,
             hidden,
             cfg;
@@ -775,8 +698,7 @@ Ext.define('Ext.layout.container.Border', {
                 item.initBorderRegion();
             }
 
-            isCenter = region === 'center';
-            if (isCenter) {
+            if (region === 'center') {
                 //<debug>
                 if (me.centerRegion) {
                     Ext.Error.raise("Cannot have multiple center regions in a BorderLayout.");
@@ -797,7 +719,7 @@ Ext.define('Ext.layout.container.Border', {
                 }
             }
 
-            if (!isCenter && !item.hasOwnProperty('collapseMode')) {
+            if (!item.hasOwnProperty('collapseMode')) {
                 item.collapseMode = me.panelCollapseMode;
             }
 
@@ -851,10 +773,8 @@ Ext.define('Ext.layout.container.Border', {
         if (!destroying && !isDestroying && comp.rendered) {
             // Clear top/left styles
             el = comp.getEl();
-            if (el) {
-                el.setStyle('top', '');
-                el.setStyle(me.horzPositionProp, '');
-            }
+            el.setStyle('top', '');
+            el.setStyle(me.horzPositionProp, '');
         }
     },
 

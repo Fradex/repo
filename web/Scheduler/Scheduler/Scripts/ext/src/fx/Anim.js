@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * This class manages animation for a specific {@link #target}. The animation allows
  * animation of various properties on the target, such as size, position, color and others.
@@ -258,26 +275,6 @@ Ext.define('Ext.fx.Anim', {
     // @private
     frameCount: 0,
 
-    /**
-     * @event beforeanimate
-     * Fires before the animation starts. A handler can return false to cancel the animation.
-     * @param {Ext.fx.Anim} this
-     */
-
-     /**
-      * @event afteranimate
-      * Fires when the animation is complete.
-      * @param {Ext.fx.Anim} this
-      * @param {Date} startTime
-      */
-
-     /**
-      * @event lastframe
-      * Fires when the animation's last frame has been set.
-      * @param {Ext.fx.Anim} this
-      * @param {Date} startTime
-      */
-
     // @private
     constructor: function(config) {
         var me = this,
@@ -307,7 +304,28 @@ Ext.define('Ext.fx.Anim', {
             }
         }
         me.id = Ext.id(null, 'ext-anim-');
-
+        me.addEvents(
+            /**
+             * @event beforeanimate
+             * Fires before the animation starts. A handler can return false to cancel the animation.
+             * @param {Ext.fx.Anim} this
+             */
+            'beforeanimate',
+             /**
+              * @event afteranimate
+              * Fires when the animation is complete.
+              * @param {Ext.fx.Anim} this
+              * @param {Date} startTime
+              */
+            'afteranimate',
+             /**
+              * @event lastframe
+              * Fires when the animation's last frame has been set.
+              * @param {Ext.fx.Anim} this
+              * @param {Date} startTime
+              */
+            'lastframe'
+        );
         me.mixins.observable.constructor.call(me);
         Ext.fx.Manager.addAnim(me);
         if (config.autoEnd) {
@@ -490,7 +508,7 @@ Ext.define('Ext.fx.Anim', {
         me.fireEvent('afteranimate', me, me.startTime);
         Ext.callback(me.callback, me.scope, [me, me.startTime]);
         if (me.remove) {
-            me.target.destroy();
+            me.target.remove();
         }
     },
     
@@ -502,10 +520,5 @@ Ext.define('Ext.fx.Anim', {
         return this.paused === false && this.running === true && this.isAnimator !== true;
     }
 });
-
-/**
- * @member Ext
- * @property {Boolean} enableFx
- * True if the {@link Ext.fx.Anim} Class is available.
- */
-Ext.enableFx = true; // Indicate that Fx is available. Class might not be available immediately.
+// Set flag to indicate that Fx is available. Class might not be available immediately.
+Ext.enableFx = true;

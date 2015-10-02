@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * This is the base class for {@link Ext.tip.QuickTip} and {@link Ext.tip.ToolTip} that provides the basic layout and
  * positioning that all tip-based classes require. This class can be used directly for simple, statically-positioned
@@ -6,7 +23,6 @@
  */
 Ext.define('Ext.tip.Tip', {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.tip',
 
     alternateClassName: 'Ext.Tip',
 
@@ -55,6 +71,10 @@ Ext.define('Ext.tip.Tip', {
     autoRender: true,
     hidden: true,
     baseCls: Ext.baseCSSPrefix + 'tip',
+    floating: {
+        shadow: true,
+        shim: true
+    },
     focusOnToFront: false,
 
     /**
@@ -113,22 +133,20 @@ Ext.define('Ext.tip.Tip', {
         }
     },
 
-    privates: {
-        /**
-         * @private
-         * Set Tip draggable using base Component's draggability.
-         */
-        initDraggable: function () {
-            var me = this;
-            me.draggable = {
-                el: me.getDragEl(),
-                delegate: me.header.el,
-                constrain: me,
-                constrainTo: me.el.dom.parentNode
-            };
-            // Important: Bypass Panel's initDraggable. Call direct to Component's implementation.
-            Ext.Component.prototype.initDraggable.call(me);
-        }
+    /**
+     * @private
+     * Set Tip draggable using base Component's draggability.
+     */
+    initDraggable : function(){
+        var me = this;
+        me.draggable = {
+            el: me.getDragEl(),
+            delegate: me.header.el,
+            constrain: me,
+            constrainTo: me.el.dom.parentNode
+        };
+        // Important: Bypass Panel's initDraggable. Call direct to Component's implementation.
+        Ext.Component.prototype.initDraggable.call(me);
     },
 
     // Tip does not ghost. Drag is "live"

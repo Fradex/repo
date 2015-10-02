@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * @docauthor Jason Johnston <jason@sencha.com>
  *
@@ -181,7 +198,7 @@ Ext.define('Ext.form.field.Date', {
      *
      * Defaults to {@link #format}.
      */
-
+    
     /**
      * @cfg {Boolean} useStrict
      * True to enforce strict date parsing to prevent the default Javascript "date rollover".
@@ -206,12 +223,6 @@ Ext.define('Ext.form.field.Date', {
      */
     startDay: 0,
     //</locale>
-
-    /**
-     * @cfg
-     * @inheritdoc
-     */
-    valuePublishEvent: ['select', 'blur'],
 
     initComponent : function(){
         var me = this,
@@ -272,11 +283,11 @@ Ext.define('Ext.form.field.Date', {
      * @param {String[]} disabledDates An array of date strings (see the {@link #disabledDates} config for details on
      * supported values) used to disable a pattern of dates.
      */
-    setDisabledDates : function(disabledDates){
+    setDisabledDates : function(dd){
         var me = this,
             picker = me.picker;
 
-        me.disabledDates = disabledDates;
+        me.disabledDates = dd;
         me.initDisabledDays();
         if (picker) {
             picker.setDisabledDates(me.disabledDatesRE);
@@ -288,12 +299,12 @@ Ext.define('Ext.form.field.Date', {
      * @param {Number[]} disabledDays An array of disabled day indexes. See the {@link #disabledDays} config for details on
      * supported values.
      */
-    setDisabledDays : function(disabledDays){
+    setDisabledDays : function(dd){
         var picker = this.picker;
 
-        this.disabledDays = disabledDays;
+        this.disabledDays = dd;
         if (picker) {
-            picker.setDisabledDays(disabledDays);
+            picker.setDisabledDays(dd);
         }
     },
 
@@ -301,10 +312,10 @@ Ext.define('Ext.form.field.Date', {
      * Replaces any existing {@link #minValue} with the new value and refreshes the Date picker.
      * @param {Date} value The minimum date that can be selected
      */
-    setMinValue : function(value){
+    setMinValue : function(dt){
         var me = this,
             picker = me.picker,
-            minValue = (Ext.isString(value) ? me.parseDate(value) : value);
+            minValue = (Ext.isString(dt) ? me.parseDate(dt) : dt);
 
         me.minValue = minValue;
         if (picker) {
@@ -317,10 +328,10 @@ Ext.define('Ext.form.field.Date', {
      * Replaces any existing {@link #maxValue} with the new value and refreshes the Date picker.
      * @param {Date} value The maximum date that can be selected
      */
-    setMaxValue : function(value){
+    setMaxValue : function(dt){
         var me = this,
             picker = me.picker,
-            maxValue = (Ext.isString(value) ? me.parseDate(value) : value);
+            maxValue = (Ext.isString(dt) ? me.parseDate(dt) : dt);
 
         me.maxValue = maxValue;
         if (picker) {
@@ -338,12 +349,10 @@ Ext.define('Ext.form.field.Date', {
      * @return {String[]} All validation errors for this field
      */
     getErrors: function(value) {
-        value = arguments.length > 0 ? value : this.formatDate(this.processRawValue(this.getRawValue()));
-
         var me = this,
             format = Ext.String.format,
             clearTime = Ext.Date.clearTime,
-            errors = me.callParent([value]),
+            errors = me.callParent(arguments),
             disabledDays = me.disabledDays,
             disabledDatesRE = me.disabledDatesRE,
             minValue = me.minValue,
@@ -355,7 +364,7 @@ Ext.define('Ext.form.field.Date', {
             day,
             time;
 
-        
+        value = me.formatDate(value || me.processRawValue(me.getRawValue()));
 
         if (value === null || value.length < 1) { // if it's blank and textfield didn't flag it then it's valid
              return errors;
@@ -489,7 +498,7 @@ Ext.define('Ext.form.field.Date', {
     },
 
     // private
-    formatDate: function(date){
+    formatDate : function(date){
         return Ext.isDate(date) ? Ext.Date.dateFormat(date, this.format) : date;
     },
 
@@ -497,14 +506,13 @@ Ext.define('Ext.form.field.Date', {
         var me = this,
             format = Ext.String.format;
 
-        // Create floating Picker BoundList. It will acquire a floatParent by looking up
-        // its ancestor hierarchy (Pickers use their pickerField property as an upward link)
-        // for a floating component.
         return new Ext.picker.Date({
             pickerField: me,
+            ownerCt: me.ownerCt,
+            renderTo: document.body,
             floating: true,
-            focusable: false, // Key events are listened from the input field which is never blurred
             hidden: true,
+            focusOnShow: true,
             minDate: me.minValue,
             maxDate: me.maxValue,
             disabledDatesRE: me.disabledDatesRE,
@@ -527,6 +535,13 @@ Ext.define('Ext.form.field.Date', {
             }
         });
     },
+    
+    onDownArrow: function(e) {
+        this.callParent(arguments);
+        if (this.isExpanded) {
+            this.getPicker().focus();
+        }
+    },
 
     onSelect: function(m, d) {
         var me = this;
@@ -545,15 +560,27 @@ Ext.define('Ext.form.field.Date', {
         this.picker.setValue(Ext.isDate(value) ? value : new Date());
     },
 
-    // private
-    onBlur: function(e) {
-        var me = this,
-            v = me.rawToValue(me.getRawValue());
+    /**
+     * @private
+     * Focuses the field when collapsing the Date picker.
+     */
+    onCollapse: function() {
+        this.focus(false, 60);
+    },
 
-        if (Ext.isDate(v)) {
+    // private
+    beforeBlur : function(){
+        var me = this,
+            v = me.parseDate(me.getRawValue()),
+            focusTask = me.focusTask;
+
+        if (focusTask) {
+            focusTask.cancel();
+        }
+
+        if (v) {
             me.setValue(v);
         }
-        me.callParent([e]);
     }
 
     /**

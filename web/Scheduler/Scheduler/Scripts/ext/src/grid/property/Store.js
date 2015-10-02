@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * A custom {@link Ext.data.Store} for the {@link Ext.grid.property.Grid}. This class handles the mapping
  * between the custom data source objects supported by the grid and the {@link Ext.grid.property.Property} format
@@ -9,13 +26,9 @@ Ext.define('Ext.grid.property.Store', {
 
     alternateClassName: 'Ext.grid.PropertyStore',
 
-    remoteSort: true,
+    sortOnLoad: false,
 
-    requires: [
-        'Ext.grid.property.Reader', 
-        'Ext.data.proxy.Memory', 
-        'Ext.grid.property.Property'
-    ],
+    uses: ['Ext.data.reader.Reader', 'Ext.data.proxy.Proxy', 'Ext.data.ResultSet', 'Ext.grid.property.Property'],
 
     /**
      * Creates new property store.
@@ -36,25 +49,57 @@ Ext.define('Ext.grid.property.Store', {
 
     // Return a singleton, customized Proxy object which configures itself with a custom Reader
     getProxy: function() {
-        var proxy = this.proxy;
-        if (!proxy) {
-            proxy = this.proxy = new Ext.data.proxy.Memory({
+        if (!this.proxy) {
+            Ext.grid.property.Store.prototype.proxy = new Ext.data.proxy.Memory({
                 model: Ext.grid.property.Property,
                 reader: this.getReader()
             });
         }
-        return proxy;
+        return this.proxy;
     },
 
     // Return a singleton, customized Reader object which reads Ext.grid.property.Property records from an object.
     getReader: function() {
-        var reader = this.reader;
-        if (!reader) {
-            reader = this.reader = new Ext.grid.property.Reader({
-                model: Ext.grid.property.Property
+        if (!this.reader) {
+            Ext.grid.property.Store.prototype.reader = new Ext.data.reader.Reader({
+                model: Ext.grid.property.Property,
+
+                buildExtractors: Ext.emptyFn,
+
+                read: function(dataObject) {
+                    return this.readRecords(dataObject);
+                },
+
+                readRecords: function(dataObject) {
+                    var val,
+                        propName,
+                        result = {
+                            records: [],
+                            success: true
+                        };
+
+                    for (propName in dataObject) {
+                        if (dataObject.hasOwnProperty(propName)) {
+                            val = dataObject[propName];
+                            if (this.isEditableValue(val)) {
+                                result.records.push(new Ext.grid.property.Property({
+                                    name: propName,
+                                    value: val
+                                }, propName));
+                            }
+                        }
+                    }
+                    result.total = result.count = result.records.length;
+                    return new Ext.data.ResultSet(result);
+                },
+
+                // @private
+                isEditableValue: function(val){
+                    return Ext.isPrimitive(val) || Ext.isDate(val) || val === null;
+                }
             });
         }
-        return reader;
+        return this.reader;
     },
 
     // @protected
@@ -65,7 +110,7 @@ Ext.define('Ext.grid.property.Store', {
         me.source = dataObject;
         me.suspendEvents();
         me.removeAll();
-        me.getProxy().setData(dataObject);
+        me.proxy.data = dataObject;
         me.load();
         me.resumeEvents();
         me.fireEvent('datachanged', me);
@@ -111,10 +156,5 @@ Ext.define('Ext.grid.property.Store', {
     // Should only be called by the grid.  Use grid.getSource instead.
     getSource : function() {
         return this.source;
-    },
-
-    onDestroy: function() {
-        Ext.destroy(this.reader, this.proxy);
-        this.callParent();
     }
 });

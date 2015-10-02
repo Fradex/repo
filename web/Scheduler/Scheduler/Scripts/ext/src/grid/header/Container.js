@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * Container which holds headers and is docked at the top or bottom of a TablePanel.
  * The HeaderContainer drives resizing/moving/hiding of columns within the TableView.
@@ -9,8 +26,7 @@ Ext.define('Ext.grid.header.Container', {
     requires: [
         'Ext.grid.ColumnLayout',
         'Ext.grid.plugin.HeaderResizer',
-        'Ext.grid.plugin.HeaderReorderer',
-        'Ext.util.KeyNav'
+        'Ext.grid.plugin.HeaderReorderer'
     ],
     uses: [
         'Ext.grid.column.Column',
@@ -19,17 +35,11 @@ Ext.define('Ext.grid.header.Container', {
         'Ext.menu.CheckItem',
         'Ext.menu.Separator'
     ],
-
-    mixins: [
-        'Ext.util.FocusableContainer'
-    ],
-
     border: true,
 
     alias: 'widget.headercontainer',
 
     baseCls: Ext.baseCSSPrefix + 'grid-header-ct',
-
     dock: 'top',
 
     /**
@@ -89,16 +99,12 @@ Ext.define('Ext.grid.header.Container', {
 
     menuColsIcon: Ext.baseCSSPrefix + 'cols-icon',
 
+    // private; will probably be removed by 4.0
+    triStateSort: false,
+
     ddLock: false,
 
     dragging: false,
-
-    // May be set to false by a SptreadSheetSelectionModel
-    sortOnClick: true,
-    
-    // Disable FocusableContainer behavior by default, since we only want it
-    // to be enabled for the root header container (we'll set the flag in initComponent)
-    enableFocusableContainer: false,
 
     /**
      * @property {Boolean} isGroupHeader
@@ -120,84 +126,11 @@ Ext.define('Ext.grid.header.Container', {
      */
     enableColumnHide: true,
 
-    /**
-     * @event columnresize
-     * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
-     * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
-     * @param {Number} width
-     */
-
-    /**
-     * @event headerclick
-     * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
-     * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
-     * @param {Ext.event.Event} e
-     * @param {HTMLElement} t
-     */
-
-    /**
-     * @event headercontextmenu
-     * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
-     * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
-     * @param {Ext.event.Event} e
-     * @param {HTMLElement} t
-     */
-
-    /**
-     * @event headertriggerclick
-     * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
-     * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
-     * @param {Ext.event.Event} e
-     * @param {HTMLElement} t
-     */
-
-    /**
-     * @event columnmove
-     * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
-     * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
-     * @param {Number} fromIdx
-     * @param {Number} toIdx
-     */
-
-    /**
-     * @event columnhide
-     * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
-     * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
-     */
-
-    /**
-     * @event columnshow
-     * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
-     * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
-     */
-
-    /**
-     * @event columnschanged
-     * Fired after the columns change in any way, when a column has been hidden or shown, or when a column
-     * is added to or removed from this header container.
-     * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
-     */
-
-    /**
-     * @event sortchange
-     * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
-     * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
-     * @param {String} direction
-     */
-
-    /**
-     * @event menucreate
-     * Fired immediately after the column header menu is created.
-     * @param {Ext.grid.header.Container} ct This instance
-     * @param {Ext.menu.Menu} menu The Menu that was created
-     */
-
     initComponent: function() {
         var me = this;
 
         me.headerCounter = 0;
         me.plugins = me.plugins || [];
-        me.defaults = me.defaults || {};
 
         // TODO: Pass in configurations to turn on/off dynamic
         //       resizing and disable resizing all together
@@ -219,14 +152,14 @@ Ext.define('Ext.grid.header.Container', {
         // use Container layout with a no-op calculate method.
         if (me.isColumn && !me.isGroupHeader) {
             if (!me.items || me.items.length === 0) {
-                me.isContainer = me.isFocusableContainer = false;
-                me.focusable = true;
+                me.isContainer = false;
                 me.layout = {
                     type: 'container',
                     calculate: Ext.emptyFn
                 };
             }
         }
+
         // HeaderContainer and Group header needs a gridcolumn layout.
         else {
             me.layout = Ext.apply({
@@ -234,18 +167,9 @@ Ext.define('Ext.grid.header.Container', {
                 align: 'stretch'
             }, me.initialConfig.layout);
 
-            // All HeaderContainers need to know this so that leaf Columns can adjust for cell border width if using content box model
-            me.defaults.columnLines = me.columnLines;
-
             // If the header isn't a column ([isColumn] or [isGroupHeader]), then it's the root header.
             if (!me.isGroupHeader) {
                 me.isRootHeader = true;
-
-                // The root header is a focusableContainer if it's not carrying hidden headers.
-                if (!me.hiddenHeaders) {
-                    me.enableFocusableContainer = true;
-                    me.ariaRole = 'row';
-                }
 
                 // Create column managers for the root header.
                 me.columnManager = new Ext.grid.ColumnManager(false, me);
@@ -268,221 +192,92 @@ Ext.define('Ext.grid.header.Container', {
             }
         }
 
+        me.defaults = me.defaults || {};
+        Ext.applyIf(me.defaults, {
+            triStateSort: me.triStateSort,
+            sortable: me.sortable
+        });
+
         me.menuTask = new Ext.util.DelayedTask(me.updateMenuDisabledState, me);
         me.callParent();
-    },
+        me.addEvents(
+            /**
+             * @event columnresize
+             * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
+             * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
+             * @param {Number} width
+             */
+            'columnresize',
 
-    insertNestedHeader: function (moveHeader) {
-        var me = this,
-            fromCt = moveHeader.ownerCt,
-            toCt = me.ownerCt,
-            layoutOwner = toCt.layout.owner,
-            toIndex;
+            /**
+             * @event headerclick
+             * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
+             * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
+             * @param {Ext.EventObject} e
+             * @param {HTMLElement} t
+             */
+            'headerclick',
 
-        if (fromCt) {
-            if (me.isGroupHeader && !toCt.isNestedParent) {
-                toIndex = layoutOwner.items.indexOf(me);
-            }
+            /**
+             * @event headercontextmenu
+             * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
+             * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
+             * @param {Ext.EventObject} e
+             * @param {HTMLElement} t
+             */
+            'headercontextmenu',
 
-            fromCt.remove(moveHeader, false);
-        }
+            /**
+             * @event headertriggerclick
+             * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
+             * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
+             * @param {Ext.EventObject} e
+             * @param {HTMLElement} t
+             */
+            'headertriggerclick',
 
-        if (toIndex === undefined) {
-            toIndex = layoutOwner.items.indexOf(me);
-        }
-
-        layoutOwner.insert(toIndex, moveHeader);
-    },
-
-    isNested: function () {
-        return !!this.getRootHeaderCt().down('[isNestedParent]');
-    },
-
-    isNestedGroupHeader: function () {
-        // The owner only has one item that isn't hidden and it's me; hide the owner.
-        var header = this,
-            items = header.getRefOwner().query('>:not([hidden])');
-
-        return (items.length === 1 && items[0] === header);
-    },
-
-    maybeShowNestedGroupHeader: function () {
-        // Group headers are special in that they are auto-hidden when their subheaders are all
-        // hidden and auto-shown when the first subheader is reshown. They are the only headers
-        // that should now be auto-shown or -hidden.
-        //
-        // It follows that since group headers are dictated by some automation depending upon the
-        // state of their child items that all group headers should be shown if anyone in the
-        // hierarchy is shown since these special group headers only contain one child, which is
-        // the next group header in the stack.
-        // This only should apply to the following grouped header scenario:
-        //
-        //           +-----------------------------------+
-        //           |               Group 1             |
-        //           |-----------------------------------|
-        //           |               Group 2             |
-        //   other   |-----------------------------------|   other
-        //  headers  |               Group 3             |  headers
-        //           |-----------------------------------|
-        //           | Field3 | Field4 | Field5 | Field6 |
-        //           |===================================|
-        //           |               view                |
-        //           +-----------------------------------+
-        //
-        var items = this.items,
-            item;
-
-        if (items && items.length === 1 && (item = items.getAt(0)) && item.hidden) {
-            item.show();
-        }
-    },
-
-    setNestedParent: function (target) {
-        // Here we need to prevent the removal of ancestor group headers from occuring if a flag is set. This
-        // is needed when there are stacked group headers and only the deepest nested group header has leaf items
-        // in its collection. In this specific scenario, the group headers above it only have 1 item, which is its
-        // child nested group header.
-        //
-        // If we don't set this flag, then all of the grouped headers will be recursively removed all the way up to
-        // the root container b/c Ext.grid.header.Container#onRemove will remove all containers that don't contain
-        // any items.
-        //
-        // Note that if an ownerCt only has one item, then we know that this item is the group header that we're
-        // currently dragging.
-        //
-        // Also, note that we mark the owner as the target header because everything up to that should be removed.
-        //
-        // We have to reset any previous headers that may have been target.ownerCts!
-        target.isNestedParent = false;
-        target.ownerCt.isNestedParent = !!(this.ownerCt.items.length === 1 && target.ownerCt.items.length === 1);
-    },
-
-    initEvents: function() {
-        var me = this,
-            onHeaderCtEvent,
-            listeners;
-
-        me.callParent();
-
-        // If this is top level, listen for events to delegate to descendant headers.
-        if (!me.isColumn && !me.isGroupHeader) {
-            onHeaderCtEvent = me.onHeaderCtEvent,
-            listeners = {
-                click: onHeaderCtEvent,
-                dblclick: onHeaderCtEvent,
-                contextmenu: onHeaderCtEvent,
-                mouseover: me.onHeaderCtMouseOver,
-                mouseout: me.onHeaderCtMouseOut,
-                scope: me
-            };
-
-            if (Ext.supports.Touch) {
-                listeners.longpress = me.onHeaderCtLongPress;
-            }
-            me.mon(me.el, listeners);
-        }
-    },
-
-    onHeaderCtEvent: function(e, t) {
-        var me = this,
-            headerEl = me.getHeaderElByEvent(e),
-            header,
-            targetEl,
-            activeHeader;
-
-        if (me.longPressFired) {
-            // if we just showed the menu as a result of a longpress, do not process
-            // the click event and sort the column.
-            me.longPressFired = false;
-            return;
-        }
-
-        if (headerEl && !me.ddLock) {
-            header = Ext.getCmp(headerEl.id);
-            if (header) {
-                targetEl = header[header.clickTargetName];
-                // If there's no possibility that the mouseEvent was on child header items,
-                // or it was definitely in our titleEl, then process it
-                if ((!header.isGroupHeader && !header.isContainer) || e.within(targetEl)) {
-                    if (e.type === 'click' || e.type === 'tap') {
-                        // The header decides which header to activate on click
-                        // on Touch, anywhere in the splitter zone activates
-                        // the left header.
-                        activeHeader = header.onTitleElClick(e, targetEl, me.sortOnClick);
-                        if (activeHeader) {
-                            me.onHeaderTriggerClick(activeHeader, e, Ext.supports.Touch ? activeHeader.el : activeHeader.triggerEl);
-                        } else {
-                            me.onHeaderClick(header, e, t);
-                        }
-                    }
-                    else if (e.type === 'contextmenu') {
-                        me.onHeaderContextMenu(header, e, t);
-                    } else if (e.type === 'dblclick' && header.resizable) {
-                        header.onTitleElDblClick(e, targetEl.dom);
-                    }
-                }
-            }
-        }
-    },
-
-    onHeaderCtMouseOver: function(e, t) {
-        var headerEl,
-            header,
-            targetEl;
-
-        // Only proces the mouse entering this HeaderContainer.
-        // From header to header, and exiting this HeaderContainer we track using mouseout events.
-        if (!e.within(this.el, true)) {
-            headerEl = e.getTarget('.' + Ext.grid.column.Column.prototype.baseCls);
-            header = headerEl && Ext.getCmp(headerEl.id);
-            if (header) {
-                targetEl = header[header.clickTargetName];
-                if (e.within(targetEl)) {
-                    header.onTitleMouseOver(e, targetEl.dom);
-                }
-            }
-        }
-    },
-
-    onHeaderCtMouseOut: function(e, t) {
-        var headerSelector = '.' + Ext.grid.column.Column.prototype.baseCls,
-            outHeaderEl = e.getTarget(headerSelector),
-            inHeaderEl = e.getRelatedTarget(headerSelector),
-            header,
-            targetEl;
-
-        // It's a mouseenter/leave, not an internal element change within a Header
-        if (outHeaderEl !== inHeaderEl) {
-            if (outHeaderEl) {
-                header = Ext.getCmp(outHeaderEl.id);
-                if (header) {
-                    targetEl = header[header.clickTargetName];
-                    header.onTitleMouseOut(e, targetEl.dom);
-                }
-            }
-            if (inHeaderEl) {
-                header = Ext.getCmp(inHeaderEl.id);
-                if (header) {
-                    targetEl = header[header.clickTargetName];
-                    header.onTitleMouseOver(e, targetEl.dom);
-                }
-            }
-        }
-    },
-
-    onHeaderCtLongPress: function(e) {
-        var me = this,
-            headerEl = me.getHeaderElByEvent(e),
-            header = Ext.getCmp(headerEl.id);
-
-        if (!header.menuDisabled) {
-            me.longPressFired = true;
-            me.showMenuBy(e, headerEl, header);
-        }
-    },
-
-    getHeaderElByEvent: function(e) {
-        return e.getTarget('.' + Ext.grid.column.Column.prototype.baseCls);
+            /**
+             * @event columnmove
+             * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
+             * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
+             * @param {Number} fromIdx
+             * @param {Number} toIdx
+             */
+            'columnmove',
+            /**
+             * @event columnhide
+             * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
+             * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
+             */
+            'columnhide',
+            /**
+             * @event columnshow
+             * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
+             * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
+             */
+            'columnshow',
+            /**
+             * @event columnschanged
+             * Fired after the columns change in any way, when a column has been hidden or shown, or when a column
+             * is added to or removed from this header container.
+             * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
+             */
+            'columnschanged',
+            /**
+             * @event sortchange
+             * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
+             * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
+             * @param {String} direction
+             */
+            'sortchange',
+            /**
+             * @event menucreate
+             * Fired immediately after the column header menu is created.
+             * @param {Ext.grid.header.Container} ct This instance
+             * @param {Ext.menu.Menu} menu The Menu that was created
+             */
+            'menucreate'
+        );
     },
 
     isLayoutRoot: function(){
@@ -496,9 +291,9 @@ Ext.define('Ext.grid.header.Container', {
         }
         return this.callParent();
     },
-
+    
     // Find the topmost HeaderContainer
-    getRootHeaderCt: function() {
+    getOwnerHeaderCt: function() {
         var me = this;
         return me.isRootHeader ? me : me.up('[isRootHeader]');
     },
@@ -511,7 +306,7 @@ Ext.define('Ext.grid.header.Container', {
         }
         me.menuTask.cancel();
         me.callParent();
-        Ext.destroy(me.visibleColumnManager, me.columnManager, me.menu);
+        Ext.destroy(me.resizer, me.reorderer, me.visibleColumnManager, me.columnManager, me.menu);
         me.columnManager = me.visibleColumnManager = null;
     },
 
@@ -525,79 +320,29 @@ Ext.define('Ext.grid.header.Container', {
             count  = items.length,
             i      = 0,
             length = columns.length,
-            c, col, columnState, index,
-            moved = false,
-            newOrder = [],
-            stateHash = {},
-            newCols = [];
+            c, col, columnState, index;
 
-        // Create state lookup hash
-        // {
-        //      col_name: {
-        //          index: 0,
-        //          width: 100
-        //      },
-        //      col_email: {
-        //          index: 1,
-        //          width: 100
-        //      }
-        // }
         for (c = 0; c < length; c++) {
             columnState = columns[c];
-            columnState.index = c;
-            stateHash[columnState.id] = columnState;
-        }
 
-        for (i = 0; i < count; i++) {
-            col = items[i];
-            columnState = stateHash[col.getStateId()];
+            for (index = count; index--; ) {
+                col = items[index];
+                if (col.getStateId && col.getStateId() == columnState.id) {
+                    // If a column in the new grid matches up with a saved state...
+                    // Ensure that the column is restored to the state order.
+                    // i is incremented upon every column match, so all persistent
+                    // columns are ordered before any new columns.
+                    if (i !== index) {
+                        me.moveHeader(index, i);
+                    }
 
-            // There's a column state for this column.
-            // Add it to the newOrder array at the specified index
-            if (columnState) {
-                index = columnState.index;
-                newOrder[index] = col;
-                if (i !== index) {
-                    moved = true;
-                }
-
-                if (col.applyColumnState) {
-                    col.applyColumnState(columnState);
+                    if (col.applyColumnState) {
+                        col.applyColumnState(columnState);
+                    }
+                    ++i;
+                    break;
                 }
             }
-            // A new column.
-            // It must be inserted at this index after state restoration,
-            else {
-                newCols.push({
-                    index: i,
-                    column: col
-                });
-            }
-        }
-
-        // If any saved columns were missing, close the gaps where they were
-        newOrder = Ext.Array.clean(newOrder);
-
-        // New column encountered.
-        // Insert them into the newOrder at their configured position
-        length = newCols.length;
-        if (length) {
-            for (i = 0; i < length; i++) {
-                columnState = newCols[i];
-                index = columnState.index;
-                if (index < newOrder.length) {
-                    moved = true;
-                    Ext.Array.splice(newOrder, index, 0, columnState.column);
-                } else {
-                    newOrder.push(columnState.column);
-                }
-            }
-        }
-
-        if (moved) {
-            me.removeAll(false);
-            me.add(newOrder);
-            me.purgeCache();
         }
     },
 
@@ -625,9 +370,6 @@ Ext.define('Ext.grid.header.Container', {
         if (!c.headerId) {
             c.headerId = c.initialConfig.id || Ext.id(null, 'header-');
         }
-        if (c.sortable === undefined) {
-            c.sortable = me.sortable;
-        }
 
         // Only generate a stateId if it really needs one - ie, it cannot yield a stateId
         if (!c.getStateId()) {
@@ -638,64 +380,34 @@ Ext.define('Ext.grid.header.Container', {
             c.stateId = c.initialConfig.id || ('h' + (++me.headerCounter));
         }
 
-        //<debug>
-        if (!me._usedIDs) {
-            me._usedIDs = {};
+        //<debug warn>
+        if (Ext.global.console && Ext.global.console.warn) {
+            if (!me._usedIDs) {
+                me._usedIDs = {};
+            }
+            if (me._usedIDs[c.headerId]) {
+                Ext.global.console.warn(this.$className, 'attempted to reuse an existing id', c.headerId);
+            }
+            me._usedIDs[c.headerId] = true;
         }
-        if (me._usedIDs[c.headerId]) {
-            Ext.log.warn(this.$className + ' attempted to reuse an existing id: ' + c.headerId);
-        }
-        me._usedIDs[c.headerId] = true;
         //</debug>
-
         me.callParent(arguments);
-
-        me.onHeadersChanged(c, me.isDDMoveInGrid);
+        me.onColumnsChanged();
+        me.checkMoveNotify(c);
     },
 
-    move: function(fromIdx, toIdx) {
-        var me = this,
-            items = me.items,
-            headerToMove;
-
-        if (fromIdx.isComponent) {
-            headerToMove = fromIdx;
-            fromIdx = items.indexOf(headerToMove);
-        } else {
-            headerToMove = items.getAt(fromIdx);
-        }
-
-        // Take real grid column index of column being moved
-        headerToMove.visibleFromIdx = me.getRootHeaderCt().visibleColumnManager.indexOf(headerToMove);
-
+    onMove: function(c, fromIdx, toIdx) {
+        var me = this;
+        
         me.callParent(arguments);
-    },
-
-    onMove: function(headerToMove, fromIdx, toIdx) {
-        var me = this,
-            gridHeaderCt = me.getRootHeaderCt(),
-            gridVisibleColumnManager = gridHeaderCt.visibleColumnManager,
-            numColsToMove = 1,
-            visibleToIdx;
-
-        // Purges cache so that indexOf returns new position of header
-        me.onHeadersChanged(headerToMove, true);
-
-        visibleToIdx = gridVisibleColumnManager.indexOf(headerToMove);
-        if (visibleToIdx >= headerToMove.visibleFromIdx) {
-            visibleToIdx++;
+        me.onColumnsChanged();
+        if (!c.dropMoving) {
+            // The drop code will take care of updating the view
+            me.checkMoveNotify(c);
+            me.fireEvent('columnmove', me, c, fromIdx, toIdx);
         }
-
-        me.callParent(arguments);
-
-        // If what is being moved is a group header, then pass the correct column count
-        if (headerToMove.isGroupHeader) {
-            numColsToMove = headerToMove.visibleColumnManager.getColumns().length;
-        }
-
-        gridHeaderCt.onHeaderMoved(headerToMove, numColsToMove, headerToMove.visibleFromIdx, visibleToIdx);
     },
-
+    
     // Invalidate column cache on remove
     // We cannot refresh the View on every remove because this method is called
     // when the HeaderDropZone moves Headers around, that will also refresh the view
@@ -705,7 +417,7 @@ Ext.define('Ext.grid.header.Container', {
 
         me.callParent(arguments);
 
-        //<debug>
+        //<debug warn>
         if (!me._usedIDs) {
             me._usedIDs = {};
         }
@@ -713,22 +425,13 @@ Ext.define('Ext.grid.header.Container', {
         //</debug>
 
         if (!me.destroying) {
-            // isDDMoveInGrid flag set by Ext.grid.header.DropZone when moving into another container *within the same grid*.
-            // This stops header change processing from being executed twice, once on remove and then on the subsequent add.
-            if (!me.isDDMoveInGrid) {
-                me.onHeadersChanged(c, false);
-            }
-
-            // Note that if the column is a group header and is the current target of a drag, we don't want to remove it
-            // if it since it could be one of any number of (empty) nested group headers.
-            // See #isNested.
-            if (me.isGroupHeader && !me.isNestedParent && ownerCt && !me.items.getCount()) {
+            me.onColumnsChanged();
+            me.checkMoveNotify(c);
+            if (me.isGroupHeader && !me.items.getCount() && ownerCt) {
                 // Detach the header from the DOM here. Since we're removing and destroying the container,
                 // the inner DOM may get overwritten, since Container::deatchOnRemove gets processed after
                 // onRemove.
-                if (c.rendered) {
-                    me.detachComponent(c);
-                }
+                me.detachComponent(c);
                 // If we don't have any items left and we're a group, remove ourselves.
                 // This will cascade up if necessary
                 Ext.suspendLayouts();
@@ -737,98 +440,78 @@ Ext.define('Ext.grid.header.Container', {
             }
         }
     },
-
-    // Private
-    // Called to clear all caches of columns whenever columns are added, removed to just moved.
-    // We need to be informed if it's just a move operation so that we don't call the heavier
-    // grid.onHeadersChanged which refreshes the view.
-    // The onMove handler ensures that grid.inHeaderMove is called which just swaps cells.
-    onHeadersChanged: function(c, isMove) {
-        var gridPanel,
-            gridHeaderCt = this.getRootHeaderCt();
-
-        // Each HeaderContainer up the chain must have its cache purged so that its getGridColumns method will return correct results.
-        this.purgeHeaderCtCache(this);
-
-        if (gridHeaderCt) {
-            gridHeaderCt.onColumnsChanged();
-            if (!c.isGroupHeader) {
-                gridPanel = gridHeaderCt.ownerCt;
-
-                // If it an add or remove operation causing this header change call, then inform the grid which refreshes.
-                // Moving calls the onHeaderMoved method of the grid which just swaps cells.
-                if (gridPanel && !isMove) {
-                    gridPanel.onHeadersChanged(gridHeaderCt, c);
+    
+    checkMoveNotify: function(c) {
+        var owner, root;
+        if (!c.isGroupHeader) {
+            // Get the root header
+            root = this.getOwnerHeaderCt();
+            if (root) {
+                // Reference the panel.Table
+                owner = root.ownerCt;
+                if (owner) {
+                    owner.onHeadersChanged(root, c);
                 }
             }
         }
     },
 
-    // Private
-    onHeaderMoved: function(header, colsToMove, fromIdx, toIdx) {
-        var me = this,
-            gridSection = me.ownerCt;
-
-        if (me.rendered) {
-            if (gridSection && gridSection.onHeaderMove) {
-                gridSection.onHeaderMove(me, header, colsToMove, fromIdx, toIdx);
-            }
-            me.fireEvent('columnmove', me, header, fromIdx, toIdx);
-        }
+    onShow: function() {
+        this.callParent(arguments);
+        this.onColumnsChanged();
     },
 
     // Private
-    // Only called on the grid's headerCt.
-    // Called whenever a column is added or removed or moved at any level below.
+    // Called whenever a column is added or removed or moved.
     // Ensures that the gridColumns caches are cleared.
     onColumnsChanged: function() {
-        var me = this,
-            menu = me.menu,
-            columnItemSeparator,
-            columnItem;
+        var headerCt = this;
 
-        if (me.rendered) {
-            me.fireEvent('columnschanged', me);
+        // Each HeaderContainer up the chain must have its cache purged so that its getGridColumns method will return correct results.
+        this.purgeHeaderCtCache(headerCt);
 
-            // Column item (and its associated menu) menu has to be destroyed (if it exits) when columns are changed.
-            // It will be recreated just before the main container menu is next shown.
-            if (menu && (columnItemSeparator = menu.child('#columnItemSeparator'))) {
-                columnItem = menu.child('#columnItem');
-
-                // Destroy the column visibility items
-                // They will be recreated before the next show
-                columnItemSeparator.destroy();
-                columnItem.destroy();
-            }
+        if (headerCt && headerCt.rendered) {
+            headerCt.fireEvent('columnschanged', headerCt);
         }
     },
     
     // @private
-    lookupComponent: function(comp) {
-        var result = this.callParent(arguments);
+    applyDefaults: function(config) {
+        var ret;
+        /*
+         * Ensure header.Container defaults don't get applied to a RowNumberer
+         * if an xtype is supplied. This isn't an ideal solution however it's
+         * much more likely that a RowNumberer with no options will be created,
+         * wanting to use the defaults specified on the class as opposed to
+         * those setup on the Container.
+         */
+        if (config && !config.isComponent && config.xtype == 'rownumberer') {
+            ret = config;
+        } else {
+            ret = this.callParent(arguments);
 
-        // Apply default width unless it's a group header (in which case it must be left to shrinkwrap), or it's flexed.
-        // Test whether width is undefined so that width: null can be used to have the header shrinkwrap its text.
-        if (!result.isGroupHeader && result.width === undefined && !result.flex) {
-            result.width = this.defaultWidth;
+            // Apply default width unless it's a group header (in which case it must be left to shrinkwrap), or it's flexed
+            if (!config.isGroupHeader && !('width' in ret) && !ret.flex) {
+                ret.width = this.defaultWidth;
+            }
         }
-        return result;
+        return ret;
     },
 
-    // Private
-    // Synchronize column UI visible sort state with Store's sorters.
-    setSortState: function() {
+    setSortState: function(){
         var store   = this.up('[store]').store,
-            columns = this.visibleColumnManager.getColumns(),
-            len = columns.length, i,
-            header, sorter;
+            // grab the first sorter, since there may also be groupers
+            // in this collection
+            first = store.getFirstSorter(),
+            hd;
 
-        for (i = 0; i < len; i++) {
-            header = columns[i];
-            sorter = store.getSorters().get(header.getSortParam());
-
-            // Important: A null sorter for this column will *clear* the UI sort indicator.
-            header.setSortState(sorter);
+        if (first) {
+            hd = this.down('gridcolumn[dataIndex=' + first.property  +']');
+            if (hd) {
+                hd.setSortState(first.direction, false, true);
+            }
+        } else {
+            this.clearOtherSortStates(null);
         }
     },
 
@@ -897,36 +580,42 @@ Ext.define('Ext.grid.header.Container', {
         return header ? menu.down('menucheckitem[headerId=' + header.id + ']') : null;
     },
 
-    onHeaderShow: function (header) {
+    onHeaderShow: function(header) {
+        // Pass up to the GridSection
         var me = this,
-            ownerCt = me.ownerCt;
-
-        if (!ownerCt) {
-            return;
-        }
+            gridSection = me.ownerCt;
 
         if (me.forceFit) {
             delete me.flex;
+
         }
 
         me.onHeaderVisibilityChange(header, true);
-        ownerCt.onHeaderShow(me, header);
 
+        // Only update the grid UI when we are notified about base level Header shows;
+        // Group header shows just cause a layout of the HeaderContainer
+        if (!header.isGroupHeader) {
+            if (gridSection) {
+                gridSection.onHeaderShow(me, header);
+            }
+        }
         me.fireEvent('columnshow', me, header);
         me.fireEvent('columnschanged', this);
     },
 
-    onHeaderHide: function (header) {
+    onHeaderHide: function(header) {
+        // Pass up to the GridSection
         var me = this,
-            ownerCt = me.ownerCt;
-
-        if (!ownerCt) {
-            return;
-        }
+            gridSection = me.ownerCt;
 
         me.onHeaderVisibilityChange(header, false);
-        ownerCt.onHeaderHide(me, header);
 
+        // Only update the UI when we are notified about base level Header hides;
+        if (!header.isGroupHeader) {
+            if (gridSection) {
+                gridSection.onHeaderHide(me, header);
+            }
+        }
         me.fireEvent('columnhide', me, header);
         me.fireEvent('columnschanged', this);
     },
@@ -945,26 +634,24 @@ Ext.define('Ext.grid.header.Container', {
         }, 200, this);
     },
 
-    onHeaderResize: function(header, w) {
+    onHeaderResize: function(header, w, suppressFocus) {
         var me = this,
+            view = me.view,
             gridSection = me.ownerCt;
 
-        if (gridSection) {
-            gridSection.onHeaderResize(me, header, w);
+        // Do not react to header sizing during initial Panel layout when there is no view content to size.
+        if (view && view.body.dom) {
+            me.tempLock();
+            if (gridSection) {
+                gridSection.onHeaderResize(me, header, w);
+            }
         }
-        me.fireEvent('columnresize', me, header, w);
+        me.fireEvent('columnresize', this, header, w);
     },
 
     onHeaderClick: function(header, e, t) {
-        var me = this,
-            selModel = header.getView().getSelectionModel()
-
-        header.fireEvent('headerclick', me, header, e, t);
-        if (me.fireEvent('headerclick', me, header, e, t) !== false) {
-            if (selModel.onHeaderClick) {
-                selModel.onHeaderClick(me, header, e);
-            }
-        }
+        header.fireEvent('headerclick', this, header, e, t);
+        this.fireEvent('headerclick', this, header, e, t);
     },
 
     onHeaderContextMenu: function(header, e, t) {
@@ -973,45 +660,23 @@ Ext.define('Ext.grid.header.Container', {
     },
 
     onHeaderTriggerClick: function(header, e, t) {
+        // generate and cache menu, provide ability to cancel/etc
         var me = this;
         if (header.fireEvent('headertriggerclick', me, header, e, t) !== false && me.fireEvent('headertriggerclick', me, header, e, t) !== false) {
-
-            // If menu is already active...
-            if (header.activeMenu) {
-                // Click/tap toggles the menu visibility.
-                if (e.pointerType) {
-                    header.activeMenu.hide();
-                } else {
-                    header.activeMenu.focus();
-                }
-            }
-            else { 
-                me.showMenuBy(e, t, header);
-            }
+            me.showMenuBy(t, header);
         }
     },
 
-    /**
-     * @private
-     *
-     * Shows the column menu under the target element passed. This method is used when the trigger element on the column
-     * header is clicked on and rarely should be used otherwise.
-     *
-     * @param {Ext.event.Event} [event] The event which triggered the current handler. If omitted
-     * or a key event, the menu autofocuses its first item.
-     * @param {HTMLElement/Ext.dom.Element} t The target to show the menu by
-     * @param {Ext.grid.header.Container} header The header container that the trigger was clicked on.
-     */
-    showMenuBy: function(clickEvent, t, header) {
+    showMenuBy: function(t, header) {
         var menu = this.getMenu(),
             ascItem  = menu.down('#ascItem'),
             descItem = menu.down('#descItem'),
             sortableMth;
 
-        // Use ownerCmp as the upward link. Menus *must have no ownerCt* - they are global floaters.
+        // Use ownerButton as the upward link. Menus *must have no ownerCt* - they are global floaters.
         // Upward navigation is done using the up() method.
-        menu.activeHeader = menu.ownerCmp = header;
-        header.setMenuActive(menu);
+        menu.activeHeader = menu.ownerButton = header;
+        header.setMenuActive(true);
 
         // enable or disable asc & desc menu items based on header being sortable
         sortableMth = header.sortable ? 'enable' : 'disable';
@@ -1021,16 +686,7 @@ Ext.define('Ext.grid.header.Container', {
         if (descItem) {
             descItem[sortableMth]();
         }
-
-        // Pointer-invoked menus do not auto focus, key invoked ones do.
-        menu.autoFocus = !clickEvent || !clickEvent.pointerType;
-        menu.showBy(t, 'tl-bl?');
-    },
-
-    hideMenu: function() {
-        if (this.menu) {
-            this.menu.hide();
-        }
+        menu.showBy(t);
     },
 
     // remove the trigger open class when the menu is hidden
@@ -1041,7 +697,7 @@ Ext.define('Ext.grid.header.Container', {
     moveHeader: function(fromIdx, toIdx) {
         // An automatically expiring lock
         this.tempLock();
-        this.move(fromIdx, toIdx);
+        this.onHeaderMoved(this.move(fromIdx, toIdx), 1, fromIdx, toIdx);
     },
 
     purgeHeaderCtCache: function (headerCt) {
@@ -1056,9 +712,10 @@ Ext.define('Ext.grid.header.Container', {
 
     purgeCache: function() {
         var me = this,
+            menu = me.menu,
             visibleColumnManager = me.visibleColumnManager,
             columnManager = me.columnManager;
-
+            
         // Delete column cache - column order has changed.
         me.gridVisibleColumns = me.gridDataColumns = me.hideableColumns = null;
 
@@ -1066,6 +723,27 @@ Ext.define('Ext.grid.header.Container', {
         if (visibleColumnManager) {
             visibleColumnManager.invalidate();
             columnManager.invalidate();
+        }
+
+        // Menu changes when columns are moved. It will be recreated.
+        // Menu does not change when columns are hidden or shown (which is all that happens when menu is visible)
+        if (menu && menu.hidden) {
+            // Must hide before destroy so that trigger el is deactivated
+            menu.hide();
+            menu.destroy();
+            me.menu = null;
+        }
+    },
+
+    onHeaderMoved: function (header, colsToMove, fromIdx, toIdx) {
+        var me = this,
+            gridSection = me.ownerCt;
+
+        if (me.rendered) {
+            if (gridSection && gridSection.onHeaderMove) {
+                gridSection.onHeaderMove(me, header, colsToMove, fromIdx, toIdx);
+            }
+            me.fireEvent('columnmove', me, header, fromIdx, toIdx);
         }
     },
 
@@ -1081,54 +759,14 @@ Ext.define('Ext.grid.header.Container', {
                 hideOnParentHide: false,  // Persists when owning ColumnHeader is hidden
                 items: me.getMenuItems(),
                 listeners: {
-                    beforeshow: me.beforeMenuShow,
                     hide: me.onMenuHide,
                     scope: me
                 }
             });
             me.fireEvent('menucreate', me, me.menu);
         }
-        return me.menu;
-    },
-
-    // Render our menus to the first enclosing scrolling element so that they scroll with the grid
-    beforeMenuShow: function(menu) {
-        var me = this,
-            columnItem = menu.child('#columnItem'),
-            hideableColumns,
-            insertPoint;
-
-        // If a change of column structure caused destruction of the column menu item
-        // or the main menu was created without the column menu item because it began with no hideable headers
-        // Then create it and its menu now.
-        if (!columnItem) {
-            hideableColumns = me.enableColumnHide ? me.getColumnMenu(me) : null;
-
-            // Insert after the "Sort Ascending", "Sort Descending" menu items if they are present.
-            insertPoint = me.sortable ? 2 : 0;
-
-            if (hideableColumns && hideableColumns.length) {
-                menu.insert(insertPoint, [{
-                    itemId: 'columnItemSeparator',
-                    xtype: 'menuseparator'
-                }, {
-                    itemId: 'columnItem',
-                    text: me.columnsText,
-                    iconCls: me.menuColsIcon,
-                    menu: {
-                        items: hideableColumns
-                    },
-                    hideOnClick: false
-                }]);
-            }
-        }
-
         me.updateMenuDisabledState(me.menu);
-        // TODO: rendering the menu to the nearest overlfowing ancestor has been disabled
-        // since DomQuery is no longer available by default in 5.0
-//        if (!menu.rendered) {
-//            menu.render(this.el.up('{overflow=auto}') || document.body);
-//        }
+        return me.menu;
     },
 
     /**
@@ -1158,10 +796,7 @@ Ext.define('Ext.grid.header.Container', {
         }
         if (hideableColumns && hideableColumns.length) {
             if (me.sortable) {
-                menuItems.push({
-                    itemId: 'columnItemSeparator',
-                    xtype: 'menuseparator'
-                });
+                menuItems.push('-');
             }
             menuItems.push({
                 itemId: 'columnItem',
@@ -1179,7 +814,7 @@ Ext.define('Ext.grid.header.Container', {
         var menu = this.getMenu(),
             activeHeader = menu.activeHeader;
 
-        activeHeader.sort('ASC');
+        activeHeader.setSortState('ASC');
     },
 
     // sort desc when clicking on item in menu
@@ -1187,7 +822,7 @@ Ext.define('Ext.grid.header.Container', {
         var menu = this.getMenu(),
             activeHeader = menu.activeHeader;
 
-        activeHeader.sort('DESC');
+        activeHeader.setSortState('DESC');
     },
 
     /**
@@ -1214,28 +849,19 @@ Ext.define('Ext.grid.header.Container', {
                 scope: this
             });
             menuItems.push(menuItem);
+
+            // If the header is ever destroyed - for instance by dragging out the last remaining sub header,
+            // then the associated menu item must also be destroyed.
+            item.on({
+                destroy: Ext.Function.bind(menuItem.destroy, menuItem)
+            });
         }
-        // Prevent creating a submenu if we have no items
-        return menuItems.length ? menuItems : null;
+        return menuItems;
     },
 
     onColumnCheckChange: function(checkItem, checked) {
-        var header = Ext.getCmp(checkItem.headerId),
-            headerId;
-
-        if (header.rendered) {
-            header[checked ? 'show' : 'hide']();
-            headerId = header.lastCheckedHeaderId;
-
-            // If there's a headerId then we know we need to restore the checked status of the last check item that was deselected
-            // (and therefore the group was hidden).
-            if (checked && headerId) {
-                header.getRootHeaderCt().getMenu().down('[headerId=' + headerId + ']').setChecked(true);
-                header.lastCheckedHeaderId = null;
-            }
-        } else {
-            header.hidden = !checked;
-        }
+        var header = Ext.getCmp(checkItem.headerId);
+        header[checked ? 'show' : 'hide']();
     },
 
     /**
@@ -1247,18 +873,41 @@ Ext.define('Ext.grid.header.Container', {
     },
 
     /**
-     * Gets the full width of all columns that are visible for setting width of tables.
+     * Gets the full width of all columns that are visible.
      */
-    getTableWidth: function() {
+    getFullWidth: function() {
         var fullWidth = 0,
             headers = this.getVisibleGridColumns(),
             headersLn = headers.length,
-            i;
+            i = 0,
+            header;
+           
 
-        for (i = 0; i < headersLn; i++) {
-            fullWidth += headers[i].getCellWidth() || 0;
+        for (; i < headersLn; i++) {
+            header = headers[i];
+            // use headers getDesiredWidth if its there
+            if (header.getDesiredWidth) {
+                fullWidth += header.getDesiredWidth() || 0;
+            // if injected a diff cmp use getWidth
+            } else {
+                fullWidth += header.getWidth();
+            }
         }
         return fullWidth;
+    },
+
+    // invoked internally by a header when not using triStateSorting
+    clearOtherSortStates: function(activeHeader) {
+        var headers   = this.getGridColumns(),
+            headersLn = headers.length,
+            i         = 0;
+
+        for (; i < headersLn; i++) {
+            if (headers[i] !== activeHeader) {
+                // unset the sortstate and dont recurse
+                headers[i].setSortState(null, true);
+            }
+        }
     },
 
     /**
@@ -1267,44 +916,24 @@ Ext.define('Ext.grid.header.Container', {
      * @returns {Array}
      */
     getVisibleGridColumns: function() {
-        var me = this,
-            allColumns, rootHeader,
-            result, len, i, column;
-
-        if (me.gridVisibleColumns) {
-            return me.gridVisibleColumns;
+        if (this.gridVisibleColumns) {
+            return this.gridVisibleColumns;
         }
-
-        allColumns = me.getGridColumns();
-        rootHeader = me.getRootHeaderCt();
-        result = [];
-        len = allColumns.length;
+        
+        var allColumns = this.getGridColumns(),
+            result = [],
+            len = allColumns.length, i;
 
         // Use an inline check instead of ComponentQuery filtering for better performance for
         // repeated grid row rendering - as in buffered rendering.
         for (i = 0; i < len; i++) {
-            column = allColumns[i];
-
-            if (!column.hidden && !column.isColumnHidden(rootHeader)) {
-                result[result.length] = column;
+            if (!allColumns[i].hidden) {
+                result[result.length] = allColumns[i];
             }
         }
-
-        me.gridVisibleColumns = result;
-
+        this.gridVisibleColumns = result;
         return result;
-    },
-
-    isColumnHidden: function(rootHeader) {
-        var owner = this.getRefOwner();
-        while (owner && owner !== rootHeader) {
-            if (owner.hidden) {
-                return true;
-            }
-            owner = owner.getRefOwner();
-        }
-        return false;
-    },
+    }, 
 
     /**
      * Returns an array of all columns which appear in the grid's View. This goes down to the leaf column header
@@ -1312,7 +941,7 @@ Ext.define('Ext.grid.header.Container', {
      *
      * It includes hidden headers even though they are not rendered. This is for collection of menu items for the column hide/show menu.
      *
-     * Headers which have a hidden ancestor have a `hiddenAncestor: true` property injected so that descendants are known to be hidden without interrogating
+     * Headers which have a hidden ancestor have a `hiddenAncestor: true` property injected so that they can also be rendered at zero width without interrogating
      * that header's ownerCt axis for a hidden ancestor.
      * @returns {Array}
      */
@@ -1329,20 +958,13 @@ Ext.define('Ext.grid.header.Container', {
         hiddenAncestor = hiddenAncestor || me.hidden;
         if (me.items) {
             items = me.items.items;
-
-            // An ActionColumn (Columns extend HeaderContainer) may have an items *array* being the action items that it renders.
-            if (items) {
-                for (i = 0, len = items.length; i < len; i++) {
-                    item = items[i];
-                    if (item.isGroupHeader) {
-                        // Group headers will need a visibleIndex for if/when they're removed from their owner.
-                        // See Ext.layout.container.Container#moveItemBefore.
-                        item.visibleIndex = result.length;
-                        item.getGridColumns(result, hiddenAncestor);
-                    } else {
-                        item.hiddenAncestor = hiddenAncestor;
-                        result.push(item);
-                    }
+            for (i = 0, len = items.length; i < len; i++) {
+                item = items[i];
+                if (item.isGroupHeader) {
+                    item.getGridColumns(result, hiddenAncestor);
+                } else {
+                    item.hiddenAncestor = hiddenAncestor;
+                    result.push(item);
                 }
             }
         }
@@ -1355,10 +977,6 @@ Ext.define('Ext.grid.header.Container', {
             // Set firstVisible and lastVisible flags
             for (i = 0, len = result.length; i < len; i++) {
                 item = result[i];
-
-                // The column index within all (visible AND hidden) leaf level columns.
-                // Used as the cellIndex in TableView's cell renderer call
-                item.fullColumnIndex = i;
                 item.isFirstVisible = item.isLastVisible = false;
                 if (!(item.hidden || item.hiddenAncestor)) {
                     if (!lastVisibleColumn) {
@@ -1404,7 +1022,7 @@ Ext.define('Ext.grid.header.Container', {
         // Binding the columnManager to a column makes it backwards-compatible with versions
         // that only bind the columnManager to a root header.
         if (!this.columnManager) {
-            this.columnManager = this.getRootHeaderCt().columnManager;
+            this.columnManager = this.getOwnerHeaderCt().columnManager;
         }
 
         return this.columnManager.getHeaderIndex(header);
@@ -1420,7 +1038,7 @@ Ext.define('Ext.grid.header.Container', {
         // Binding the columnManager to a column makes it backwards-compatible with versions
         // that only bind the columnManager to a root header.
         if (!this.columnManager) {
-            this.columnManager = this.getRootHeaderCt().columnManager;
+            this.columnManager = this.getOwnerHeaderCt().columnManager;
         }
 
         return this.columnManager.getHeaderAtIndex(index);
@@ -1436,7 +1054,7 @@ Ext.define('Ext.grid.header.Container', {
         // Binding the columnManager to a column makes it backwards-compatible with versions
         // that only bind the columnManager to a root header.
         if (!this.visibleColumnManager) {
-            this.visibleColumnManager = this.getRootHeaderCt().visibleColumnManager;
+            this.visibleColumnManager = this.getOwnerHeaderCt().visibleColumnManager;
         }
 
         return this.visibleColumnManager.getVisibleHeaderClosestToIndex(index);
@@ -1449,7 +1067,7 @@ Ext.define('Ext.grid.header.Container', {
             // Used when a column's max contents are larger than the available view width.
             useMinWidthForFlex = false,
             defaultWidth = Ext.grid.header.Container.prototype.defaultWidth,
-            availFlex = me.el.dom.clientWidth - (view.el.dom.scrollHeight > view.el.dom.clientHeight ? Ext.getScrollbarSize().width : 0),
+            availFlex = me.el.getViewSize().width - (view.el.dom.scrollHeight > view.el.dom.clientHeight ? Ext.getScrollbarSize().width : 0),
             totalFlex = 0,
             items = me.getVisibleGridColumns(),
             hidden = header.hidden,
@@ -1543,63 +1161,6 @@ Ext.define('Ext.grid.header.Container', {
             view.autoSizeColumn(header);
             if (this.forceFit) {
                 this.applyForceFit(header);
-            }
-        }
-    },
-
-    privates: {
-        getFocusables: function() {
-            return this.isRootHeader ?
-                this.getVisibleGridColumns() :
-                this.items.items;
-        },
-
-        createFocusableContainerKeyNav: function(el) {
-            var me = this;
-
-            return new Ext.util.KeyNav(el, {
-                scope: me,
-
-                down: me.showHeaderMenu,
-                left: me.onFocusableContainerLeftKey,
-                right: me.onFocusableContainerRightKey,
-
-                space: me.onHeaderActivate,
-                enter: me.onHeaderActivate
-            });
-        },
-
-        showHeaderMenu: function(e) {
-            var column = this.getFocusableFromEvent(e);
-
-            if (column && column.triggerEl) {
-                this.onHeaderTriggerClick(column, e, column.triggerEl);
-            }
-        },
-
-        onHeaderActivate: function(e) {
-            var column = this.getFocusableFromEvent(e);
-
-            if (column) {
-                // Sort the column is configured that way.
-                // sortOnClick may be set to false by SpreadsheelSelectionModel to allow click to select a column. 
-                if (column.sortable && this.sortOnClick) {
-                    column.toggleSortState();
-                }
-                // onHeaderClick is a necessary part of accessibility processing, sortable or not.
-                this.onHeaderClick(column, e, column.el);
-            }
-        },
-
-        onFocusableContainerMousedown: function(e, target) {
-            var targetCmp = Ext.ComponentManager.byElement(target);
-
-            if (targetCmp === this) {
-                e.preventDefault();
-            } else {
-                // The DDManager (Header Containers are draggable) prevents mousedown default
-                // So we must explicitly focus the header
-                targetCmp.focus();
             }
         }
     }

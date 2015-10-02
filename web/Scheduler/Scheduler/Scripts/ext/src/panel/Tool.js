@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * This class is used to display small visual icons in the header of a panel. There are a set of
  * 25 icons that can be specified by using the {@link #type} config. The {@link #callback} config
@@ -48,16 +65,14 @@
  */
 Ext.define('Ext.panel.Tool', {
     extend: 'Ext.Component',
-    uses: ['Ext.tip.QuickTipManager'],
-    xtype: 'tool',
+    requires: ['Ext.tip.QuickTipManager'],
+    alias: 'widget.tool',
 
     /**
      * @property {Boolean} isTool
      * `true` in this class to identify an object as an instantiated Tool, or subclass thereof.
      */
     isTool: true,
-    
-    focusable: true,
 
     baseCls: Ext.baseCSSPrefix + 'tool',
     disabledCls: Ext.baseCSSPrefix + 'tool-disabled',
@@ -80,15 +95,13 @@ Ext.define('Ext.panel.Tool', {
     ],
 
     renderTpl: [
-        '<img id="{id}-toolEl" data-ref="toolEl" src="{blank}" class="{baseCls}-img {baseCls}-{type}' +
+        '<img id="{id}-toolEl" src="{blank}" class="{baseCls}-img {baseCls}-{type}' +
             '{childElCls}" role="presentation"/>'
     ],
 
     /**
      * @cfg {Ext.Component} toolOwner
      * The owner to report to the `callback` method. Default is `null` for the `ownerCt`.
-     * This is automatically set to the owning `Ext.panel.Panel` when a tool is created as
-     * a member of a panel's `tools`.
      * @since 4.2
      */
     toolOwner: null,
@@ -99,7 +112,7 @@ Ext.define('Ext.panel.Tool', {
      * `Ext.panel.Panel`, this is set to the owning panel. This value comes from the
      * `toolOwner` config.
      * @cfg {Ext.panel.Tool} callback.tool The tool that is calling.
-     * @cfg {Ext.event.Event} callback.event The click event.
+     * @cfg {Ext.EventObject} callback.event The click event.
      * @since 4.2
      */
 
@@ -107,12 +120,10 @@ Ext.define('Ext.panel.Tool', {
      * @cfg {Function} handler
      * A function to execute when the tool is clicked. Arguments passed are:
      *
-     * - **event** : Ext.event.Event - The click event.
+     * - **event** : Ext.EventObject - The click event.
      * - **toolEl** : Ext.Element - The tool Element.
      * - **owner** : Ext.panel.Header - The host panel header.
      * - **tool** : Ext.panel.Tool - The tool object
-     *
-     * @deprecated 4.2 Use `callback` instead.
      */
 
     /**
@@ -168,8 +179,9 @@ Ext.define('Ext.panel.Tool', {
      */
     stopEvent: true,
 
-    cacheHeight: true,
-    cacheWidth: true,
+    // Tool size is fixed so that Box layout can avoid measurements.
+    height: 15,
+    width: 15,
 
     //<debug>
     _toolTypes: {
@@ -203,10 +215,19 @@ Ext.define('Ext.panel.Tool', {
 
     initComponent: function() {
         var me = this;
+        me.addEvents(
+            /**
+             * @event click
+             * Fires when the tool is clicked
+             * @param {Ext.panel.Tool} this
+             * @param {Ext.EventObject} e The event object
+             */
+            'click'
+        );
 
         //<debug>
-        if (me.id && me._toolTypes[me.id]) {
-            Ext.Error.raise('When specifying a tool you should use the type option, the id can conflict now that tool is a Component');
+        if (me.id && me._toolTypes[me.id] && Ext.global.console) {
+            Ext.global.console.warn('When specifying a tool you should use the type option, the id can conflict now that tool is a Component');
         }
         //</debug>
 
@@ -226,7 +247,7 @@ Ext.define('Ext.panel.Tool', {
     // inherit docs
     afterRender: function() {
         var me = this,
-            tip;
+            attr;
 
         me.callParent(arguments);
 
@@ -238,48 +259,21 @@ Ext.define('Ext.panel.Tool', {
             scope: me
         });
 
-        tip = me.tooltip;
-        if (tip) {
-            me.setTooltip(tip);
-        }
-    },
-
-    tipAttrs: {
-        qtip: 'data-qtip'
-    },
-
-    setTooltip: function (tooltip, type) {
-        var me = this,
-            oldTip = me.tooltip,
-            oldType = me.tooltipType,
-            id = me.id,
-            el = me.el,
-            attr;
-
-        if (oldTip && Ext.quickTipsActive && Ext.isObject(oldTip)) {
-            Ext.tip.QuickTipManager.unregister(id);
-        }
-
-        me.tooltip = tooltip;
-        if (type) {
-            me.tooltipType = type;
-        }
-
-        if (tooltip) {
-            if (Ext.quickTipsActive && Ext.isObject(tooltip)) {
+        if (me.tooltip) {
+            if (Ext.quickTipsActive && Ext.isObject(me.tooltip)) {
                 Ext.tip.QuickTipManager.register(Ext.apply({
-                    target: id
-                }, tooltip));
-            } else if (el) {
-                if (type && oldType && type !== oldType) {
-                    attr = me.tipAttrs[oldType] || 'title';
-                    el.dom.removeAttribute(attr);
-                }
-
-                attr = me.tipAttrs[type || oldType] || 'title';
-                el.dom.setAttribute(attr, tooltip);
+                    target: me.id
+                }, me.tooltip));
+            }
+            else {
+                attr = me.tooltipType == 'qtip' ? 'data-qtip' : 'title';
+                me.el.dom.setAttribute(attr, me.tooltip);
             }
         }
+    },
+
+    getFocusEl: function() {
+        return this.el;
     },
 
     /**
@@ -303,101 +297,83 @@ Ext.define('Ext.panel.Tool', {
         return me;
     },
 
-    // inherit docs
-    onDestroy: function(){
-        var me = this,
-            keyMap = me.keyMap;
+    /**
+     * Called when the tool element is clicked
+     * @private
+     * @param {Ext.EventObject} e
+     * @param {HTMLElement} target The target element
+     */
+    onClick: function(e, target) {
+        var me = this;
 
-        me.setTooltip(null);
-
-        // ARIA overrides may create a keyMap on a Tool
-        if (keyMap) {
-            keyMap.destroy();
-            me.keyMap = null;
+        if (me.disabled) {
+            return false;
         }
 
-        delete me.toolOwner;
+        //remove the pressed + over class
+        me.el.removeCls(me.toolPressedCls);
+        me.el.removeCls(me.toolOverCls);
 
+        if (me.stopEvent !== false) {
+            e.stopEvent();
+        }
+
+        if (me.handler) {
+            Ext.callback(me.handler, me.scope || me, [e, target, me.ownerCt, me]);
+        } else if (me.callback) {
+            Ext.callback(me.callback, me.scope || me, [me.toolOwner || me.ownerCt, me, e]);
+        }
+        me.fireEvent('click', me, e);
+        return true;
+    },
+
+    // inherit docs
+    onDestroy: function(){
+        var me = this;
+        
+        if (Ext.quickTipsActive && Ext.isObject(me.tooltip)) {
+            Ext.tip.QuickTipManager.unregister(me.id);
+        }
+        
+        // ARIA overrides may create a keyMap on a Tool
+        if (me.keyMap) {
+            me.keyMap.destroy();
+        }
+        
         me.callParent();
     },
 
-    privates: {
-        getFocusEl: function () {
-            return this.el;
-        },
-
-        /**
-         * Called when the tool element is clicked
-         * @private
-         * @param {Ext.event.Event} e
-         * @param {HTMLElement} target The target element
-         */
-        onClick: function(e, target) {
-            var me = this;
-
-            if (me.disabled) {
-                return false;
-            }
-
-            //remove the pressed + over class
-            me.el.removeCls(me.toolPressedCls + ' ' + me.toolOverCls);
-
-            if (me.stopEvent !== false) {
-                e.stopEvent();
-            }
-
-            if (me.handler) {
-                Ext.callback(me.handler, me.scope, [e, target, me.ownerCt, me], 0, me);
-            } else if (me.callback) {
-                Ext.callback(me.callback, me.scope, [me.toolOwner || me.ownerCt, me, e], 0, me);
-            }
-
-            /**
-             * @event click
-             * Fires when the tool is clicked
-             * @param {Ext.panel.Tool} this
-             * @param {Ext.event.Event} e The event object
-             * @param {Ext.Component} owner The logical owner of the tool. In a typical
-             * `Ext.panel.Panel`, this is set to the owning panel. This value comes from the
-             * `toolOwner` config. ** Added in v5.0 **
-             */
-            me.fireEvent('click', me, e, me.toolOwner || me.ownerCt);
-
-            return true;
-        },
-
-        /**
-         * Called when the user presses their mouse button down on a tool
-         * Adds the press class ({@link #toolPressedCls})
-         * @private
-         */
-        onMouseDown: function() {
-            if (this.disabled) {
-                return false;
-            }
-
-            this.el.addCls(this.toolPressedCls);
-        },
-
-        /**
-         * Called when the user rolls over a tool
-         * Adds the over class ({@link #toolOverCls})
-         * @private
-         */
-        onMouseOver: function() {
-            if (this.disabled) {
-                return false;
-            }
-            this.el.addCls(this.toolOverCls);
-        },
-
-        /**
-         * Called when the user rolls out from a tool.
-         * Removes the over class ({@link #toolOverCls})
-         * @private
-         */
-        onMouseOut: function() {
-            this.el.removeCls(this.toolOverCls);
+    /**
+     * Called when the user presses their mouse button down on a tool
+     * Adds the press class ({@link #toolPressedCls})
+     * @private
+     */
+    onMouseDown: function() {
+        if (this.disabled) {
+            return false;
         }
+
+        this.el.addCls(this.toolPressedCls);
+    },
+
+    /**
+     * Called when the user rolls over a tool
+     * Adds the over class ({@link #toolOverCls})
+     * @private
+     */
+    onMouseOver: function() {
+        if (this.disabled) {
+            return false;
+        }
+        this.el.addCls(this.toolOverCls);
+    },
+
+    /**
+     * Called when the user rolls out from a tool.
+     * Removes the over class ({@link #toolOverCls})
+     * @private
+     */
+    onMouseOut: function() {
+        this.el.removeCls(this.toolOverCls);
     }
 });

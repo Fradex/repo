@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * This class provides a container DD instance that allows dragging of multiple child source nodes.
  *
@@ -13,7 +30,7 @@
  * simpler way to allow a DragZone to manage any number of draggable elements is to configure the DragZone with an
  * implementation of the {@link #getDragData} method which interrogates the passed mouse event to see if it has taken
  * place within an element, or class of elements. This is easily done by using the event's {@link
- * Ext.event.Event#getTarget getTarget} method to identify a node based on a CSS selector. For example,
+ * Ext.EventObject#getTarget getTarget} method to identify a node based on a {@link Ext.DomQuery} selector. For example,
  * to make the nodes of a DataView draggable, use the following technique. Knowledge of the use of the DataView is
  * required:
  *
@@ -61,7 +78,7 @@ Ext.define('Ext.dd.DragZone', {
 
     /**
      * Creates new DragZone.
-     * @param {String/HTMLElement/Ext.dom.Element} el The container element or ID of it.
+     * @param {String/HTMLElement/Ext.Element} el The container element or ID of it.
      * @param {Object} config
      */
     constructor : function(el, config){
