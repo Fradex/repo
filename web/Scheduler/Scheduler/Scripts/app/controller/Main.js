@@ -12,6 +12,6 @@
     },
 
     onPanelRendered: function () {
-        console.log('The panel was rendered');
+        alert('Готово');
     }
 });

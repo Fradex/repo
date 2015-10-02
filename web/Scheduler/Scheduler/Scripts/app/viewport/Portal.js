@@ -3,135 +3,97 @@
     extend: 'Ext.container.Viewport',
     requires: [],
 
-    getTools: function () {
-        return [{
-            xtype: 'tool',
-            type: 'gear',
-            handler: function (e, target, header, tool) {
-                var portlet = header.ownerCt;
-                portlet.setLoading('Loading...');
-                Ext.defer(function () {
-                    portlet.setLoading(false);
-                }, 2000);
-            }
-        }];
-    },
-
-    initComponent: function () {
-        var content = '<div class="portlet-content">' + '</div>';
-
-        Ext.apply(this, {
-            id: 'app-viewport',
-            layout: {
-                type: 'border',
-                padding: '0 5 5 5' // pad the layout from the window edges
-            },
-            items: [{
-                id: 'app-header',
-                xtype: 'box',
-                region: 'north',
-                height: 40,
-                html: 'Ext Portal'
-            }, {
-                xtype: 'container',
-                region: 'center',
-                layout: 'border',
-                items: [{
-                    id: 'app-options',
-                    title: 'Options',
-                    region: 'west',
-                    animCollapse: true,
-                    width: 200,
-                    minWidth: 150,
-                    maxWidth: 400,
-                    split: true,
-                    collapsible: true,
-                    layout: {
-                        type: 'accordion',
-                        animate: true
-                    },
-                    items: [{
-                        html: content,
-                        title: 'Navigation',
-                        autoScroll: true,
-                        border: false,
-                        iconCls: 'nav'
-                    }, {
-                        title: 'Settings',
-                        html: content,
-                        border: false,
-                        autoScroll: true,
-                        iconCls: 'settings'
-                    }]
-                }, {
-                    id: 'app-portal',
-                    xtype: 'portalpanel',
-                    region: 'center',
-                    items: [{
-                        id: 'col-1',
-                        items: [{
-                            id: 'portlet-1',
-                            title: 'Grid Portlet',
-                            tools: this.getTools(),
-                            //items: Ext.create('Ext.app.GridPortlet'),
-                            listeners: {
-                                'close': Ext.bind(this.onPortletClose, this)
-                            }
-                        }, {
-                            id: 'portlet-2',
-                            title: 'Portlet 2',
-                            tools: this.getTools(),
-                            html: content,
-                            listeners: {
-                                'close': Ext.bind(this.onPortletClose, this)
-                            }
-                        }]
-                    }, {
-                        id: 'col-2',
-                        items: [{
-                            id: 'portlet-3',
-                            title: 'Portlet 3',
-                            tools: this.getTools(),
-                            html: '<div class="portlet-content">'  + '</div>',
-                            listeners: {
-                                'close': Ext.bind(this.onPortletClose, this)
-                            }
-                        }]
-                    }, {
-                        id: 'col-3',
-                        items: [{
-                            id: 'portlet-4',
-                            title: 'Stock Portlet',
-                            tools: this.getTools(),
-                            //items: Ext.create('Ext.app.ChartPortlet'),
-                            listeners: {
-                                'close': Ext.bind(this.onPortletClose, this)
-                            }
-                        }]
-                    }]
-                }]
-            }]
-        });
-        this.callParent(arguments);
-    },
-
-    onPortletClose: function (portlet) {
-        this.showMsg('"' + portlet.title + '" was removed');
-    },
-
-    showMsg: function (msg) {
-        var el = Ext.get('app-msg'),
-            msgId = Ext.id();
-
-        this.msgId = msgId;
-        el.update(msg).show();
-
-        Ext.defer(this.clearMsg, 3000, this, [msgId]);
-    },
-
-    clearMsg: function (msgId) {
-        if (msgId === this.msgId) {
-            Ext.get('app-msg').hide();
+    //getTools: function () {
+    //    return [{
+    //        xtype: 'tool',
+    //        type: 'gear',
+    //        handler: function (e, target, header, tool) {
+    //            var portlet = header.ownerCt;
+    //            portlet.setLoading('Loading...');
+    //            Ext.defer(function () {
+    //                portlet.setLoading(false);
+    //            }, 2000);
+    //        }
+    //    }];
+    //},
+    generateData: function () {
+        var data = [{
+            name: 0,
+            djia: 10000,
+            sp500: 1100
+        }],
+            i;
+        for (i = 1; i < 50; i++) {
+            data.push({
+                name: i,
+                sp500: data[i - 1].sp500 + ((Math.floor(Math.random() * 2) % 2) ? -1 : 1) * Math.floor(Math.random() * 7),
+                djia: data[i - 1].djia + ((Math.floor(Math.random() * 2) % 2) ? -1 : 1) * Math.floor(Math.random() * 7)
+            });
         }
+        return data;
+    },
+    initComponent: function () {
+        Ext.apply(this, {
+            layout: 'fit',
+            height: 300,
+            items: {
+                xtype: 'chart',
+                animate: false,
+                shadow: false,
+                store: Ext.create('Ext.data.JsonStore', {
+                    fields: ['name', 'sp500', 'djia'],
+                    data: this.generateData()
+                }),
+                legend: {
+                    position: 'bottom'
+                },
+                axes: [{
+                    type: 'Numeric',
+                    position: 'left',
+                    fields: ['djia'],
+                    title: 'Dow Jones Average',
+                    label: {
+                        font: '11px Arial'
+                    }
+                }, {
+                    type: 'Numeric',
+                    position: 'right',
+                    grid: false,
+                    fields: ['sp500'],
+                    title: 'S&P 500',
+                    label: {
+                        font: '11px Arial'
+                    }
+                }],
+                series: [{
+                    type: 'line',
+                    lineWidth: 1,
+                    showMarkers: false,
+                    fill: true,
+                    axis: 'left',
+                    xField: 'name',
+                    yField: 'djia',
+                    style: {
+                        'stroke-width': 1,
+                        stroke: 'rgb(148, 174, 10)'
+
+                    }
+                }, {
+                    type: 'line',
+                    lineWidth: 1,
+                    showMarkers: false,
+                    axis: 'right',
+                    xField: 'name',
+                    yField: 'sp500',
+                    style: {
+                        'stroke-width': 1,
+                        stroke: 'rgb(17, 95, 166)'
+
+                    }
+                }]
+            }
+        });
+
+        this.callParent(arguments);
     }
 });

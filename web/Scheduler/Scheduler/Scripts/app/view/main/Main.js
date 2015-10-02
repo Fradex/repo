@@ -1,5 +1,5 @@
 ﻿Ext.define('Main.view.main.Main', {
-    extend: 'Ext.grid.Panel',
+    extend: 'Ext.window',
     alias: 'widget.mainview',
 
     title: 'Main',

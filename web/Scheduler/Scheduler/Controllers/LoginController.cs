@@ -69,8 +69,6 @@ namespace Scheduler.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult> ApiLogin(string userName, string password)
         {
             var user = await UserManager.FindAsync(userName, password);

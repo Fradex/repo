@@ -1,0 +1,138 @@
+﻿.long-logo {
+    /*float: right;*/
+    right: 0px;
+    bottom: 200px;
+    background: 0px 0px no-repeat url('../images/system/calendar.png');
+    background-size: 200px 200px;
+    width: 250px;
+    height: 200px;
+}
+
+.x-column-header-inner, .x-column-header-inner span { white-space:normal !important; text-align: center;}
+.x-tool-info{
+    background-position:0pt 0px;
+    width:100px;
+    background-image:url(/cap/ext/resources/images/default/panel/tool-wide-sprites.gif);
+}
+
+.main_buttons {
+    width: 120px !important;
+    background-color: inherit !important;
+    background-image: none !important;
+    z-index: 2;
+}
+
+.main_buttons_icons {
+    height: 73px !important;
+    position: absolute !important;
+}
+
+.html_body_1 {
+    width: 100%;
+    height: 100%;
+}
+
+.html_body_2 {
+    color: #000000;
+    background: #f8f9f8 url('../images/background.gif') repeat;
+    font-family: Tahoma;
+    color: #797979;
+    font-size: 12px;
+    min-width: 731px;
+    border: none !important;
+}
+
+.toolbar_bottom_left { 
+    display: block;
+    float: left;
+    position: relative;
+    font-size: 12 !important;
+    color: #797979 !important;
+}
+
+.toolbar_bottom_right { 
+    display: block;
+    float: right;
+    position: relative;
+    font-size: 12 !important;
+    color: #797979 !important;
+}
+
+.main_bottom_body {
+    bottom:0px;
+    height: 100%;
+    border-top: 1px solid #bcbcbc !important;
+    background:#d3d3d3 url('../images/pattern.png') repeat;
+    display: block;
+    padding: 0px 0px 2px 2px;
+}
+
+.main_bgicon_right {
+    bottom: 9px !important;
+    position: absolute !important;
+    color: #797979;
+}
+
+.main_header {
+    background: #80D4D9;
+    height: 58px;
+    overflow: hidden;
+    position: relative;
+    width: 100%; 
+    border: false !important;
+}
+
+.x-grid-cell-checkcolumn .x-grid-cell-inner {
+    padding-top: 4px;
+    padding-bottom: 2px;
+    line-height: 14px;
+}
+.x-grid-with-row-lines .x-grid-cell-checkcolumn .x-grid-cell-inner {
+    padding-top: 3px;
+}
+.x-grid-checkheader {
+    height: 14px;
+    background-image: url('../images/unchecked.gif');
+    background-position: 50% -2px;
+    background-repeat: no-repeat;
+    background-color: transparent;
+}
+
+.x-grid-checkheader-checked {
+    background-image: url('../images/checked.gif');
+}
+
+.x-grid-checkheader-editor .x-form-cb-wrap {
+    text-align: center;
+}
+
+header .subsystem {
+    color: #424242;
+    display: block;
+    left: 334px;
+    padding: 0px 0px 0px 21px;
+    position: absolute;
+    top: 32px;
+    z-index: 100;
+}
+
+.icons .icon-caption { 
+	color: #424242;
+	text-decoration: none;
+	top: 80px !important;
+}
+
+.container_cur_month {
+	display: block;
+	float: left;
+	position: relative;
+	font-size: 11 !important;
+}
+
+.container_cur_month_bold {
+	display: block;
+	float: left;
+	position: relative;
+	font-size: 11 !important;
+    style: font-weight:bold;
+}

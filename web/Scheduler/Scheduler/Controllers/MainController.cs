@@ -11,7 +11,7 @@ namespace Scheduler.Controllers
         // GET: Main
         public ActionResult Index()
         {
-            return View();
+            return PartialView();
         }
     }
 }
