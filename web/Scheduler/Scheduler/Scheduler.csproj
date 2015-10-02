@@ -634,6 +634,7 @@
     <Content Include="Content\img\bg.jpg" />
     <Content Include="Content\img\scheduler.png" />
     <Content Include="Content\img\white.png" />
+    <Content Include="Content\style.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <EmbeddedResource Include="Scripts\app.js" />
@@ -644,6 +645,7 @@
     <Content Include="Scripts\app\model\Readme.md" />
     <Content Include="Scripts\app\Readme.md" />
     <Content Include="Scripts\app\store\Readme.md" />
+    <Content Include="Content\style.scss" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\ext\ext-all-debug-w-comments.js" />
     <Content Include="Scripts\ext\ext-all-debug.js" />
@@ -1196,8 +1198,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Autorization\AuthenticationResult.cs" />
     <Compile Include="Models\Autorization\ApplicationUser.cs" />
+    <Compile Include="Models\Autorization\AuthenticationResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

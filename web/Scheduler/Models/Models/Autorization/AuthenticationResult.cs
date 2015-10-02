@@ -82,14 +82,12 @@ namespace Scheduler.Models.Autorization
     {
         [Required]
         [Display(Name = "Логин")]
-
         public string UserName { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "Пароль {0} не должен быть меньше {2} символов", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Пароль")]
-        
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
