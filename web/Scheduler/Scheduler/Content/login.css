@@ -14,6 +14,8 @@ body {
     font-family: Arial, Verdana, Helvetica;
     background-position: right bottom;
     background-repeat: no-repeat;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 a:focus {
@@ -31,10 +33,10 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 
 
 .centered {
-    text-align:center;
-    align-content:center;
-    align-items:center;
-    align-self:center;
+    text-align: center;
+    align-content: center;
+    align-items: center;
+    align-self: center;
 }
 
 .wrapper {
@@ -49,6 +51,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 .container {
+    position: relative;
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
     border-radius: 6px;
@@ -81,6 +84,6 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
     text-align: center;
 }
 
-.control-label{
-    margin-left:-50px;
+.control-label {
+    margin-left: -50px;
 }
