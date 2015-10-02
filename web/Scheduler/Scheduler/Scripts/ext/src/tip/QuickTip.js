@@ -1,30 +1,24 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * A specialized tooltip class for tooltips that can be specified in markup and automatically managed
  * by the global {@link Ext.tip.QuickTipManager} instance.  See the QuickTipManager documentation for
  * additional usage details and examples.
- *
- *      @example     
- *      Ext.tip.QuickTipManager.init(); // Instantiate the QuickTipManager 
- *
- *      Ext.create('Ext.Button', {
- *
- *          renderTo: Ext.getBody(),
- *          text: 'My Button',
- *          listeners: {
- *
- *              afterrender: function(me) {
- *
- *                  // Register the new tip with an element's ID
- *                  Ext.tip.QuickTipManager.register({
- *                      target: me.getId(), // Target button's ID
- *                      title : 'My Tooltip',  // QuickTip Header
- *                      text  : 'My Button has a QuickTip' // Tip content  
- *                  });
- *
- *              }
- *          }
- *      });
- *
  */
 Ext.define('Ext.tip.QuickTip', {
     extend: 'Ext.tip.ToolTip',
@@ -32,9 +26,9 @@ Ext.define('Ext.tip.QuickTip', {
     alternateClassName: 'Ext.QuickTip',
 
     /**
-     * @cfg {String/HTMLElement/Ext.dom.Element} target
-     * The target HTMLElement, {@link Ext.dom.Element} or id to associate with this Quicktip.
-     *
+     * @cfg {String/HTMLElement/Ext.Element} target
+     * The target HTMLElement, {@link Ext.Element} or id to associate with this Quicktip.
+     * 
      * Defaults to the document.
      */
 
@@ -58,9 +52,7 @@ Ext.define('Ext.tip.QuickTip', {
         cls : 'qclass',
         align : 'qalign',
         anchor : 'anchor',
-        showDelay: 'qshowDelay',
-        hideAction: 'hideAction',
-        anchorTarget: 'anchorTarget'
+        showDelay: 'qshowDelay'
     },
     
     shrinkWrapDock: true,
@@ -72,12 +64,6 @@ Ext.define('Ext.tip.QuickTip', {
         me.target = me.target || Ext.getDoc();
         me.targets = me.targets || {};
         me.callParent();
-    },
-
-    setTagConfig: function(cfg) {
-        this.tagConfig = Ext.apply({}, cfg);
-        // Let attr get recomputed
-        delete this.tagConfig.attr;
     },
 
     /**
@@ -117,7 +103,7 @@ Ext.define('Ext.tip.QuickTip', {
 
     /**
      * Removes this quick tip from its element and destroys it.
-     * @param {String/HTMLElement/Ext.dom.Element} el The element from which the quick tip
+     * @param {String/HTMLElement/Ext.Element} el The element from which the quick tip
      * is to be removed or ID of the element.
      */
     unregister : function(el){
@@ -126,7 +112,7 @@ Ext.define('Ext.tip.QuickTip', {
 
     /**
      * Hides a visible tip or cancels an impending show for a particular element.
-     * @param {String/HTMLElement/Ext.dom.Element} el The element that is the target of
+     * @param {String/HTMLElement/Ext.Element} el The element that is the target of
      * the tip or ID of the element.
      */
     cancelShow: function(el){
@@ -135,10 +121,10 @@ Ext.define('Ext.tip.QuickTip', {
 
         el = Ext.get(el).dom;
         if (me.isVisible()) {
-            if (activeTarget && activeTarget.el === el) {
+            if (activeTarget && activeTarget.el == el) {
                 me.hide();
             }
-        } else if (activeTarget && activeTarget.el === el) {
+        } else if (activeTarget && activeTarget.el == el) {
             me.clearTimer('show');
         }
     },
@@ -149,62 +135,59 @@ Ext.define('Ext.tip.QuickTip', {
      * attribute we are configured to look for. Returns an object containing the text
      * from the attribute, and the target element from which the text was read.
      */
-    getTipCfg: function (target, event) {
-        var titleText = target.title,
-            cfg = this.tagConfig,
-            attr = cfg.attr || (cfg.attr = cfg.namespace + cfg.attribute),
-            text;
+    getTipCfg: function(e) {
+        var t = e.getTarget(),
+            titleText = t.title,
+            cfg;
 
         if (this.interceptTitles && titleText && Ext.isString(titleText)) {
-            target.setAttribute(attr, titleText);
-            target.removeAttribute('title');
-
+            t.qtip = titleText;
+            t.removeAttribute("title");
+            e.preventDefault();
             return {
                 text: titleText
             };
         }
         else {
-            target = Ext.fly(target).findParent(function(dom) {
-                // Want to test the truthiness of the attribute and save it.
-                return (text = dom.getAttribute(attr));
-            });
-            if (target) {
+            cfg = this.tagConfig;
+            t = e.getTarget('[' + cfg.namespace + cfg.attribute + ']');
+            if (t) {
                 return {
-                    target: target,
-                    text: text
+                    target: t,
+                    text: t.getAttribute(cfg.namespace + cfg.attribute)
                 };
             }
         }
     },
 
-    onTargetOver: function (event) {
-        // This is a separate method so that tooltip activation can be done by calling
-        // doTargetOver directly.
-        this.doTargetOver(event.getTarget(this.delegate), null, event);
-    },
-
     // @private
-    doTargetOver : function (target, xy, event) {
+    onTargetOver : function(e){
         var me = this,
-            hasShowDelay, hideAction, delay, elTarget, cfg, ns, tipConfig, autoHide,
+            target = e.getTarget(me.delegate),
+            hasShowDelay,
+            delay,
+            elTarget,
+            cfg,
+            ns,
+            tipConfig,
+            autoHide,
             targets, targetEl, value, key;
 
         if (me.disabled) {
             return;
         }
 
-        if (typeof target === 'string') {
-            target = Ext.getDom(target);
-        }
-
-        me.targetXY = xy || (event ? event.getXY() : Ext.fly(target).getXY());
+        // TODO - this causes "e" to be recycled in IE6/7 (EXTJSIV-1608) so ToolTip#setTarget
+        // was changed to include freezeEvent. The issue seems to be a nested 'resize' event
+        // that smashed Ext.EventObject.
+        me.targetXY = e.getXY();
 
         // If the over target was filtered out by the delegate selector, or is not an HTMLElement, or is the <html> or the <body>, then return
         if(!target || target.nodeType !== 1 || target == document.documentElement || target == document.body){
             return;
         }
 
-        if (me.activeTarget && ((target === me.activeTarget.el) || Ext.fly(me.activeTarget.el).contains(target))) {
+        if (me.activeTarget && ((target == me.activeTarget.el) || Ext.fly(me.activeTarget.el).contains(target))) {
             // We may have started a delayed show where we have an active target.
             // If the timer is yet to be fired, but the mouse moves, it will try to
             // show it immediately. If the attribute has been removed from the element,
@@ -250,11 +233,6 @@ Ext.define('Ext.tip.QuickTip', {
                 if (hasShowDelay) {
                     me.showDelay = delay;
                 }
-                if (!(hideAction = me.activeTarget.hideAction)) {
-                    delete me.hideAction;
-                } else {
-                    me.hideAction = hideAction;
-                }
                 return;
             }
         }
@@ -263,7 +241,7 @@ Ext.define('Ext.tip.QuickTip', {
         elTarget = Ext.fly(target, '_quicktip-target');
         cfg = me.tagConfig;
         ns = cfg.namespace;
-        tipConfig = me.getTipCfg(target, event);
+        tipConfig = me.getTipCfg(e);
 
         if (tipConfig) {
 
@@ -283,19 +261,11 @@ Ext.define('Ext.tip.QuickTip', {
                 title: elTarget.getAttribute(ns + cfg.title),
                 cls: elTarget.getAttribute(ns + cfg.cls),
                 align: elTarget.getAttribute(ns + cfg.align),
-                showDelay: parseInt(elTarget.getAttribute(ns + cfg.showDelay)||0, 10),
-                hideAction: elTarget.getAttribute(ns + cfg.hideAction),
-                anchorTarget: elTarget.getAttribute(ns + cfg.anchorTarget)
+                showDelay: parseInt(elTarget.getAttribute(ns + cfg.showDelay), 10)
             };
-
-            // If we were not configured with an anchor, allow it to be set by the target's properties
-            if (!me.initialConfig.hasOwnProperty('anchor')) {
-                me.anchor = elTarget.getAttribute(ns + cfg.anchor);
-            }
-
-            // If we are anchored, and not configured with an anchorTarget, anchor to the target element, or whatever its 'data-anchortarget' points to
-            if (me.anchor && !me.initialConfig.hasOwnProperty('anchorTarget')) {
-                me.anchorTarget = me.activeTarget.anchorTarget || target;
+            me.anchor = elTarget.getAttribute(ns + cfg.anchor);
+            if (me.anchor) {
+                me.anchorTarget = target;
             }
             hasShowDelay = parseInt(me.activeTarget.showDelay, 10);
             if (hasShowDelay) {
@@ -316,9 +286,9 @@ Ext.define('Ext.tip.QuickTip', {
             hasHideDelay,
             delay;
 
-        // If moving within the current target, and it does not have a new tip, ignore
-        // the mouseout. e.within is the only correct way to determine this.
-        if (active && e.within(me.activeTarget.el) && !me.getTipCfg(e.getTarget(), e)) {
+        // If moving within the current target, and it does not have a new tip, ignore the mouseout
+        // EventObject.within is the only correct way to determine this.
+        if (active && e.within(me.activeTarget.el) && !me.getTipCfg(e)) {
             return;
         }
 
@@ -336,13 +306,13 @@ Ext.define('Ext.tip.QuickTip', {
             }
         }
     },
-
+    
     targetTextEmpty: function(){
         var me = this,
             target = me.activeTarget,
             cfg = me.tagConfig,
             el, text;
-
+            
          if (target) {
              el = target.el;
              if (el) {
@@ -357,19 +327,19 @@ Ext.define('Ext.tip.QuickTip', {
          }
          return false;
     },
-
+    
     show: function(){
         var me = this,
             fromDelay = me.fromDelayShow;
-
+            
         // We're coming from a delayed show, so check whether
-        // the attribute has been removed before we show it
+        // the attribute has been removed before we show it 
         if (fromDelay && me.targetTextEmpty()) {
             me.onShowVeto();
             delete me.activeTarget;
             return;
         }
-        me.callParent(arguments);
+        me.callParent(arguments);    
     },
 
     // @inheritdoc

@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * @docauthor Robert Dougan <rob@sencha.com>
  *
@@ -38,6 +55,7 @@ Ext.define('Ext.form.field.TextArea', {
     alternateClassName: 'Ext.form.TextArea',
     requires: [
         'Ext.XTemplate', 
+        'Ext.layout.component.field.TextArea',
         'Ext.util.DelayedTask'
     ],
 
@@ -54,12 +72,15 @@ Ext.define('Ext.form.field.TextArea', {
     fieldSubTpl: [
         '<textarea id="{id}" role="{role}" {inputAttrTpl}',
             '<tpl if="name"> name="{name}"</tpl>',
+            '<tpl if="rows"> rows="{rows}" </tpl>',
+            '<tpl if="cols"> cols="{cols}" </tpl>',
             '<tpl if="placeholder"> placeholder="{placeholder}"</tpl>',
+            '<tpl if="size"> size="{size}"</tpl>',
             '<tpl if="maxLength !== undefined"> maxlength="{maxLength}"</tpl>',
             '<tpl if="readOnly"> readonly="readonly"</tpl>',
             '<tpl if="disabled"> disabled="disabled"</tpl>',
-            '<tpl if="tabIdx != null"> tabindex="{tabIdx}"</tpl>',
-            ' class="{fieldCls} {typeCls} {typeCls}-{ui} {inputCls}" ',
+            '<tpl if="tabIdx"> tabIndex="{tabIdx}"</tpl>',
+            ' class="{fieldCls} {typeCls} {inputCls}" ',
             '<tpl if="fieldStyle"> style="{fieldStyle}"</tpl>',
             ' autocomplete="off">\n',
             '<tpl if="value">{[Ext.util.Format.htmlEncode(values.value)]}</tpl>',
@@ -90,6 +111,20 @@ Ext.define('Ext.form.field.TextArea', {
     growAppend: '\n-',
 
     /**
+     * @cfg {Number} cols
+     * An initial value for the 'cols' attribute on the textarea element. This is only used if the component has no
+     * configured {@link #width} and is not given a width by its container's layout.
+     */
+    cols: 20,
+
+    /**
+     * @cfg {Number} rows
+     * An initial value for the 'rows' attribute on the textarea element. This is only used if the component has no
+     * configured {@link #height} and is not given a height by its container's layout. Defaults to 4.
+     */
+    rows: 4,
+
+    /**
      * @cfg {Boolean} enterIsSpecial
      * True if you want the ENTER key to be classed as a special key and the {@link #specialkey} event to be fired
      * when ENTER is pressed.
@@ -102,37 +137,32 @@ Ext.define('Ext.form.field.TextArea', {
      * relevant when {@link #grow} is true. Equivalent to setting overflow: hidden.
      */
     preventScrollbars: false,
+
+    // private
+    componentLayout: 'textareafield',
+    
+    setGrowSizePolicy: Ext.emptyFn,
     
     returnRe: /\r/g,
 
     inputCls: Ext.baseCSSPrefix + 'form-textarea',
 
-    extraFieldBodyCls: Ext.baseCSSPrefix + 'form-textarea-body',
-
-    //<debug>
-    constructor: function(config) {
-        this.callParent([config]);
-        if (this.cols) {
-            Ext.log.warn('Ext.form.field.TextArea "cols" config was removed in Ext 5.0. Please specify a "width" or use a layout instead.');
-        }
-
-        if (this.rows) {
-            Ext.log.warn('Ext.form.field.TextArea "rows" config was removed in Ext 5.0. Please specify a "height" or use a layout instead.');
-        }
-    },
-    //</debug>
-
     // private
-    getSubTplData: function(fieldData) {
+    getSubTplData: function() {
         var me = this,
             fieldStyle = me.getFieldStyle(),
-            ret = me.callParent(arguments);
+            ret = me.callParent();
 
         if (me.grow) {
             if (me.preventScrollbars) {
                 ret.fieldStyle = (fieldStyle||'') + ';overflow:hidden;height:' + me.growMin + 'px';
             }
         }
+
+        Ext.applyIf(ret, {
+            cols: me.cols,
+            rows: me.rows
+        });
 
         return ret;
     },
@@ -158,6 +188,10 @@ Ext.define('Ext.form.field.TextArea', {
         return this.stripReturns(value);
     },
     
+    transformOriginalValue: function(value){
+        return this.stripReturns(value); 
+    },
+    
     getValue: function(){
         return this.stripReturns(this.callParent());    
     },
@@ -174,7 +208,7 @@ Ext.define('Ext.form.field.TextArea', {
         return value;
     },
 
-    onPaste: function(){
+    onPaste: function(e){
         var me = this;
         if (!me.pasteTask) {
             me.pasteTask = new Ext.util.DelayedTask(me.pasteCheck, me);
@@ -220,38 +254,28 @@ Ext.define('Ext.form.field.TextArea', {
     },
 
     /**
-     * Automatically grows the field to accomodate the height of the text up to the maximum
-     * field height allowed. This only takes effect if {@link #grow} = true, and fires the
-     * {@link #autosize} event if the height changes.
+     * Automatically grows the field to accomodate the height of the text up to the maximum field height allowed. This
+     * only takes effect if {@link #grow} = true, and fires the {@link #autosize} event if the height changes.
      */
     autoSize: function() {
         var me = this,
-            inputEl, inputHeight, height, curWidth, value;
+            height;
 
-        if (me.grow && me.rendered && me.getSizeModel().height.auto) {
-            inputEl = me.inputEl;
-            //subtract border/padding to get the available width for the text
-            curWidth = inputEl.getWidth(true);
-
-            value = Ext.util.Format.htmlEncode(inputEl.dom.value) || '&#160;';
-            value += me.growAppend;
-
-            // Translate newlines to <br> tags
-            value = value.replace(/\n/g, '<br/>');
-
-            height = Ext.util.TextMetrics.measure(inputEl, value, curWidth).height +
-                inputEl.getPadding('tb') +
-                // The element that has the border depends on theme - inputWrap (classic)
-                // or triggerWrap (neptune)
-                me.inputWrap.getBorderWidth('tb') + me.triggerWrap.getBorderWidth('tb');
-
-            height = Math.min(Math.max(height, me.growMin), me.growMax);
-
-            me.bodyEl.setHeight(height);
-
+        if (me.grow && me.rendered) {
             me.updateLayout();
-
-            me.fireEvent('autosize', me, height);
+            height = me.inputEl.getHeight();
+            if (height !== me.lastInputHeight) {
+                /**
+                 * @event autosize
+                 * Fires when the {@link #autoSize} function is triggered and the field is resized according to
+                 * the grow/growMin/growMax configs as a result. This event provides a hook for the developer
+                 * to apply additional logic at runtime to resize the field if needed.
+                 * @param {Ext.form.field.Text} this
+                 * @param {Number} height
+                 */
+                me.fireEvent('autosize', me, height);
+                me.lastInputHeight = height;
+            }
         }
     },
 

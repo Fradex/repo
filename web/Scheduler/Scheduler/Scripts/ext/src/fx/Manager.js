@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * @class Ext.fx.Manager
  * Animation Manager which keeps track of all current animations and manages them on a frame by frame basis.
@@ -11,17 +28,14 @@ Ext.define('Ext.fx.Manager', {
 
     singleton: true,
 
-    requires: [
-        'Ext.util.MixedCollection',
-        'Ext.util.TaskRunner',
-        'Ext.fx.target.Element',
-        'Ext.fx.target.ElementCSS',
-        'Ext.fx.target.CompositeElement',
-        'Ext.fx.target.CompositeElementCSS',
-        'Ext.fx.target.Sprite',
-        'Ext.fx.target.CompositeSprite',
-        'Ext.fx.target.Component'
-    ],
+    requires: ['Ext.util.MixedCollection',
+               'Ext.fx.target.Element',
+               'Ext.fx.target.ElementCSS',
+               'Ext.fx.target.CompositeElement',
+               'Ext.fx.target.CompositeElementCSS',
+               'Ext.fx.target.Sprite',
+               'Ext.fx.target.CompositeSprite',
+               'Ext.fx.target.Component'],
 
     mixins: {
         queue: 'Ext.fx.Queue'
@@ -38,6 +52,24 @@ Ext.define('Ext.fx.Manager', {
         // Do not use fireIdleEvent: false. Each tick of the TaskRunner needs to fire the idleEvent
         // in case an animation callback/listener adds a listener.
         me.taskRunner = new Ext.util.TaskRunner();
+
+        // this.requestAnimFrame = (function() {
+        //     var raf = window.requestAnimationFrame ||
+        //               window.webkitRequestAnimationFrame ||
+        //               window.mozRequestAnimationFrame ||
+        //               window.oRequestAnimationFrame ||
+        //               window.msRequestAnimationFrame;
+        //     if (raf) {
+        //         return function(callback, element) {
+        //             raf(callback);
+        //         };
+        //     }
+        //     else {
+        //         return function(callback, element) {
+        //             window.setTimeout(callback, Ext.fx.Manager.interval);
+        //         };
+        //     }
+        // })();
     },
 
     /**

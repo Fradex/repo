@@ -24,16 +24,16 @@ namespace Scheduler.Controllers
         }
 
         public LoginController()
-            : this(new UserManager<ApplicationUserCommit>(new UserStore<ApplicationUserCommit>(new ApplicationDbContext())))
+            : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
         {
         }
 
-        public LoginController(UserManager<ApplicationUserCommit> userManager)
+        public LoginController(UserManager<ApplicationUser> userManager)
         {
             UserManager = userManager;
         }
 
-        public UserManager<ApplicationUserCommit> UserManager { get; }
+        public UserManager<ApplicationUser> UserManager { get; }
         // GET: Login
         public ActionResult Index()
         {
@@ -85,7 +85,7 @@ namespace Scheduler.Controllers
             }
             else
             {
-                return this.RedirectToAction("Ext", "Main");
+                return this.RedirectToAction("Index", "Main");
             }
         }
 
@@ -102,7 +102,7 @@ namespace Scheduler.Controllers
         //    return this.View();
         //}
 
-        private async Task SignInAsync(ApplicationUserCommit user, bool isPersistent)
+        private async Task SignInAsync(ApplicationUser user, bool isPersistent)
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
             var identity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);

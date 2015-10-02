@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * A small abstract class that contains the shared behaviour for any summary
  * calculations to be used in the grid.
@@ -9,21 +26,18 @@ Ext.define('Ext.grid.feature.AbstractSummary', {
     alias: 'feature.abstractsummary',
 
     summaryRowCls: Ext.baseCSSPrefix + 'grid-row-summary',
+    summaryTableCls: Ext.plainTableCls + ' ' + Ext.baseCSSPrefix + 'grid-table',
     summaryRowSelector: '.' + Ext.baseCSSPrefix + 'grid-row-summary',
-
-    readDataOptions: {
-        recordCreator: Ext.identityFn
-    },
 
     // High priority rowTpl interceptor which sees summary rows early, and renders them correctly and then aborts the row rendering chain.
     // This will only see action when summary rows are being updated and Table.onUpdate->Table.bufferRender renders the individual updated sumary row.
     summaryRowTpl: {
-        fn: function(out, values, parent) {
-            // If a summary record comes through the rendering pipeline, render it simply instead of proceeding through the tplchain
+        before: function(values, out) {
+            // If a summary record comes through the rendering pipeline, render it simply, and return false from the
+            // before method which aborts the tpl chain
             if (values.record.isSummary && this.summaryFeature.showSummaryRow) {
-                this.summaryFeature.outputSummaryRecord(values.record, values, out, parent);
-            } else {
-                this.nextTpl.applyOut(values, out, parent);
+                this.summaryFeature.outputSummaryRecord(values.record, values, out);
+                return false;
             }
         },
         priority: 1000
@@ -44,63 +58,14 @@ Ext.define('Ext.grid.feature.AbstractSummary', {
         // Add a high priority interceptor which renders summary records simply
         // This will only see action ona bufferedRender situation where summary records are updated.
         me.view.addRowTpl(me.summaryRowTpl).summaryFeature = me;
-        
-        // Define on the instance to store info needed by summary renderers.
-        me.summaryData = {};
-        me.groupInfo = {};
-
-        // Cell widths in the summary table are set directly into the cells. There's no <colgroup><col>
-        // Some browsers use content box and some use border box when applying the style width of a TD
-        if (!me.summaryTableCls) {
-            me.summaryTableCls = Ext.baseCSSPrefix + 'grid-item';
-        }
     },
 
     /**
      * Toggle whether or not to show the summary row.
      * @param {Boolean} visible True to show the summary row
      */
-    toggleSummaryRow: function(visible /* private */, fromLockingPartner) {
-        var me = this,
-            prev = me.showSummaryRow,
-            doRefresh;
-
-        visible = visible != null ? !!visible : !me.showSummaryRow;
-        me.showSummaryRow = visible;
-        if (visible && visible !== prev) {
-            // If being shown, something may have changed while not visible, so
-            // force the summary records to recalculate
-            me.updateNext = true;
-        }
-
-        // If there is another side to be toggled, then toggle it (as long as we are not already being commanded from that other side);
-        // Then refresh the whole arrangement.
-        if (me.lockingPartner) {
-            if (!fromLockingPartner) {
-                me.lockingPartner.toggleSummaryRow(visible, true);
-                doRefresh = true;
-            }
-        } else {
-            doRefresh = true;
-        }
-        if (doRefresh) {
-            me.grid.ownerGrid.getView().refresh();
-        }
-    },
-
-    createRenderer: function (column, record) {
-        var me = this,
-            ownerGroup = record.ownerGroup,
-            summaryData = ownerGroup ? me.summaryData[ownerGroup] : me.summaryData,
-            // Use the column.getItemId() for columns without a dataIndex. The populateRecord method does the same.
-            dataIndex = column.dataIndex || column.getItemId();
-
-        return function (value, metaData) {
-             return column.summaryRenderer ?
-                column.summaryRenderer(record.data[dataIndex], summaryData, dataIndex, metaData) :
-                // For no summaryRenderer, return the field value in the Feature record.
-                record.data[dataIndex];
-        };
+    toggleSummaryRow: function(visible) {
+        this.showSummaryRow = !!visible;
     },
 
     outputSummaryRecord: function(summaryRecord, contextValues, out) {
@@ -125,17 +90,21 @@ Ext.define('Ext.grid.feature.AbstractSummary', {
         for (i = 0; i < colCount; i++) {
             column = columns[i];
             column.savedRenderer = column.renderer;
-
-            if (column.summaryType || column.summaryRenderer) {
-                column.renderer = this.createRenderer(column, summaryRecord);
-            } else {
+            if (column.summaryRenderer) {
+                column.renderer = column.summaryRenderer;
+            } else if (!column.summaryType) {
                 column.renderer = Ext.emptyFn;
+            }
+
+            // Summary records may contain values based upon the column's ID if the column is not mapped from a field
+            if (!column.dataIndex) {
+                column.dataIndex = column.id;
             }
         }
 
         // Use the base template to render a summary row
         view.rowValues = values;
-        view.self.prototype.rowTpl.applyOut(values, out, parent);
+        view.self.prototype.rowTpl.applyOut(values, out);
         view.rowValues = savedRowValues;
 
         // Restore regular column renderers
@@ -153,35 +122,30 @@ Ext.define('Ext.grid.feature.AbstractSummary', {
      * @param {String/Function} type The type of aggregation. If a function is specified it will
      * be passed to the stores aggregate function.
      * @param {String} field The field to aggregate on
-     * @param {Boolean} group True to aggregate in grouped mode
+     * @param {Boolean} group True to aggregate in grouped mode 
      * @return {Number/String/Object} See the return type for the store functions.
      * if the group parameter is `true` An object is returned with a property named for each group who's
      * value is the summary value.
      */
-    getSummary: function (store, type, field, group) {
-        var isGrouped = !!group,
-            item = isGrouped ? group : store;
-        
+    getSummary: function(store, type, field, group){
+        var records = group.records;
+
         if (type) {
             if (Ext.isFunction(type)) {
-                if (isGrouped) {
-                    return item.aggregate(field, type);
-                } else {
-                    return item.aggregate(type, null, false, [field]);
-                }
+                return store.getAggregate(type, null, records, [field]);
             }
 
             switch (type) {
                 case 'count':
-                    return item.count(field);
+                    return records.length;
                 case 'min':
-                    return item.min(field);
+                    return store.getMin(records, field);
                 case 'max':
-                    return item.max(field);
+                    return store.getMax(records, field);
                 case 'sum':
-                    return item.sum(field);
+                    return store.getSum(records, field);
                 case 'average':
-                    return item.average(field);
+                    return store.getAverage(records, field);
                 default:
                     return '';
 
@@ -189,137 +153,120 @@ Ext.define('Ext.grid.feature.AbstractSummary', {
         }
     },
 
-    generateSummaryData: function (groupField) {
+    /**
+     * Used by the Grouping Feature when {@link #showSummaryRow} is `true`.
+     * 
+     * Generates group summary data for the whole store.
+     * @private
+     * @return {Object} An object hash keyed by group name containing summary records.
+     */
+    generateSummaryData: function(){
         var me = this,
-            reader = me.view.store.getProxy().getReader(),
-            convertedSummaryRow = {},
-            remoteData = {},
-            i, len, root, summaryRows;
+            store = me.view.store,
+            groups = store.groups.items,
+            reader = store.proxy.reader,
+            len = groups.length,
+            groupField = me.getGroupField(),
+            data = {},
+            lockingPartner = me.lockingPartner,
+            i, group, record,
+            root, summaryRows, hasRemote,
+            convertedSummaryRow, remoteData;
 
-        // reset reader root and rebuild extractors to extract summaries data
-        root = reader.getRootProperty();
-        reader.setRootProperty(me.remoteRoot);
-        reader.buildExtractors(true);
-        summaryRows = reader.getRoot(reader.rawData);
-
-        if (summaryRows) {
-            if (!Ext.isArray(summaryRows)) {
-                summaryRows = [summaryRows];
-            }
-
+        /**
+         * @cfg {String} [remoteRoot=undefined]
+         * The name of the property which contains the Array of summary objects.
+         * It allows to use server-side calculated summaries.
+         */
+        if (me.remoteRoot && reader.rawData) {
+            hasRemote = true;
+            remoteData = {};
+            // reset reader root and rebuild extractors to extract summaries data
+            root = reader.root;
+            reader.root = me.remoteRoot;
+            reader.buildExtractors(true);
+            summaryRows = reader.getRoot(reader.rawData)||[];
             len = summaryRows.length;
 
+            // Ensure the Reader has a data conversion function to convert a raw data row into a Record data hash
+            if (!reader.convertRecordData) {
+                reader.buildExtractors();
+            }
+
             for (i = 0; i < len; ++i) {
-                // Convert a raw data row into a Record's hash object using the Reader.
-                convertedSummaryRow = reader.extractRecordData(summaryRows[i], me.readDataOptions);
-                if (groupField) {
-                    remoteData[convertedSummaryRow[groupField]] = convertedSummaryRow;
+                convertedSummaryRow = {};
+
+                // Convert a raw data row into a Record's hash object using the Reader
+                reader.convertRecordData(convertedSummaryRow, summaryRows[i]);
+                remoteData[convertedSummaryRow[groupField]] = convertedSummaryRow;
+            }
+
+            // restore initial reader configuration
+            reader.root = root;
+            reader.buildExtractors(true);
+        }
+
+        for (i = 0; i < len; ++i) {
+            group = groups[i];
+            // Something has changed or it doesn't exist, populate it
+            if (hasRemote || group.isDirty() || !group.hasAggregate()) {
+                if (hasRemote) {
+                    record = me.populateRemoteRecord(group, remoteData);
+                } else {
+                    record = me.populateRecord(group);
+                }
+                // Clear the dirty state of the group if this is the only Summary, or this is the right hand (normal grid's) summary
+                if (!lockingPartner || (me.view.ownerCt === me.view.ownerCt.ownerLockable.normalGrid)) {
+                    group.commit();
+                }
+            } else {
+                record = group.getAggregateRecord();
+            }
+            data[group.key] = record;
+        }
+
+        return data;
+    },
+
+    populateRemoteRecord: function(group, data) {
+        var record = group.getAggregateRecord(true),
+            groupData = data[group.key],
+            field;
+
+        record.beginEdit();
+        for (field in groupData) {
+            if (groupData.hasOwnProperty(field)) {
+                if (field !== record.idProperty) {
+                    record.set(field, groupData[field]);
                 }
             }
         }
+        record.endEdit(true);
+        record.commit(true);
 
-        // Restore initial reader configuration.
-        reader.setRootProperty(root);
-        reader.buildExtractors(true);
-
-        return groupField ? remoteData : convertedSummaryRow;
+        return record;
     },
 
-    setSummaryData: function (record, colId, summaryValue, groupName) {
-        var summaryData = this.summaryData;
-
-        if (groupName) {
-            if (!summaryData[groupName]) {
-                summaryData[groupName] = {};
-            }
-            summaryData[groupName][colId] = summaryValue;
-        } else {
-            summaryData[colId] = summaryValue;
-        }
-    },
-
-    populateRecord: function (group, groupInfo, remoteData) {
+    populateRecord: function(group){
         var me = this,
             view = me.grid.ownerLockable ? me.grid.ownerLockable.view : me.view,
-            store = me.view.getStore(),
-            record = me.getAggregateRecord(group),
+            store = me.view.store,
+            record = group.getAggregateRecord(),
             // Use the full column set, regardless of locking
             columns = view.headerCt.getGridColumns(),
             len = columns.length,
-            groupName = group.getGroupKey(),
-            groupData, field, i, column, fieldName, summaryValue;
+            i, column, fieldName;
 
         record.beginEdit();
-
-        if (remoteData) {
-            // Remote summary grouping provides the grouping totals so there's no need to
-            // iterate throught the columns to map the column's dataIndex to the field name.
-            // Instead, enumerate the grouping record and set the field in the aggregate
-            // record for each one.
-            groupData = remoteData[groupName];
-            for (field in groupData) {
-                if (groupData.hasOwnProperty(field)) {
-                    if (field !== record.idProperty) {
-                        record.set(field, groupData[field]);
-                    }
-                }
-            }
-        }
-
-        // Here we iterate through the columns with two objectives:
-        //    1. For local grouping, get the summary for each column and update the record.
-        //    2. For both local and remote grouping, set the summary data object
-        //       which is passed to the summaryRenderer (if defined).
         for (i = 0; i < len; ++i) {
             column = columns[i];
             // Use the column id if there's no mapping, could be a calculated field
-            fieldName = column.dataIndex || column.getItemId();
-
-            // We need to capture the summary value because it could get overwritten when
-            // setting on the model if there is a convert() method on the model.
-            if (!remoteData) {
-                summaryValue = me.getSummary(store, column.summaryType, fieldName, group);
-                record.set(fieldName, summaryValue);
-            } else {
-                // For remote groupings, just get the value from the model.
-                summaryValue = record.get(column.dataIndex);
-            }
-
-            // Capture the columnId:value for the summaryRenderer in the summaryData object.
-            me.setSummaryData(record, column.getItemId(), summaryValue, groupName);
+            fieldName = column.dataIndex || column.id;
+            record.set(fieldName, me.getSummary(store, column.summaryType, fieldName, group));
         }
-
-        // Poke on the owner group for easy lookup in this.createRenderer().
-        record.ownerGroup = groupName;
-
         record.endEdit(true);
         record.commit();
 
         return record;
-    },
-    
-    getGroupInfo: function(group) {
-        var groupInfo = this.groupInfo,
-            key = group.getGroupKey(),
-            item = groupInfo[key];
-        
-        if (!item) {
-            item = groupInfo[key] = {
-                lastGeneration: null,
-                aggregateRecord: new Ext.data.Model()
-            };
-        }
-        return item;
-    },
-
-    getAggregateRecord: function(group, forceNew) {
-        var rec;
-
-        if (forceNew === true || group.dirty || !group.aggregateRecord) {
-            rec = new Ext.data.Model();
-            group.aggregateRecord = rec;
-            rec.isNonData = rec.isSummary = true;
-        }
-        return group.aggregateRecord;
     }
 });

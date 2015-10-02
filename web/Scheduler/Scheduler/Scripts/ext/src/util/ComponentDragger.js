@@ -1,11 +1,28 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * A subclass of Ext.dd.DragTracker which handles dragging any Component.
  *
  * This is configured with a Component to be made draggable, and a config object for the {@link Ext.dd.DragTracker}
  * class.
  *
- * A {@link #delegate} may be provided which may be either the element to use as the mousedown target or a
- * CSS selector to activate multiple mousedown targets.
+ * A {@link #delegate} may be provided which may be either the element to use as the mousedown target or a {@link
+ * Ext.DomQuery} selector to activate multiple mousedown targets.
  *
  * When the Component begins to be dragged, its `beginDrag` method will be called if implemented.
  *
@@ -20,8 +37,8 @@ Ext.define('Ext.util.ComponentDragger', {
      */
 
     /**
-     * @cfg {String/Ext.dom.Element} delegate
-     * A CSS selector which identifies child elements within the Component's encapsulating
+     * @cfg {String/Ext.Element} delegate
+     * A {@link Ext.DomQuery DomQuery} selector which identifies child elements within the Component's encapsulating
      * Element which are the drag handles. This limits dragging to only begin when the matching elements are
      * mousedowned.
      *
@@ -79,8 +96,7 @@ Ext.define('Ext.util.ComponentDragger', {
             delegateRegion,
             elRegion,
             dragEl = me.proxy ? me.proxy.el : comp.el,
-            shadow = dragEl.shadow,
-            shadowSize = (shadow && !me.constrainDelegate && comp.constrainShadow && !shadow.disabled) ? shadow.getShadowSize() : 0;
+            shadowSize = (!me.constrainDelegate && dragEl.shadow && comp.constrainShadow && !dragEl.shadowDisabled) ? dragEl.shadow.getShadowSize() : 0;
 
         // The configured constrainTo might be a Region or an element
         if (!(constrainTo instanceof Ext.util.Region)) {

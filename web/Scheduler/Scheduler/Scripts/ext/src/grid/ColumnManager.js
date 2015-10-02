@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * @private
  *
@@ -33,22 +50,6 @@ Ext.define('Ext.grid.ColumnManager', {
             this.cacheColumns();
         }
         return this.columns;
-    },
-
-    hasVariableRowHeight: function() {
-        var me = this,
-            columns = me.getColumns(),
-            len = columns.length,
-            i;
-
-        if (me.variableRowHeight == null) {
-            me.variableRowHeight = false;
-            for (i = 0; !me.variableRowHeight && i < len; i++) {
-                me.variableRowHeight = !!columns[i].variableRowHeight;
-            }
-        }
-
-        return me.variableRowHeight;
     },
 
     /**
@@ -98,7 +99,7 @@ Ext.define('Ext.grid.ColumnManager', {
         return col;
     },
     
-    getNextSibling: function(header) {
+    getNextSibling: function(header){
         var index = this.getHeaderIndex(header),
             col;
             
@@ -112,7 +113,7 @@ Ext.define('Ext.grid.ColumnManager', {
      * Get the first column.
      * @return {Ext.grid.column.Column} The header. `null` if it doesn't exist
      */
-    getFirst: function() {
+    getFirst: function(){
         var columns = this.getColumns();
         return columns.length > 0 ? columns[0] : null;
     },
@@ -128,26 +129,6 @@ Ext.define('Ext.grid.ColumnManager', {
         return len > 0 ? columns[len - 1] : null;
     },
     
-    /**
-     * Get a leaf level header by data index regardless of what the nesting
-     * structure is.
-     * @param {String} dataIndex The data index
-     * @return {Ext.grid.column.Column} The header. `null` if it doesn't exist.
-     */
-    getHeaderByDataIndex: function (dataIndex) {
-        var columns = this.getColumns(),
-            len = columns.length,
-            i, header;
-            
-        for (i = 0; i < len; ++i) {
-            header = columns[i];
-            if (header.dataIndex === dataIndex) {
-                return header;
-            }
-        }
-        return null;
-    },
-
     /**
      * Get a leaf level header by index regardless of what the nesting
      * structure is.
@@ -202,7 +183,7 @@ Ext.define('Ext.grid.ColumnManager', {
 
     invalidate: function() {
         var root = this.rootColumns;
-        this.columns = this.variableRowHeight = null;
+        this.columns = null;
 
         // If we are part of a lockable assembly, invalidate the root column manager
         if (root) {

@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * The rowbody feature enhances the grid's markup to have an additional
  * tr -> td -> div which spans the entire width of the original row.
@@ -17,7 +34,7 @@
  *         extend: 'Ext.data.Model',
  *         fields: ['name', 'latin', 'desc']
  *     });
- *
+ * 
  *     Ext.create('Ext.grid.Panel', {
  *         width: 400,
  *         height: 300,
@@ -49,13 +66,12 @@
  *             setupRowData: function(record, rowIndex, rowValues) {
  *                 var headerCt = this.view.headerCt,
  *                     colspan = headerCt.getColumnCount();
- *
  *                 // Usually you would style the my-body-class in CSS file
- *                 Ext.apply(rowValues, {
+ *                 return {
  *                     rowBody: '<div style="padding: 1em">'+record.get("desc")+'</div>',
  *                     rowBodyCls: "my-body-class",
  *                     rowBodyColspan: colspan
- *                 });
+ *                 };
  *             }
  *         }]
  *     });
@@ -79,20 +95,17 @@ Ext.define('Ext.grid.feature.RowBody', {
 
     colSpanDecrement: 0,
 
-    /**
-     * @cfg {Boolean} [bodyBefore=false]
-     * Configure as `true` to put the row expander body *before* the data row.
-     * 
-     */
-    bodyBefore: false,
-
-    outerTpl: {
-        fn: function(out, values, parent) {
+    tableTpl: {
+        before: function(values, out) {
             var view = values.view,
                 rowValues = view.rowValues;
 
             this.rowBody.setup(values.rows, rowValues);
-            this.nextTpl.applyOut(values, out, parent);
+        },
+        after: function(values, out) {
+            var view = values.view,
+                rowValues = view.rowValues;
+
             this.rowBody.cleanup(values.rows, rowValues);
         },
         priority: 100
@@ -100,32 +113,34 @@ Ext.define('Ext.grid.feature.RowBody', {
 
     extraRowTpl: [
         '{%',
-            'if(this.rowBody.bodyBefore) {',
-                // MUST output column sizing elements because the first row in this table
-                // contains one colspanning TD, and that overrides subsequent column width settings.
-                'values.view.renderColumnSizer(values, out);',
-            '} else {',
-                'this.nextTpl.applyOut(values, out, parent);',
-            '}',
             'values.view.rowBodyFeature.setupRowData(values.record, values.recordIndex, values);',
+            'this.nextTpl.applyOut(values, out, parent);',
         '%}',
-        '<tr class="' + Ext.baseCSSPrefix + 'grid-rowbody-tr {rowBodyCls}" {ariaRowAttr}>',
-            '<td class="' + Ext.baseCSSPrefix + 'grid-td ' + Ext.baseCSSPrefix + 'grid-cell-rowbody" colspan="{rowBodyColspan}" {ariaCellAttr}>',
-                '<div class="' + Ext.baseCSSPrefix + 'grid-rowbody {rowBodyDivCls}" {ariaCellInnerAttr}>{rowBody}</div>',
+        '<tr class="', Ext.baseCSSPrefix, 'grid-rowbody-tr {rowBodyCls}" {ariaRowAttr}>',
+            '<td class="', Ext.baseCSSPrefix, 'grid-cell-rowbody', '" colspan="{rowBodyColspan}" {ariaCellAttr}>',
+                '<div class="', Ext.baseCSSPrefix, 'grid-rowbody', ' {rowBodyDivCls}" {ariaCellInnerAttr}>{rowBody}</div>',
             '</td>',
-        '</tr>',
-        '{%',
-            'if(this.rowBody.bodyBefore) {',
-                'this.nextTpl.applyOut(values, out, parent);',
-            '}',
-        '%}', {
+        '</tr>', {
             priority: 100,
 
-            beginRowSync: function (rowSync) {
-                rowSync.add('rowBody', this.owner.eventSelector);
+            syncRowHeights: function(firstRow, secondRow) {
+                var owner = this.owner,
+                    firstRowBody = Ext.fly(firstRow).down(owner.eventSelector, true),
+                    secondRowBody,
+                    firstHeight, secondHeight;
+
+                // Sync the heights of row body elements in each row if they need it.
+                if (firstRowBody && (secondRowBody = Ext.fly(secondRow).down(owner.eventSelector, true))) {
+                    if ((firstHeight = firstRowBody.offsetHeight) > (secondHeight = secondRowBody.offsetHeight)) {
+                        Ext.fly(secondRowBody).setHeight(firstHeight);
+                    }
+                    else if (secondHeight > firstHeight) {
+                        Ext.fly(firstRowBody).setHeight(secondHeight);
+                    }
+                }
             },
 
-            syncContent: function(destRow, sourceRow, columnsToUpdate) {
+            syncContent: function(destRow, sourceRow) {
                 var owner = this.owner,
                     destRowBody = Ext.fly(destRow).down(owner.eventSelector, true),
                     sourceRowBody;
@@ -140,42 +155,60 @@ Ext.define('Ext.grid.feature.RowBody', {
 
     init: function(grid) {
         var me = this,
-            view = me.view = grid.getView();
+            view = me.view;
 
-        // The extra data means variableRowHeight
-        grid.variableRowHeight = view.variableRowHeight = true;
         view.rowBodyFeature = me;
 
-        grid.mon(view, {
-            element: 'el',
-            click: me.onClick,
-            scope: me
-        });
+        // If we are not inside a wrapped row, we must listen for mousedown in the body row to trigger selection.
+        // Also need to remove the body row on removing a record.
+        if (!view.findFeature('rowwrap')) {
+            grid.mon(view, {
+                element: 'el',
+                mousedown: me.onMouseDown,
+                scope: me
+            });
+            
+            me.mon(grid.getStore(), 'remove', me.onStoreRemove, me);
+        }
 
         view.headerCt.on({
             columnschanged: me.onColumnsChanged,
             scope: me
         });
-        view.addTpl(me.outerTpl).rowBody = me;
-        view.addRowTpl(Ext.XTemplate.getTpl(this, 'extraRowTpl')).rowBody = me;
+        view.addTableTpl(me.tableTpl).rowBody = me;
+        view.addRowTpl(Ext.XTemplate.getTpl(this, 'extraRowTpl'));
         me.callParent(arguments);
     },
+    
+    onStoreRemove: function(store, model, index){
+        var view = this.view,
+            node;
+            
+        if (view.rendered) {
+            node = view.getNode(index);
+            if (node) {
+                node = Ext.fly(node).next(this.eventSelector);
+                if (node) {
+                    node.remove();
+                }
+            }
+        }
+    },
 
-    // Needed to select the data row when clicked on the body row.
-    onClick: function(e) {
+    // Needed when not used inside a RowWrap to select the data row when mousedown on the body row.
+    onMouseDown: function(e) {
         var me = this,
             tableRow = e.getTarget(me.eventSelector);
 
-        // If we have clicked on a row body TR and its previous (or next - we can put the body first) sibling is a grid row,
-        // pass that onto the view for processing
-        if (tableRow && Ext.fly(tableRow = (tableRow.previousSibling || tableRow.nextSibling)).is(me.view.rowSelector)) {
+        // If we have mousedowned on a row body TR and its previous sibling is a grid row, pass that onto the view for processing
+        if (tableRow && Ext.fly(tableRow = tableRow.previousSibling).is(me.view.getItemSelector())) {
             e.target = tableRow;
             me.view.handleEvent(e);
         }
     },
 
     getSelectedRow: function(view, rowIndex) {
-        var selectedRow = view.getNode(rowIndex);
+        var selectedRow = view.getNode(rowIndex, false);
         if (selectedRow) {
             return Ext.fly(selectedRow).down(this.eventSelector);
         }
@@ -190,10 +223,10 @@ Ext.define('Ext.grid.feature.RowBody', {
             i;
 
         for (i = 0; i < len; ++i) {
-            items[i].setAttribute('colSpan', colspan);
+            items[i].colSpan = colspan;
         }
     },
-
+    
     /**
      * @method getAdditionalData
      * Provides additional data to the prepareData call within the grid view.
@@ -212,10 +245,10 @@ Ext.define('Ext.grid.feature.RowBody', {
 
     setup: function(rows, rowValues) {
         rowValues.rowBodyCls = this.rowBodyCls;
-        rowValues.rowBodyColspan = this.view.headerCt.visibleColumnManager.getColumns().length - this.colSpanDecrement;
+        rowValues.rowBodyColspan = rowValues.view.getGridColumns().length - this.colSpanDecrement;
     },
 
     cleanup: function(rows, rowValues) {
-        rowValues.rowBodyCls = rowValues.rowBodyColspan = rowValues.rowBody = null;
+        rowValues.rowBodyCls = rowValues.rowBodyColspan = rowValues.rowBody = null;    
     }
 });

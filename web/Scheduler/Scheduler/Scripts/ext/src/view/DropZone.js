@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * @private
  */
@@ -48,7 +65,7 @@ Ext.define('Ext.view.DropZone', {
 //      Not over a row node: The content may be narrower than the View's encapsulating element, so return the closest.
 //      If we fall through because the mouse is below the nodes (or there are no nodes), we'll get an onContainerOver call.
         if (!node) {
-            mouseY = e.getY();
+            mouseY = e.getPageY();
             for (i = 0, nodeList = this.view.getNodes(), len = nodeList.length; i < len; i++) {
                 testNode = nodeList[i];
                 box = Ext.fly(testNode).getBox();
@@ -103,7 +120,7 @@ Ext.define('Ext.view.DropZone', {
         }
         var view = this.view,
             recordIndex = view.indexOf(record),
-            nodeBefore = view.getNode(recordIndex + offset),
+            nodeBefore = view.getNode(recordIndex + offset, true),
             recordBefore = nodeBefore ? view.getRecord(nodeBefore) : null;
 
         return recordBefore && Ext.Array.contains(records, recordBefore);
@@ -118,20 +135,16 @@ Ext.define('Ext.view.DropZone', {
             indicatorY;
 
         if (!Ext.Array.contains(draggingRecords, overRecord) && (
-            pos === 'before' && !me.containsRecordAtOffset(draggingRecords, overRecord, -1) ||
-            pos === 'after' && !me.containsRecordAtOffset(draggingRecords, overRecord, 1)
+            pos == 'before' && !me.containsRecordAtOffset(draggingRecords, overRecord, -1) ||
+            pos == 'after' && !me.containsRecordAtOffset(draggingRecords, overRecord, 1)
         )) {
             me.valid = true;
 
-            if (me.overRecord !== overRecord || me.currentPosition !== pos) {
+            if (me.overRecord != overRecord || me.currentPosition != pos) {
 
                 indicatorY = Ext.fly(node).getY() - view.el.getY() - 1;
-                if (pos === 'after') {
+                if (pos == 'after') {
                     indicatorY += Ext.fly(node).getHeight();
-                }
-                // If view is scrolled using CSS translate, account for then when positioning the indicator
-                if (view.touchScroll === 2) {
-                    indicatorY += view.getScrollY();
                 }
                 me.getIndicator().setWidth(Ext.fly(view.el).getWidth()).showAt(0, indicatorY);
 
@@ -167,7 +180,7 @@ Ext.define('Ext.view.DropZone', {
         var me = this;
 
         me.callParent(arguments);
-        me.overRecord = me.currentPosition = null;
+        me.overRecord = me.currentPosition = null
         me.valid = false;
         if (me.indicator) {
             me.indicator.hide();

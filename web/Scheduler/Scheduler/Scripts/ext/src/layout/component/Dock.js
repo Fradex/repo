@@ -1,8 +1,25 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * This ComponentLayout handles docking for Panels. It takes care of panels that are
  * part of a ContainerLayout that sets this Panel's size and Panels that are part of
  * an AutoContainerLayout in which this panel get his height based of the CSS or
- * its content.
+ * or its content.
  * @private
  */
 Ext.define('Ext.layout.component.Dock', {
@@ -98,8 +115,6 @@ Ext.define('Ext.layout.component.Dock', {
         left: 'border-left-width'
     },
 
-    _itemCls: Ext.baseCSSPrefix + 'docked',
-
     handleItemBorders: function() {
         var me = this,
             owner = me.owner,
@@ -177,8 +192,6 @@ Ext.define('Ext.layout.component.Dock', {
                 }
                 if ((!borders[side].satisfied && !owner.bodyBorder) || owner.bodyBorder === false) {
                     owner.addBodyCls(noBorderClassesSides[side]);
-                } else {
-                    owner.removeBodyCls(noBorderClassesSides[side]);
                 }
             }
             else if (borders[side].satisfied) {
@@ -230,7 +243,6 @@ Ext.define('Ext.layout.component.Dock', {
             docked = me.getLayoutItems(),
             layoutContext = ownerContext.context,
             dockedItemCount = docked.length,
-            lastCollapsedState = me.lastCollapsedState,
             dockedItems, i, item, itemContext, offsets,
             collapsed, dock;
 
@@ -239,7 +251,7 @@ Ext.define('Ext.layout.component.Dock', {
         // Cache the children as ContextItems (like a Container). Also setup to handle
         // collapsed state:
         collapsed = owner.getCollapsed();
-        if (collapsed !== lastCollapsedState && lastCollapsedState !== undefined) {
+        if (collapsed !== me.lastCollapsedState && Ext.isDefined(me.lastCollapsedState)) {
             // If we are collapsing...
             if (me.owner.collapsed) {
                 ownerContext.isCollapsingOrExpanding = 1;
@@ -1316,7 +1328,7 @@ Ext.define('Ext.layout.component.Dock', {
         // Calculate the number of DOM nodes in our target that are not our docked items
         for (i = 0, j = 0; i < targetChildCount; i++) {
             targetChildNode = targetNodes[i];
-            if (targetChildNode.nodeType === 1 && Ext.fly(targetChildNode).hasCls(Ext.baseCSSPrefix + 'resizable-handle')) {
+            if (Ext.fly(targetChildNode).hasCls(Ext.baseCSSPrefix + 'resizable-handle')) {
                 break;
             }
             for (j = 0; j < dockedItemCount; j++) {
@@ -1493,10 +1505,8 @@ Ext.define('Ext.layout.component.Dock', {
     configureItem : function(item, pos) {
         this.callParent(arguments);
 
-        item.addCls(this._itemCls);
-        if (!item.ignoreBorderManagement) {
-            item.addClsWithUI(this.getDockCls(item.dock));
-        }
+        item.addCls(Ext.baseCSSPrefix + 'docked');
+        item.addClsWithUI(this.getDockCls(item.dock));
     },
 
     /**
@@ -1509,17 +1519,12 @@ Ext.define('Ext.layout.component.Dock', {
         return 'docked-' + dock;
     },
 
-    afterRemove: function(item) {
-        var dom;
-
+    afterRemove : function(item) {
         this.callParent(arguments);
-
-        item.removeCls(this._itemCls);
-        if (!item.ignoreBorderManagement) {
-            item.removeClsWithUI(this.getDockCls(item.dock));
+        if (this.itemCls) {
+            item.el.removeCls(this.itemCls + '-' + item.dock);
         }
-
-        dom = item.el.dom;
+        var dom = item.el.dom;
 
         if (!item.destroying && dom) {
             dom.parentNode.removeChild(dom);

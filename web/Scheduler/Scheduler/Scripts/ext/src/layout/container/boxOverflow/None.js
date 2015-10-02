@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * @private
  * Base class for Box Layout overflow handlers. These specialized classes are invoked when a Box Layout
@@ -6,26 +23,10 @@
  */
 Ext.define('Ext.layout.container.boxOverflow.None', {
     alternateClassName: 'Ext.layout.boxOverflow.None',
-    alias: [
-        'box.overflow.none',
-        'box.overflow.None' // capitalized for 4.x compat
-    ],
-
-    mixins: [
-        'Ext.mixin.Factoryable'
-    ],
-
-    factoryConfig: {
-        defaultType: 'none'
-    },
-
-    isBoxOverflowHandler: true,
-
-    $configPrefixed: false,
-    $configStrict: false,
     
-    constructor: function(config) {
-        this.initConfig(config);
+    constructor: function(layout, config) {
+        this.layout = layout;
+        Ext.apply(this, config);
     },
 
     handleOverflow: Ext.emptyFn,
@@ -94,17 +95,15 @@ Ext.define('Ext.layout.container.boxOverflow.None', {
     getItem: function(item) {
         return this.layout.owner.getComponent(item);
     },
-
+    
     getOwnerType: function(owner){
         var type;
         if (owner.isToolbar) {
             type = 'toolbar';
         } else if (owner.isTabBar) {
-            type = 'tab-bar';
+            type = 'tabbar';
         } else if (owner.isMenu) {
             type = 'menu';
-        } else if (owner.isBreadcrumb) {
-            type = 'breadcrumb';
         } else {
             type = owner.getXType();
         }
@@ -116,14 +115,5 @@ Ext.define('Ext.layout.container.boxOverflow.None', {
     getSuffixConfig: Ext.emptyFn,
     getOverflowCls: function() {
         return '';
-    },
-
-    setVertical: function() {
-        var me = this,
-            layout = me.layout,
-            innerCt = layout.innerCt;
-
-        innerCt.removeCls(me.getOverflowCls(layout.oppositeDirection));
-        innerCt.addCls(me.getOverflowCls(layout.direction));
     }
 });

@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * @class Ext.state.Provider
  * <p>Abstract base class for state provider implementations. The provider is responsible
@@ -21,17 +38,18 @@ Ext.define('Ext.state.Provider', {
      */
     prefix: 'ext-',
     
-    /**
-     * @event statechange
-     * Fires when a state change occurs.
-     * @param {Ext.state.Provider} this This state provider
-     * @param {String} key The state key which was changed
-     * @param {String} value The encoded value for the state
-     */
-
     constructor : function(config){
+        config = config || {};
         var me = this;
         Ext.apply(me, config);
+        /**
+         * @event statechange
+         * Fires when a state change occurs.
+         * @param {Ext.state.Provider} this This state provider
+         * @param {String} key The state key which was changed
+         * @param {String} value The encoded value for the state
+         */
+        me.addEvents("statechange");
         me.state = {};
         me.mixins.observable.constructor.call(me);
     },
@@ -157,7 +175,7 @@ Ext.define('Ext.state.Provider', {
         } else if(typeof value == 'boolean') {
             enc = 'b:' + (value ? '1' : '0');
         } else if(Ext.isDate(value)) {
-            enc = 'd:' + value.toUTCString();
+            enc = 'd:' + value.toGMTString();
         } else if(Ext.isArray(value)) {
             for (len = value.length; i < len; i++) {
                 flat += this.encodeValue(value[i]);

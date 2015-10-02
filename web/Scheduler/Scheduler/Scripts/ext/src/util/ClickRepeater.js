@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * A wrapper class which can be applied to any element. Fires a "click" event while the
  * mouse is pressed. The interval between firings may be specified in the config but
@@ -9,29 +26,8 @@ Ext.define('Ext.util.ClickRepeater', {
     extend: 'Ext.util.Observable',
 
     /**
-     * @event mousedown
-     * Fires when the mouse button is depressed.
-     * @param {Ext.util.ClickRepeater} this
-     * @param {Ext.event.Event} e
-     */
-
-    /**
-     * @event click
-     * Fires on a specified interval during the time the element is pressed.
-     * @param {Ext.util.ClickRepeater} this
-     * @param {Ext.event.Event} e
-     */
-
-    /**
-     * @event mouseup
-     * Fires when the mouse key is released.
-     * @param {Ext.util.ClickRepeater} this
-     * @param {Ext.event.Event} e
-     */
-
-    /**
      * Creates new ClickRepeater.
-     * @param {String/HTMLElement/Ext.dom.Element} el The element or its ID to listen on
+     * @param {String/HTMLElement/Ext.Element} el The element or its ID to listen on
      * @param {Object} [config] Config object.
      */
     constructor : function(el, config){
@@ -43,6 +39,30 @@ Ext.define('Ext.util.ClickRepeater', {
         Ext.apply(me, config);
 
         me.callParent();
+
+        me.addEvents(
+        /**
+         * @event mousedown
+         * Fires when the mouse button is depressed.
+         * @param {Ext.util.ClickRepeater} this
+         * @param {Ext.EventObject} e
+         */
+        "mousedown",
+        /**
+         * @event click
+         * Fires on a specified interval during the time the element is pressed.
+         * @param {Ext.util.ClickRepeater} this
+         * @param {Ext.EventObject} e
+         */
+        "click",
+        /**
+         * @event mouseup
+         * Fires when the mouse key is released.
+         * @param {Ext.util.ClickRepeater} this
+         * @param {Ext.EventObject} e
+         */
+        "mouseup"
+        );
 
         if(!me.disabled){
             me.disabled = true;
@@ -56,7 +76,7 @@ Ext.define('Ext.util.ClickRepeater', {
     },
 
     /**
-     * @cfg {String/HTMLElement/Ext.dom.Element} el
+     * @cfg {String/HTMLElement/Ext.Element} el
      * The element to act as a button.
      */
 
@@ -106,7 +126,7 @@ Ext.define('Ext.util.ClickRepeater', {
             this.el.on('mousedown', this.handleMouseDown, this);
             // IE versions will detect clicks as in sequence as dblclicks
             // if they happen in quick succession
-            if (Ext.isIE8){
+            if (Ext.isIE && !(Ext.isIE10p || (Ext.isStrict && Ext.isIE9))){
                 this.el.on('dblclick', this.handleDblClick, this);
             }
             if(this.preventDefault || this.stopDefault){
@@ -126,7 +146,7 @@ Ext.define('Ext.util.ClickRepeater', {
                 this.el.removeCls(this.pressedCls);
             }
             Ext.getDoc().un('mouseup', this.handleMouseUp, this);
-            this.el.clearListeners();
+            this.el.removeAllListeners();
         }
         this.disabled = true;
     },
@@ -151,6 +171,7 @@ Ext.define('Ext.util.ClickRepeater', {
     // @private
     destroy : function() {
         this.disable(true);
+        Ext.destroy(this.el);
         this.clearListeners();
     },
 
@@ -182,6 +203,10 @@ Ext.define('Ext.util.ClickRepeater', {
             this.delay = 400;
         }
 
+        // Re-wrap the event object in a non-shared object, so it doesn't lose its context if
+        // the global shared EventObject gets a new Event put into it before the timer fires.
+        e = new Ext.EventObjectImpl(e);
+
         this.timer =  Ext.defer(this.click, this.delay || this.interval, this, [e]);
     },
 
@@ -210,12 +235,12 @@ Ext.define('Ext.util.ClickRepeater', {
     },
 
     // @private
-    handleMouseReturn : function(e){
+    handleMouseReturn : function(){
         this.el.un("mouseover", this.handleMouseReturn, this);
         if(this.pressedCls){
             this.el.addCls(this.pressedCls);
         }
-        this.click(e);
+        this.click();
     },
 
     // @private

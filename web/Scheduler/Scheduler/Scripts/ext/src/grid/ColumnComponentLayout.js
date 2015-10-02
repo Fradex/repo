@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * Component layout for grid column headers which have a title element at the top followed by content.
  * @private
@@ -10,57 +27,79 @@ Ext.define('Ext.grid.ColumnComponentLayout', {
 
     setWidthInDom: true,
 
-    _paddingReset: {
-        paddingTop: '',  // reset back to default padding of the style
-        paddingBottom: ''
-    },
-
     beginLayout: function(ownerContext) {
         this.callParent(arguments);
         ownerContext.titleContext = ownerContext.getEl('titleEl');
+        ownerContext.triggerContext = ownerContext.getEl('triggerEl');
     },
 
     beginLayoutCycle: function(ownerContext) {
-        var me = this,
-            owner = me.owner;
+        var owner = this.owner;
 
-        me.callParent(arguments);
+        this.callParent(arguments);
 
         // If shrinkwrapping, allow content width to stretch the element
         if (ownerContext.widthModel.shrinkWrap) {
             owner.el.setWidth('');
         }
 
-        owner.titleEl.setStyle(me._paddingReset);
+        owner.titleEl.setStyle({
+            paddingTop: '',  // reset back to default padding of the style
+            paddingBottom: ''
+        });
     },
 
     // If not shrink wrapping, push height info down into child items
     publishInnerHeight: function(ownerContext, outerHeight) {
-        var me = this,
-            owner = me.owner,
-            innerHeight;
-            
-        // TreePanels (and grids with hideHeaders: true) set their column container height to zero to hide them.
+        // TreePanels (and grids with hideHeaders: true) set their column container height to zero ti hide them.
         // This is because they need to lay out in order to calculate widths for the columns (eg flexes).
         // If there is no height to lay out, bail out early.
-        if (owner.getRootHeaderCt().hiddenHeaders) {
-            ownerContext.setProp('innerHeight', 0);
+        if (!outerHeight) {
             return;
         }
-        
 
-        // If this ia a group header; that is, it contains subheaders...
-        // hasRawContent = !(target.isContainer && target.items.items.length > 0)
-        if (!ownerContext.hasRawContent) {
-            // We do not have enough information to get the height of the titleEl
-            if (owner.headerWrap && !ownerContext.hasDomProp('width')) {
-                me.done = false;
-                return;
-            }
+        var me = this,
+            owner = me.owner,
+            innerHeight = outerHeight - ownerContext.getBorderInfo().height,
+            availableHeight = innerHeight,
+            textHeight,
+            titleHeight,
+            pt, pb;
 
-            innerHeight = outerHeight - ownerContext.getBorderInfo().height;
-            ownerContext.setProp('innerHeight', innerHeight - owner.titleEl.getHeight(), false);
+        // We do not have enough information to get the height of the titleEl
+        if (!owner.noWrap && !ownerContext.hasDomProp('width')) {
+            me.done = false;
+            return;
         }
+
+        // If we are not a container, but just have HTML content...
+        if (ownerContext.hasRawContent) {
+            titleHeight = availableHeight;
+
+            // Vertically center the header text and ensure titleContext occupies availableHeight
+            textHeight = owner.textEl.getHeight();
+            if (textHeight) {
+                availableHeight -= textHeight;
+                if (availableHeight > 0) {
+                    pt = Math.floor(availableHeight / 2);
+                    pb = availableHeight - pt;
+                    ownerContext.titleContext.setProp('padding-top', pt);
+                    ownerContext.titleContext.setProp('padding-bottom', pb);
+                }
+            }
+        }
+
+        // There are child items
+        else {
+            titleHeight = owner.titleEl.getHeight();
+            ownerContext.setProp('innerHeight', innerHeight - titleHeight, false);
+        }
+        // Only IE6 and IEQuirks needs this.
+        // This is why we maintain titleHeight when setting it.
+        if ((Ext.isIE6 || Ext.isIEQuirks) && ownerContext.triggerContext) {
+            ownerContext.triggerContext.setHeight(titleHeight);
+        }
+
     },
 
     // We do not need the Direct2D sub pixel measurement here. Just the offsetHeight will do.
@@ -68,6 +107,15 @@ Ext.define('Ext.grid.ColumnComponentLayout', {
     // remove this override.
     measureContentHeight: function(ownerContext) {
         return ownerContext.el.dom.offsetHeight;
+    },
+
+    publishOwnerHeight: function(ownerContext, contentHeight) {
+        this.callParent(arguments);
+        // Only IE6 and IEQuirks needs this.
+        // This is why we maintain titleHeight when setting it.
+        if ((Ext.isIE6 || Ext.isIEQuirks) && ownerContext.triggerContext) {
+            ownerContext.triggerContext.setHeight(contentHeight);
+        }
     },
 
     // If not shrink wrapping, push width info down into child items
@@ -80,13 +128,12 @@ Ext.define('Ext.grid.ColumnComponentLayout', {
 
     // Push content height outwards when we are shrinkwrapping
     calculateOwnerHeightFromContentHeight: function (ownerContext, contentHeight) {
-        var result = this.callParent(arguments),
-            owner = this.owner;
+        var result = this.callParent(arguments);
 
         // If we are NOT a group header, we just use the auto component's measurement
         if (!ownerContext.hasRawContent) {
-            if (!owner.headerWrap || ownerContext.hasDomProp('width')) {
-                return contentHeight + owner.titleEl.getHeight() + ownerContext.getBorderInfo().height;
+            if (this.owner.noWrap || ownerContext.hasDomProp('width')) {
+                return contentHeight + this.owner.titleEl.getHeight() + ownerContext.getBorderInfo().height;
             }
 
             // We do not have the information to return the height yet because we cannot know

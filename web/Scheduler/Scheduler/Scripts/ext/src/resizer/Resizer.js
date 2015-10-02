@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * Applies drag handles to an element or component to make it resizable. The drag handles are inserted into the element
  * (or component's element) and positioned absolute.
@@ -24,7 +41,7 @@
  * Here's an example showing the creation of a typical Resizer:
  *
  *     Ext.create('Ext.resizer.Resizer', {
- *         target: 'elToResize',
+ *         el: 'elToResize',
  *         handles: 'all',
  *         minWidth: 200,
  *         minHeight: 100,
@@ -41,11 +58,10 @@ Ext.define('Ext.resizer.Resizer', {
 
     alternateClassName: 'Ext.Resizable',
 
-    handleCls:  Ext.baseCSSPrefix + 'resizable-handle',
-    overCls:  Ext.baseCSSPrefix + 'resizable-handle-over',
-    pinnedCls:  Ext.baseCSSPrefix + 'resizable-pinned',
-    wrapCls:    Ext.baseCSSPrefix + 'resizable-wrap',
-    wrappedCls: Ext.baseCSSPrefix + 'resizable-wrapped',
+    handleCls: Ext.baseCSSPrefix + 'resizable-handle',
+    pinnedCls: Ext.baseCSSPrefix + 'resizable-pinned',
+    overCls:   Ext.baseCSSPrefix + 'resizable-over',
+    wrapCls:   Ext.baseCSSPrefix + 'resizable-wrap',
     delimiterRe: /(?:\s*[,;]\s*)|\s+/,
 
     /**
@@ -134,7 +150,7 @@ Ext.define('Ext.resizer.Resizer', {
     transparent: false,
 
     /**
-     * @cfg {Ext.dom.Element/Ext.util.Region} constrainTo
+     * @cfg {Ext.Element/Ext.util.Region} constrainTo
      * An element, or a {@link Ext.util.Region Region} into which the resize operation must be constrained.
      */
 
@@ -150,162 +166,136 @@ Ext.define('Ext.resizer.Resizer', {
     },
 
     /**
-     * @cfg {Ext.dom.Element/Ext.Component} target
+     * @cfg {Ext.Element/Ext.Component} target
      * The Element or Component to resize.
      */
 
     /**
-     * @property {Ext.dom.Element} el
+     * @property {Ext.Element} el
      * Outer element for resizing behavior.
      */
-
+    
     ariaRole: 'presentation',
-
-    /**
-     * @event beforeresize
-     * Fired before resize is allowed. Return false to cancel resize.
-     * @param {Ext.resizer.Resizer} this
-     * @param {Number} width The start width
-     * @param {Number} height The start height
-     * @param {Ext.event.Event} e The mousedown event
-     */
-
-    /**
-     * @event resizedrag
-     * Fires during resizing.
-     * @param {Ext.resizer.Resizer} this
-     * @param {Number} width The new width
-     * @param {Number} height The new height
-     * @param {Ext.event.Event} e The mousedown event
-     */
-
-    /**
-     * @event resize
-     * Fired after a resize.
-     * @param {Ext.resizer.Resizer} this
-     * @param {Number} width The new width
-     * @param {Number} height The new height
-     * @param {Ext.event.Event} e The mouseup event
-     */
 
     constructor: function(config) {
         var me = this,
+            target,
+            targetEl,
+            tag,
             handles = me.handles,
-            unselectableCls = Ext.dom.Element.unselectableCls,
+            handleCls,
+            possibles,
+            len,
+            i = 0,
+            pos, 
             handleEls = [],
-            resizeTarget, handleCls, possibles, tag,
-            len, i, pos, el, box, 
-            wrapTarget, positioning, targetBaseCls;
-            
+            eastWestStyle, style,
+            box, targetBaseCls,
+            unselectableCls = Ext.dom.Element.unselectableCls;
+
+        me.addEvents(
+            /**
+             * @event beforeresize
+             * Fired before resize is allowed. Return false to cancel resize.
+             * @param {Ext.resizer.Resizer} this
+             * @param {Number} width The start width
+             * @param {Number} height The start height
+             * @param {Ext.EventObject} e The mousedown event
+             */
+            'beforeresize',
+            /**
+             * @event resizedrag
+             * Fires during resizing. Return false to cancel resize.
+             * @param {Ext.resizer.Resizer} this
+             * @param {Number} width The new width
+             * @param {Number} height The new height
+             * @param {Ext.EventObject} e The mousedown event
+             */
+            'resizedrag',
+            /**
+             * @event resize
+             * Fired after a resize.
+             * @param {Ext.resizer.Resizer} this
+             * @param {Number} width The new width
+             * @param {Number} height The new height
+             * @param {Ext.EventObject} e The mouseup event
+             */
+            'resize'
+        );
 
         if (Ext.isString(config) || Ext.isElement(config) || config.dom) {
-            resizeTarget = config;
+            target = config;
             config = arguments[1] || {};
-            config.target = resizeTarget;
+            config.target = target;
         }
         // will apply config to this
         me.mixins.observable.constructor.call(me, config);
 
         // If target is a Component, ensure that we pull the element out.
         // Resizer must examine the underlying Element.
-        resizeTarget = me.target;
-        if (resizeTarget) {
-            if (resizeTarget.isComponent) {
+        target = me.target;
+        if (target) {
+            if (target.isComponent) {
 
                 // Resizable Components get a new UI class on them which makes them overflow:visible
-                // if the border width is non-zero and therefore the SASS has embedded the handles
+                // if the border width is non-zero and therefore the SASS has embedded the handles 
                 // in the borders using -ve position.
-                resizeTarget.addClsWithUI('resizable');
+                target.addClsWithUI('resizable');
 
-                if (resizeTarget.minWidth) {
-                    me.minWidth = resizeTarget.minWidth;
+                me.el = target.getEl();
+                if (target.minWidth) {
+                    me.minWidth = target.minWidth;
                 }
-                if (resizeTarget.minHeight) {
-                    me.minHeight = resizeTarget.minHeight;
+                if (target.minHeight) {
+                    me.minHeight = target.minHeight;
                 }
-                if (resizeTarget.maxWidth) {
-                    me.maxWidth = resizeTarget.maxWidth;
+                if (target.maxWidth) {
+                    me.maxWidth = target.maxWidth;
                 }
-                if (resizeTarget.maxHeight) {
-                    me.maxHeight = resizeTarget.maxHeight;
+                if (target.maxHeight) {
+                    me.maxHeight = target.maxHeight;
                 }
-                if (resizeTarget.floating) {
+                if (target.floating) {
                     if (!me.hasOwnProperty('handles')) {
                         me.handles = 'n ne e se s sw w nw';
                     }
                 }
-                me.el = resizeTarget.getEl();
             } else {
-                resizeTarget = me.el = me.target = Ext.get(resizeTarget);
+                me.el = me.target = Ext.get(target);
             }
         }
         // Backwards compatibility with Ext3.x's Resizable which used el as a config.
         else {
-            resizeTarget = me.target = me.el = Ext.get(me.el);
-        }
-
-        // Locally enforce border box model.
-        // https://sencha.jira.com/browse/EXTJSIV-11511
-        me.el.addCls(Ext.Component.prototype.borderBoxCls);
-
-        // Constrain within configured maxima
-        if (Ext.isNumber(me.width)) {
-            me.width = Ext.Number.constrain(me.width, me.minWidth, me.maxWidth);
-        }
-        if (Ext.isNumber(me.height)) {
-            me.height = Ext.Number.constrain(me.height, me.minHeight, me.maxHeight);
-        }
-
-        // Size the target.
-        if (me.width !== null || me.height !== null) {
-            me.target.setSize(me.width, me.height);
+            me.target = me.el = Ext.get(me.el);
         }
 
         // Tags like textarea and img cannot
         // have children and therefore must
         // be wrapped
         tag = me.el.dom.tagName.toUpperCase();
-        if (tag === 'TEXTAREA' || tag === 'IMG' || tag === 'TABLE') {
+        if (tag == 'TEXTAREA' || tag == 'IMG' || tag == 'TABLE') {
             /**
-             * @property {Ext.dom.Element/Ext.Component} originalTarget
+             * @property {Ext.Element/Ext.Component} originalTarget
              * Reference to the original resize target if the element of the original resize target was a
              * {@link Ext.form.field.Field Field}, or an IMG or a TEXTAREA which must be wrapped in a DIV.
              */
             me.originalTarget = me.target;
-
-            wrapTarget = resizeTarget.isComponent ? resizeTarget.getEl() : resizeTarget;
-
-            // Tag the wrapped element with a class so thaht we can force it to use border box sizing model
-            me.el.addCls(me.wrappedCls);
-
+            targetEl = me.el;
+            box = targetEl.getBox();
             me.target = me.el = me.el.wrap({
                 role: 'presentation',
                 cls: me.wrapCls,
                 id: me.el.id + '-rzwrap',
-                style: wrapTarget.getStyle(['margin-top', 'margin-bottom'])
+                style: targetEl.getStyles('margin-top', 'margin-bottom')
             });
 
-            positioning = wrapTarget.getPositioning();
-
             // Transfer originalTarget's positioning+sizing+margins
-            me.el.setPositioning(positioning);
-
-            wrapTarget.clearPositioning();
-
-            box = wrapTarget.getBox();
-
-            if (positioning.position !== 'absolute'){
-                //reset coordinates
-                box.x = 0;
-                box.y = 0;
-            }
-
+            me.el.setPositioning(targetEl.getPositioning());
+            targetEl.clearPositioning();
             me.el.setBox(box);
 
             // Position the wrapped element absolute so that it does not stretch the wrapper
-            wrapTarget.setStyle('position', 'absolute');
-
-            me.isTargetWrapped = true;
+            targetEl.setStyle('position', 'absolute');
         }
 
         // Position the element, this enables us to absolute position
@@ -320,20 +310,13 @@ Ext.define('Ext.resizer.Resizer', {
          */
         me.resizeTracker = new Ext.resizer.ResizeTracker({
             disabled: me.disabled,
-            target: resizeTarget,
-            el: me.el,
+            target: me.target,
             constrainTo: me.constrainTo,
-            handleCls: me.handleCls,
             overCls: me.overCls,
             throttle: me.throttle,
-
-            // If we have wrapped something, instruct the ResizerTracker to use that wrapper as a proxy
-            // and we should resize the wrapped target dynamically.
-            proxy: me.originalTarget ? me.el : null,
-            dynamic: me.originalTarget ? true : me.dynamic,
-
             originalTarget: me.originalTarget,
             delegate: '.' + me.handleCls,
+            dynamic: me.dynamic,
             preserveRatio: me.preserveRatio,
             heightIncrement: me.heightIncrement,
             widthIncrement: me.widthIncrement,
@@ -351,7 +334,7 @@ Ext.define('Ext.resizer.Resizer', {
             scope: me
         });
 
-        if (me.handles === 'all') {
+        if (me.handles == 'all') {
             me.handles = 'n s e w ne nw se sw';
         }
 
@@ -361,46 +344,69 @@ Ext.define('Ext.resizer.Resizer', {
 
         handleCls = me.handleCls + ' ' + me.handleCls + '-{0}';
         if (me.target.isComponent) {
-            targetBaseCls = me.target.baseCls;
+            targetBaseCls = me.target.baseCls
             handleCls += ' ' + targetBaseCls + '-handle ' + targetBaseCls + '-handle-{0}';
             if (Ext.supports.CSS3BorderRadius) {
                 handleCls += ' ' + targetBaseCls + '-handle-{0}-br';
             }
         }
 
-        for (i = 0; i < len; i++){
+        // Needs heighting on IE6!
+        eastWestStyle = Ext.isIE6 ? ' style="height:' + me.el.getHeight() + 'px"' : '';
+
+        for (; i < len; i++){
             // if specified and possible, create
             if (handles[i] && possibles[handles[i]]) {
                 pos = possibles[handles[i]];
+                if (pos === 'east' || pos === 'west') {
+                    style = eastWestStyle;
+                } else {
+                    style = '';
+                }
 
                 handleEls.push(
-                    '<div id="', me.el.id, '-', pos, '-handle" class="', Ext.String.format(handleCls, pos), ' ', unselectableCls,
-                        '" unselectable="on" role="presentation"',
+                    '<div id="', me.el.id, '-', pos, '-handle"',
+                        ' class="', Ext.String.format(handleCls, pos), ' ', unselectableCls, '"',
+                        ' unselectable="on" role="presentation"',
+                        style,
                     '></div>'
                 );
             }
         }
         Ext.DomHelper.append(me.el, handleEls.join(''));
 
-        // Let's reuse the handleEls stack to collect the actual els.
-        handleEls.length = 0;
-
         // store a reference to each handle element in this.east, this.west, etc
         for (i = 0; i < len; i++){
             // if specified and possible, create
             if (handles[i] && possibles[handles[i]]) {
                 pos = possibles[handles[i]];
-                el = me[pos] = me.el.getById(me.el.id + '-' + pos + '-handle');
-                handleEls.push(el);
-                el.region = pos;
+                me[pos] = me.el.getById(me.el.id + '-' + pos + '-handle');
+                me[pos].region = pos;
 
                 if (me.transparent) {
-                    el.setOpacity(0);
+                    me[pos].setOpacity(0);
                 }
             }
         }
 
-        me.resizeTracker.handleEls = handleEls;
+        // Constrain within configured maxima
+        if (Ext.isNumber(me.width)) {
+            me.width = Ext.Number.constrain(me.width, me.minWidth, me.maxWidth);
+        }
+        if (Ext.isNumber(me.height)) {
+            me.height = Ext.Number.constrain(me.height, me.minHeight, me.maxHeight);
+        }
+
+        // Size the target (and originalTarget)
+        if (me.width !== null || me.height !== null) {
+            if (me.originalTarget) {
+                me.originalTarget.setWidth(me.width);
+                me.originalTarget.setHeight(me.height);
+            }
+            me.resizeTo(me.width, me.height);
+        }
+
+        me.forceHandlesHeight();
     },
 
     disable: function() {
@@ -412,50 +418,39 @@ Ext.define('Ext.resizer.Resizer', {
     },
 
     /**
-     * @private
-     * Relay the Tracker's mousedown event as beforeresize
-     * @param {Ext.resizer.ResizeTracker} The tracker
-     * @param {Ext.event.Event} The event
+     * @private Relay the Tracker's mousedown event as beforeresize
+     * @param tracker The Resizer
+     * @param e The Event
      */
     onBeforeResize: function(tracker, e) {
-        return this.fireResizeEvent('beforeresize', tracker, e);
+        var box = this.el.getBox();
+        return this.fireEvent('beforeresize', this, box.width, box.height, e);
     },
 
     /**
-     * @private
-     * Relay the Tracker's drag event as resizedrag
-     * @param {Ext.resizer.ResizeTracker} The tracker
-     * @param {Ext.event.Event} The event
+     * @private Relay the Tracker's drag event as resizedrag
+     * @param tracker The Resizer
+     * @param e The Event
      */
     onResize: function(tracker, e) {
-        return this.fireResizeEvent('resizedrag', tracker, e);
+        var me = this,
+            box = me.el.getBox();
+            
+        me.forceHandlesHeight();
+        return me.fireEvent('resizedrag', me, box.width, box.height, e);
     },
 
     /**
-     * @private
-     * Relay the Tracker's dragend event as resize
-     * @param {Ext.resizer.ResizeTracker} The tracker
-     * @param {Ext.event.Event} The event
+     * @private Relay the Tracker's dragend event as resize
+     * @param tracker The Resizer
+     * @param e The Event
      */
     onResizeEnd: function(tracker, e) {
-        return this.fireResizeEvent('resize', tracker, e);
-    },
-
-    /**
-     * @private
-     * Fire a resize event, checking if we have listeners before firing.
-     * @param {String} name The name of the event
-     * @param {Ext.resizer.ResizeTracker} The tracker
-     * @param {Ext.event.Event} The event
-     */
-    fireResizeEvent: function(name, tracker, e) {
         var me = this,
-            box;
-
-        if (me.hasListeners[name]) {
             box = me.el.getBox();
-            return me.fireEvent(name, me, box.width, box.height, e);
-        }
+            
+        me.forceHandlesHeight();
+        return me.fireEvent('resize', me, box.width, box.height, e);
     },
 
     /**
@@ -475,7 +470,7 @@ Ext.define('Ext.resizer.Resizer', {
      *
      * Textarea and img elements will be wrapped with an additional div because these elements do not support child
      * nodes. The original element can be accessed through the originalTarget property.
-     * @return {Ext.dom.Element} element
+     * @return {Ext.Element} element
      */
     getEl : function() {
         return this.el;
@@ -486,7 +481,7 @@ Ext.define('Ext.resizer.Resizer', {
      *
      * Textarea and img elements will be wrapped with an additional div because these elements do not support child
      * nodes. The original element can be accessed through the originalTarget property.
-     * @return {Ext.dom.Element/Ext.Component}
+     * @return {Ext.Element/Ext.Component}
      */
     getTarget: function() {
         return this.target;
@@ -501,16 +496,30 @@ Ext.define('Ext.resizer.Resizer', {
             handle;
 
         me.resizeTracker.destroy();
-
-        // The target is redefined as an element when it's wrapped so we must destroy it.
-        if (me.isTargetWrapped) {
-            me.target.destroy();
-        }
-
         for (i = 0; i < len; i++) {
-            if ((handle = me[positions[handles[i]]])) {
-                handle.destroy();
+            if (handle = me[positions[handles[i]]]) {
+                handle.remove();
             }
+        }
+    },
+
+    /**
+     * @private
+     * Fix IE6 handle height issue.
+     */
+    forceHandlesHeight : function() {
+        var me = this,
+            handle;
+        if (Ext.isIE6) {
+            handle = me.east;
+            if (handle) {
+                handle.setHeight(me.el.getHeight());
+            }
+            handle = me.west;
+            if (handle) {
+                handle.setHeight(me.el.getHeight());
+            }
+            me.el.repaint();
         }
     }
 });

@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * This plugin provides drag and/or drop functionality for a {@link Ext.grid.View GridView}.
  *
@@ -14,11 +31,11 @@
  *
  *   The source GridView from which the drag originated.
  *
- * - `ddel` : HTMLElement
+ * - `ddel` : HtmlElement
  *
  *   The drag proxy element which moves with the mouse
  *
- * - `item` : HTMLElement
+ * - `item` : HtmlElement
  *
  *   The GridView node upon which the mousedown event was registered.
  *
@@ -60,7 +77,7 @@
  *     });
  */
 Ext.define('Ext.grid.plugin.DragDrop', {
-    extend: 'Ext.plugin.Abstract',
+    extend: 'Ext.AbstractPlugin',
     alias: 'plugin.gridviewdragdrop',
 
     uses: [
@@ -143,11 +160,11 @@ Ext.define('Ext.grid.plugin.DragDrop', {
      *
      *   The source GridView from which the drag originated.
      *
-     * - `ddel` : HTMLElement
+     * - `ddel` : HtmlElement
      *
      *   The drag proxy element which moves with the mouse
      *
-     * - `item` : HTMLElement
+     * - `item` : HtmlElement
      *
      *   The {@link Ext.grid.View GridView}{@link Ext.grid.View GridView} node upon which the mousedown event was registered.
      *
@@ -175,14 +192,14 @@ Ext.define('Ext.grid.plugin.DragDrop', {
     //</locale>
 
     /**
-     * @cfg {String} [ddGroup=gridDD]
+     * @cfg {String} ddGroup
      * A named drag drop group to which this object belongs. If a group is specified, then both the DragZones and
      * DropZone used by this plugin will only interact with other drag drop objects in the same group.
      */
     ddGroup : "GridDD",
 
     /**
-     * @cfg {String} [dragGroup]
+     * @cfg {String} dragGroup
      * The {@link #ddGroup} to which the DragZone will belong.
      *
      * This defines which other DropZones the DragZone will interact with. Drag/DropZones only interact with other
@@ -190,7 +207,7 @@ Ext.define('Ext.grid.plugin.DragDrop', {
      */
 
     /**
-     * @cfg {String} [dropGroup]
+     * @cfg {String} dropGroup
      * The {@link #ddGroup} to which the DropZone will belong.
      *
      * This defines which other DragZones the DropZone will interact with. Drag/DropZones only interact with other
@@ -216,37 +233,13 @@ Ext.define('Ext.grid.plugin.DragDrop', {
      */
     containerScroll: false,
 
-    /**
-     * @cfg {Object} [dragZone]
-     * A config object to apply to the creation of the {@link #property-dragZone DragZone} which handles for drag start gestures.
-     *
-     * Template methods of the DragZone may be overridden using this config.
-     */
-
-    /**
-     * @cfg {Object} [dropZone]
-     * A config object to apply to the creation of the {@link #property-dropZone DropZone} which handles mouseover and drop gestures.
-     *
-     * Template methods of the DropZone may be overridden using this config.
-     */
-
-    /**
-     * @property {Ext.view.DragZone} dragZone
-     * An {@link Ext.view.DragZone DragZone} which handles mousedown and dragging of records from the grid.
-     */
-
-    /**
-     * @property {Ext.grid.ViewDropZone} dropZone
-     * An {@link Ext.grid.ViewDropZone DropZone} which handles mouseover and dropping records in any grid which shares the same {@link #dropGroup}.
-     */
-
     init : function(view) {
         view.on('render', this.onViewRender, this, {single: true});
     },
 
     /**
      * @private
-     * Component calls destroy on all its plugins at destroy time.
+     * AbstractComponent calls destroy on all its plugins at destroy time.
      */
     destroy: function() {
         Ext.destroy(this.dragZone, this.dropZone);
@@ -282,21 +275,21 @@ Ext.define('Ext.grid.plugin.DragDrop', {
             if (me.containerScroll) {
                 scrollEl = view.getEl();
             }
-
-            me.dragZone = new Ext.view.DragZone(Ext.apply({
+            
+            me.dragZone = new Ext.view.DragZone({
                 view: view,
                 ddGroup: me.dragGroup || me.ddGroup,
                 dragText: me.dragText,
                 containerScroll: me.containerScroll,
                 scrollEl: scrollEl
-            }, me.dragZone));
+            });
         }
 
         if (me.enableDrop) {
-            me.dropZone = new Ext.grid.ViewDropZone(Ext.apply({
+            me.dropZone = new Ext.grid.ViewDropZone({
                 view: view,
                 ddGroup: me.dropGroup || me.ddGroup
-            }, me.dropZone));
+            });
         }
     }
 });

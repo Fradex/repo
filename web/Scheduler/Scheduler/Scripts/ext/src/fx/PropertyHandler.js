@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * @private
  */
@@ -5,7 +22,7 @@ Ext.define('Ext.fx.PropertyHandler', {
 
     /* Begin Definitions */
 
-    requires: ['Ext.fx.DrawPath'],
+    requires: ['Ext.draw.Draw'],
 
     statics: {
         defaultHandler: {
@@ -291,7 +308,7 @@ Ext.define('Ext.fx.PropertyHandler', {
 
             forcePath: function(path) {
                 if (!Ext.isArray(path) && !Ext.isArray(path[0])) {
-                    path = Ext.fx.DrawPath.parsePathString(path);
+                    path = Ext.draw.Draw.parsePathString(path);
                 }
                 return path;
             },
@@ -304,7 +321,7 @@ Ext.define('Ext.fx.PropertyHandler', {
                 for (i = 0; i < startLn; i++) {
                     startPath = this.forcePath(start[i][1]);
 
-                    deltaPath = Ext.fx.DrawPath.interpolatePaths(startPath, endPath);
+                    deltaPath = Ext.draw.Draw.interpolatePaths(startPath, endPath);
                     startPath = deltaPath[0];
                     endPath = deltaPath[1];
 

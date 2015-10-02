@@ -1,9 +1,26 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * This is a layout that enables anchoring of contained elements relative to the container's dimensions.
  * If the container is resized, all anchored items are automatically rerendered according to their
  * `{@link #anchor}` rules.
  *
- * This class is intended to be extended or created via the {@link Ext.container.Container#layout layout}: 'anchor'
+ * This class is intended to be extended or created via the {@link Ext.container.AbstractContainer#layout layout}: 'anchor' 
  * config, and should generally not need to be created directly via the new keyword.
  * 
  * AnchorLayout does not have any direct config options (other than inherited ones). By default,
@@ -30,7 +47,7 @@
  *             {
  *                 xtype: 'panel',
  *                 title: 'Offset -300 Width & -200 Height',
- *                 anchor: '-300 -200'   
+ *                 anchor: '-300 -200'		
  *             },
  *             {
  *                 xtype: 'panel',
@@ -109,12 +126,6 @@ Ext.define('Ext.layout.container.Anchor', {
     parseAnchorRE: /^(r|right|b|bottom)$/i,
 
     manageOverflow: true,
-
-    // Anchor layout does not read the size of individual items in the shrink-wrapping
-    // dimension(s) because, as a subclass of autocontainer, it measures them as a whole
-    // using an outer element.  However, anchor layout may set the size of its items in
-    // non-shrink-wrapping dimension(s).
-    setsItemSize: true,
 
     beginLayoutCycle: function (ownerContext) {
         var me = this,
@@ -290,7 +301,7 @@ Ext.define('Ext.layout.container.Anchor', {
 
         me.callParent(arguments);
 
-        if (!item.anchor && item.items && !Ext.isNumber(item.width)) {
+        if (!item.anchor && item.items && !Ext.isNumber(item.width) && !(Ext.isIE6 && Ext.isStrict)) {
             item.anchor = anchor = me.defaultAnchor;
         }
 

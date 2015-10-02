@@ -1,152 +1,42 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * Internal utility class that provides default configuration for cell editing.
  * @private
  */
 Ext.define('Ext.grid.CellEditor', {
     extend: 'Ext.Editor',
-
-    alignment: 'l-l?',
-
-    hideEl : false,
-
-    cls: Ext.baseCSSPrefix + 'small-editor ' +
-        Ext.baseCSSPrefix + 'grid-editor ' +
-        Ext.baseCSSPrefix + 'grid-cell-editor',
-
-    treeNodeSelector: '.' + Ext.baseCSSPrefix + 'tree-node-text',
-
-    shim: false,
-
-    shadow: false,
-
     constructor: function(config) {
-        var field;
-
-        // Editor must appear at the top so that it does not contribute to scrollbars.
-        this.y = 0;
-
         config = Ext.apply({}, config);
-        field = config.field;
-
-        if (field) {
-            field.monitorTab = false;
+        
+        if (config.field) {
+            config.field.monitorTab = false;
         }
-
         this.callParent([config]);
     },
-
-    // Set the grid that owns this editor.
-    // Usually this will only *change* once, and the renderTo will cause
-    // rendering into the owning grid.
-    // However in a Lockable assembly the editor has to swap sides if the column is moved across.
-    // Called by CellEditing#getEditor
-    setGrid: function(grid) {
-        var me = this,
-            oldGrid = me.grid,
-            view,
-            viewListeners;
-
-        if (grid !== oldGrid) {
-            viewListeners = {
-                beforerefresh: me.beforeViewRefresh,
-                refresh: me.onViewRefresh,
-                scope: me
-            };
-            // Remove previous refresh listener
-            if (oldGrid) {
-                oldGrid.getView().un(viewListeners);
-            }
-
-            // Set the renderTo target to reflect new grid view ownership
-            view = grid.getView();
-            me.renderTo = view.getTargetEl().dom;
-            me.grid = grid;
-
-            // On view refresh, we need to copy our DOM into the detached body to prevent it from being garbage collected.
-            view.on(viewListeners);
-        }
-    },
-
-    afterFirstLayout: function(width, height) {
-        // After we've been laid out, we can get rid of the y property, we don't want
-        // to be positioned now
-        delete this.y;
-        this.callParent([width, height]);
-    },
-
-    beforeViewRefresh: function() {
-        var me = this,
-            dom = me.el && me.el.dom;
-
-        if (dom) {
-            if (me.editing && !(me.field.column && me.field.column.sorting)) {
-
-                // Clear the Panel's cellFocused flag prior to removing it from the DOM
-                // This will prevent the Panels onFocusLeave from processing the resulting blurring.
-                me.grid.view.cellFocused = false;
-
-                // Set the Editor.allowBlur setting so that it does not process the upcoming field blur event and terminate the edit
-                me.wasAllowBlur = me.allowBlur;
-                me.allowBlur = false;
-            }
-
-            // Remove the editor from the view to protect it from anihilation: https://sencha.jira.com/browse/EXTJSIV-11713
-            if (dom.parentNode) {
-                dom.parentNode.removeChild(dom);
-            }
-        }
-    },
-
-    onViewRefresh: function() {
-        var me = this,
-            dom = me.el && me.el.dom,
-            sorting;
-
-        if (dom) {
-            sorting = me.field.column && me.field.column.sorting;
-
-            // If the view was refreshed while we were editing, replace it.
-            if (me.editing && !sorting) {
-                me.allowBlur = me.wasAllowBlur;
-                me.renderTo.appendChild(dom);
-                
-                // The removal will have blurred, so avoid the processing in onFocusEnter by restoring the previous
-                // cellFocused setting
-                me.grid.view.cellFocused = true;
-
-                me.field.focus();
-            } else if (!sorting) {
-                Ext.getDetachedBody().dom.appendChild(dom);
-            }
-
-            // If the column was sorted while editing, we must detect that and complete the edit
-            // because the view will be refreshed and the editor will be removed from the dom.
-            if (me.editing && sorting) {
-                me.completeEdit();
-            }
-        }
-    },
-
-    startEdit: function(record, columnHeader) {
-        this.context = this.editingPlugin.context;
-        this.callParent([record, columnHeader]);
-    },
-
+    
     /**
      * @private
-     * Shows the editor, end ensures that it is rendered into the correct view
      * Hides the grid cell inner element when a cell editor is shown.
      */
     onShow: function() {
         var me = this,
             innerCell = me.boundEl.first();
-
-        // If we have had our owning grid changed (by a column switching sides in a Lockable assembly)
-        // or, if a view refresh has removed us from the DOM
-        // append this component into its renderTo target.
-        if (me.el.dom.parentNode !== me.renderTo) {
-            me.renderTo.appendChild(me.el.dom);
-        }
 
         if (innerCell) {
             if (me.isForTree) {
@@ -158,45 +48,11 @@ Ext.define('Ext.grid.CellEditor', {
         me.callParent(arguments);
     },
 
-    onEditComplete: function(remainVisible) {
-        // When being asked to process edit completion, if we are not hiding, restore the cell now
-        if (remainVisible) {
-            this.restoreCell();
-        }
-        this.callParent(arguments);
-    },
-
     /**
      * @private
      * Shows the grid cell inner element when a cell editor is hidden
      */
     onHide: function() {
-        var me = this,
-            context = me.context,
-            focusContext;
-
-        me.restoreCell();
-
-        if (context && me.el.contains(Ext.Element.getActiveElement())) {
-            focusContext = context.clone();
-
-            // If, after hiding, focus has not been programatically moved to another target
-            // (eg, we are in a TAB event listener, and move to edit the next cell)
-            // then revert focus back to the corresponding grid cell.
-            Ext.on({
-                idle: function() {
-                    if (Ext.Element.getActiveElement() === document.body) {
-                        context.view.getNavigationModel().setPosition(focusContext, null, null, null, true);
-                    }
-                },
-                single: true
-            });
-            me.context = null;
-        }
-        me.callParent(arguments);
-    },
-
-    restoreCell: function() {
         var me = this,
             innerCell = me.boundEl.first();
 
@@ -205,7 +61,9 @@ Ext.define('Ext.grid.CellEditor', {
                 innerCell = innerCell.child(me.treeNodeSelector);
             }
             innerCell.show();
-        }        
+        }
+        
+        me.callParent(arguments);
     },
 
     /**
@@ -217,7 +75,6 @@ Ext.define('Ext.grid.CellEditor', {
             field = me.field;
 
         me.callParent(arguments);
-
         if (field.isCheckbox) {
             field.mon(field.inputEl, {
                 mousedown: me.onCheckBoxMouseDown,
@@ -234,7 +91,7 @@ Ext.define('Ext.grid.CellEditor', {
     onCheckBoxMouseDown: function() {
         this.completeEdit = Ext.emptyFn;
     },
-     
+    
     /**
      * @private
      * Restore checkbox focus and completeEdit method.
@@ -274,7 +131,7 @@ Ext.define('Ext.grid.CellEditor', {
         if (grid.columnLines) {
             // Subtract the column border width so that the editor displays inside the
             // borders. The column border could be either on the left or the right depending
-            // on whether the grid is RTL - using the sum of both borders works in both modes.
+            // on whether the grid is RTL - using the sum of both borders works in both modes. 
             width -= boundEl.getBorderWidth('rl');
         }
 
@@ -286,9 +143,7 @@ Ext.define('Ext.grid.CellEditor', {
         if (isEmpty) {
             innerCell.dom.innerHTML = 'X';
         }
-
         me.alignTo(innerCell, me.alignment, offsets);
-
         if (isEmpty) {
             innerCell.dom.firstChild.data = v;
         }
@@ -306,15 +161,19 @@ Ext.define('Ext.grid.CellEditor', {
         }
     },
 
-    onFocusLeave : function(e) {
-        // We are going to hide because of this focus exit.
-        // Ensure that hide processing does not throw focus back to the previously focused element.
-        this.previousFocus = null;
-
-        this.callParent([e]);
-
+    onFieldBlur : function() {
+        this.callParent(arguments);
         // Reset the flag that may have been set by CellEditing#startEdit to prevent
         // Ext.Editor#onFieldBlur from canceling editing.
         this.selectSameEditor = false;
-    }
+    },
+
+    alignment: "l-l",
+    hideEl : false,
+    cls: Ext.baseCSSPrefix + 'small-editor ' +
+        Ext.baseCSSPrefix + 'grid-editor ' + 
+        Ext.baseCSSPrefix + 'grid-cell-editor',
+    treeNodeSelector: '.' + Ext.baseCSSPrefix + 'tree-node-text',
+    shim: false,
+    shadow: false
 });

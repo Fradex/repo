@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 // @define Ext.MessageBox, Ext.Msg
 
 /**
@@ -27,19 +44,10 @@
  *
  *     @example
  *     Ext.Msg.show({
- *         title:'Save Changes?',
- *         message: 'You are closing a tab that has unsaved changes. Would you like to save your changes?',
- *         buttons: Ext.Msg.YESNOCANCEL,
- *         icon: Ext.Msg.QUESTION,
- *         fn: function(btn) {
- *             if (btn === 'yes') {
- *                 console.log('Yes pressed');
- *             } else if (btn === 'no') {
- *                 console.log('No pressed');
- *             } else {
- *                 console.log('Cancel pressed');
- *             } 
- *         }
+ *          title:'Save Changes?',
+ *          msg: 'You are closing a tab that has unsaved changes. Would you like to save your changes?',
+ *          buttons: Ext.Msg.YESNOCANCEL,
+ *          icon: Ext.Msg.QUESTION
  *     });
  */
 Ext.define('Ext.window.MessageBox', {
@@ -49,6 +57,7 @@ Ext.define('Ext.window.MessageBox', {
         'Ext.toolbar.Toolbar',
         'Ext.form.field.Text',
         'Ext.form.field.TextArea',
+        'Ext.form.field.Display',
         'Ext.button.Button',
         'Ext.layout.container.Anchor',
         'Ext.layout.container.HBox',
@@ -117,7 +126,6 @@ Ext.define('Ext.window.MessageBox', {
     hideMode: 'offsets',
     closeAction: 'hide',
     resizable: false,
-    scrollable: true,
     title: '&#160;',
 
     defaultMinWidth: 250,
@@ -133,7 +141,7 @@ Ext.define('Ext.window.MessageBox', {
     maxHeight: null,
     constrain: true,
 
-    cls: [Ext.baseCSSPrefix + 'message-box', Ext.baseCSSPrefix + 'hidden-offsets'],
+    cls: [Ext.baseCSSPrefix + 'message-box', Ext.baseCSSPrefix + 'hide-offsets'],
 
     layout: {
         type: 'vbox',
@@ -191,7 +199,8 @@ Ext.define('Ext.window.MessageBox', {
     },
     //</locale>
 
-    baseIconCls: Ext.baseCSSPrefix + 'message-box-icon',
+    iconHeight: 35,
+    iconWidth: 50,
     
     ariaRole: 'alertdialog',
 
@@ -206,24 +215,10 @@ Ext.define('Ext.window.MessageBox', {
         });
     },
 
-    btnCallback: function(btn, event) {
+    btnCallback: function(btn) {
         var me = this,
             value,
             field;
-
-        // If this is caused by a keydown event (eg: SPACE on a Button), then the
-        // hide will throw focus back to the previously focused element which will
-        // then recieve an unexpected keyup event.
-        // So defer callback handling until the upcoming keyup event.
-        if (event && event.type === 'keydown' && !event.isSpecialKey()) {
-            event.getTarget(null, null, true).on({
-                keyup: function(e) {
-                    me.btnCallback(btn, e);
-                },
-                single: true
-            });
-            return;
-        }
 
         if (me.cfg.prompt || me.cfg.multiline) {
             if (me.cfg.multiline) {
@@ -242,7 +237,7 @@ Ext.define('Ext.window.MessageBox', {
 
     hide: function() {
         var me = this,
-            cls = me.cfg ? me.cfg.cls : '';
+            cls = me.cfg.cls;
 
         me.progressBar.reset();
         if (cls) {
@@ -269,9 +264,7 @@ Ext.define('Ext.window.MessageBox', {
             baseId = me.id,
             i, button;
 
-        // A title or iconCls could have been passed in the config to the constructor.
-        me.title = me.title || '&#160;';
-        me.iconCls = me.iconCls || '';
+        me.title = '&#160;';
 
         me.topContainer = new Ext.container.Container({
             layout: 'hbox',
@@ -281,21 +274,20 @@ Ext.define('Ext.window.MessageBox', {
             },
             items: [
                 me.iconComponent = new Ext.Component({
-                    cls: me.baseIconCls
+                    width: me.iconWidth,
+                    height: me.iconHeight
                 }),
                 me.promptContainer = new Ext.container.Container({
                     flex: 1,
-                    layout: {
-                        type: 'vbox',
-                        align: 'stretch'
-                    },
+                    layout: 'anchor',
                     items: [
-                        me.msg = new Ext.Component({
-                            id: baseId + '-msg',
+                        me.msg = new Ext.form.field.Display({
+                            id: baseId + '-displayfield',
                             cls: me.baseCls + '-text'
                         }),
                         me.textField = new Ext.form.field.Text({
                             id: baseId + '-textfield',
+                            anchor: '100%',
                             enableKeyEvents: true,
                             listeners: {
                                 keydown: me.onPromptKey,
@@ -304,13 +296,13 @@ Ext.define('Ext.window.MessageBox', {
                         }),
                         me.textArea = new Ext.form.field.TextArea({
                             id: baseId + '-textarea',
+                            anchor: '100%',
                             height: 75
                         })
                     ]
                 })
             ]
         });
-
         me.progressBar = new Ext.ProgressBar({
             id: baseId + '-progressbar',
             margin: '0 10 10 10'
@@ -370,16 +362,14 @@ Ext.define('Ext.window.MessageBox', {
             hideToolbar = true,
             oldButtonText = me.buttonText,
             resizer = me.resizer,
-            header = me.header,
-            headerCfg = header && !header.isHeader,
-            message = cfg && (cfg.message || cfg.msg),
-            resizeTracker, width, height, i, textArea,
-            textField, msg, progressBar, msgButtons;
+            resizeTracker, width, height, i, textArea, textField,
+            msg, progressBar, msgButtons;
 
         // Restore default buttonText before reconfiguring.
         me.updateButtonText();
 
-        me.cfg = cfg = cfg || {};
+        cfg = cfg || {};
+        me.cfg = cfg;
         if (cfg.width) {
             width = cfg.width;
         }
@@ -413,13 +403,9 @@ Ext.define('Ext.window.MessageBox', {
         // Defaults to modal
         me.modal = cfg.modal !== false;
 
-        // Show the title/icon if a title/iconCls config was passed in the config to either the constructor
-        // or the show() method. Note that anything passed in the config should win.
-        //
-        // Note that if there is no title/iconCls in the config, check the headerCfg and default to the instance
-        // properties. This works because there are default values defined in initComponent.
-        me.setTitle(cfg.title || (headerCfg && header.title) || me.title);
-        me.setIconCls(cfg.iconCls || (headerCfg && header.iconCls) || me.iconCls);
+        // Show the title/icon
+        me.setTitle(cfg.title || '');
+        me.setIconCls(cfg.iconCls || '');
 
         // Extract button configs
         if (Ext.isObject(cfg.buttons)) {
@@ -440,7 +426,8 @@ Ext.define('Ext.window.MessageBox', {
         // During the on render, or size resetting layouts, and in subsequent hiding and showing, we need to
         // suspend layouts, and flush at the end when the Window's children are at their final visibility.
         Ext.suspendLayouts();
-        me.width = me.height = null;
+        delete me.width;
+        delete me.height;
         if (width || height) {
             if (width) {
                 me.setWidth(width);
@@ -457,35 +444,28 @@ Ext.define('Ext.window.MessageBox', {
 
         // Hide or show the close tool
         me.closable = cfg.closable !== false && !cfg.wait;
+        me.header.child('[type=close]').setVisible(me.closable);
 
-        // We need to redefine `header` because me.setIconCls() could create a Header instance.
-        header = me.header;
-
-        if (header) {
-            header.child('[type=close]').setVisible(me.closable);
-
-            // Hide or show the header
-            if (!cfg.title && !me.closable && !cfg.iconCls) {
-                header.hide();
-            } else {
-                header.show();
-            }
+        // Hide or show the header
+        if (!cfg.title && !me.closable && !cfg.iconCls) {
+            me.header.hide();
+        } else {
+            me.header.show();
         }
 
         // Default to dynamic drag: drag the window, not a ghost
         me.liveDrag = !cfg.proxyDrag;
 
         // wrap the user callback
-        me.userCallback = Ext.Function.bindCallback(cfg.callback ||cfg.fn || Ext.emptyFn,
-            cfg.scope || Ext.global);
+        me.userCallback = Ext.Function.bind(cfg.callback ||cfg.fn || Ext.emptyFn, cfg.scope || Ext.global);
 
         // Hide or show the icon Component
-        me.setIcon(cfg.icon);
+        me.setIcon(cfg.icon, cfg.iconWidth, cfg.iconHeight);
 
         // Hide or show the message area
         msg = me.msg;
-        if (message) {
-            msg.setHtml(message);
+        if (cfg.msg) {
+            msg.setValue(cfg.msg);
             msg.show();
         } else {
             msg.hide();
@@ -518,7 +498,7 @@ Ext.define('Ext.window.MessageBox', {
         if (cfg.progress || cfg.wait) {
             progressBar.show();
             me.updateProgress(0, cfg.progressText);
-            if (cfg.wait === true) {
+            if(cfg.wait === true){
                 progressBar.wait(cfg.waitConfig);
             }
         } else {
@@ -587,7 +567,7 @@ Ext.define('Ext.window.MessageBox', {
      *
      *     Ext.Msg.show({
      *         title: 'Address',
-     *         message: 'Please enter your address:',
+     *         msg: 'Please enter your address:',
      *         width: 300,
      *         buttons: Ext.Msg.OKCANCEL,
      *         multiline: true,
@@ -687,7 +667,7 @@ Ext.define('Ext.window.MessageBox', {
      * @param {Boolean} config.modal
      * False to allow user interaction with the page while the message box is displayed (defaults to true)
      *
-     * @param {String} config.message
+     * @param {String} config.msg
      * A string that will replace the existing message box body text (defaults to the XHTML-compliant non-breaking space
      * character '&#160;')
      *
@@ -727,10 +707,8 @@ Ext.define('Ext.window.MessageBox', {
         var me = this,
             visibleFocusables;
 
-        cfg = cfg || {};
-
         // If called during global layout suspension, make the call after layout resumption
-        if (Ext.Component.layoutSuspendCount) {
+        if (Ext.AbstractComponent.layoutSuspendCount) {
             Ext.on({
                 resumelayouts: function() {
                     me.show(cfg);
@@ -763,7 +741,7 @@ Ext.define('Ext.window.MessageBox', {
     },
 
     updateText: function(text) {
-        this.msg.setHtml(text);
+        this.msg.setValue(text);
     },
 
     /**
@@ -793,9 +771,7 @@ Ext.define('Ext.window.MessageBox', {
 
         if (icon) {
             iconCmp.show();
-            if (width || height) {
-                iconCmp.setSize(width || iconCmp.getWidth(), height || iconCmp.getHeight());
-            }
+            iconCmp.setSize(width || me.iconWidth, height || me.iconHeight);
             iconCmp.addCls(Ext.baseCSSPrefix + 'dlg-icon');
             iconCmp.addCls(me.messageIconCls = icon);
         } else {
@@ -812,14 +788,14 @@ Ext.define('Ext.window.MessageBox', {
      *
      * @param {Number} [value=0] Any number between 0 and 1 (e.g., .5)
      * @param {String} [progressText=''] The progress text to display inside the progress bar.
-     * @param {String} [message] The message box's body text is replaced with the specified string (defaults to undefined
+     * @param {String} [msg] The message box's body text is replaced with the specified string (defaults to undefined
      * so that any existing body text will not get overwritten by default unless a new value is passed in)
      * @return {Ext.window.MessageBox} this
      */
-    updateProgress : function(value, progressText, message){
+    updateProgress : function(value, progressText, msg){
         this.progressBar.updateProgress(value, progressText);
-        if (message){
-            this.updateText(message);
+        if (msg){
+            this.updateText(msg);
         }
         return this;
     },
@@ -837,18 +813,18 @@ Ext.define('Ext.window.MessageBox', {
      * (could also be the top-right close button, which will always report as "cancel").
      *
      * @param {String} title The title bar text
-     * @param {String} message The message box body text
+     * @param {String} msg The message box body text
      * @param {Function} [fn] The callback function invoked after the message box is closed.
      * See {@link #method-show} method for details.
      * @param {Object} [scope=window] The scope (`this` reference) in which the callback is executed.
      * @return {Ext.window.MessageBox} this
      */
-    confirm: function(cfg, message, fn, scope) {
+    confirm: function(cfg, msg, fn, scope) {
         if (Ext.isString(cfg)) {
             cfg = {
                 title: cfg,
                 icon: this.QUESTION,
-                message: message,
+                msg: msg,
                 buttons: this.YESNO,
                 callback: fn,
                 scope: scope
@@ -864,7 +840,7 @@ Ext.define('Ext.window.MessageBox', {
      * close button, which will always report as "cancel") and the text that was entered will be passed as the two parameters to the callback.
      *
      * @param {String} title The title bar text
-     * @param {String} message The message box body text
+     * @param {String} msg The message box body text
      * @param {Function} [fn] The callback function invoked after the message box is closed.
      * See {@link #method-show} method for details.
      * @param {Object} [scope=window] The scope (`this` reference) in which the callback is executed.
@@ -873,13 +849,13 @@ Ext.define('Ext.window.MessageBox', {
      * @param {String} [value=''] Default value of the text input element
      * @return {Ext.window.MessageBox} this
      */
-    prompt : function(title, message, fn, scope, multiline, value){
-        if (Ext.isString(title)) {
-            title = {
+    prompt : function(cfg, msg, fn, scope, multiline, value){
+        if (Ext.isString(cfg)) {
+            cfg = {
                 prompt: true,
-                title: title,
+                title: cfg,
                 minWidth: this.minPromptWidth,
-                message: message,
+                msg: msg,
                 buttons: this.OKCANCEL,
                 callback: fn,
                 scope: scope,
@@ -887,7 +863,7 @@ Ext.define('Ext.window.MessageBox', {
                 value: value
             };
         }
-        return this.show(title);
+        return this.show(cfg);
     },
 
     /**
@@ -895,16 +871,16 @@ Ext.define('Ext.window.MessageBox', {
      * interaction while waiting for a long-running process to complete that does not have defined intervals.
      * You are responsible for closing the message box when the process is complete.
      *
-     * @param {String} message The message box body text
+     * @param {String} msg The message box body text
      * @param {String} [title] The title bar text
      * @param {Object} [config] A {@link Ext.ProgressBar#wait} config object
      * @return {Ext.window.MessageBox} this
      */
-    wait : function(message, title, config){
-        if (Ext.isString(message)) {
-            message = {
+    wait : function(cfg, title, config){
+        if (Ext.isString(cfg)) {
+            cfg = {
                 title : title,
-                message : message,
+                msg : cfg,
                 closable: false,
                 wait: true,
                 modal: true,
@@ -912,7 +888,7 @@ Ext.define('Ext.window.MessageBox', {
                 waitConfig: config
             };
         }
-        return this.show(message);
+        return this.show(cfg);
     },
 
     /**
@@ -922,24 +898,24 @@ Ext.define('Ext.window.MessageBox', {
      * (could also be the top-right close button, which will always report as "cancel").
      *
      * @param {String} title The title bar text
-     * @param {String} message The message box body text
+     * @param {String} msg The message box body text
      * @param {Function} [fn] The callback function invoked after the message box is closed.
      * See {@link #method-show} method for details.
      * @param {Object} [scope=window] The scope (<code>this</code> reference) in which the callback is executed.
      * @return {Ext.window.MessageBox} this
      */
-    alert: function(title, message, fn, scope) {
-        if (Ext.isString(title)) {
-            title = {
-                title: title,
-                message: message,
+    alert: function(cfg, msg, fn, scope) {
+        if (Ext.isString(cfg)) {
+            cfg = {
+                title : cfg,
+                msg : msg,
                 buttons: this.OK,
                 fn: fn,
                 scope : scope,
                 minWidth: this.minWidth
             };
         }
-        return this.show(title);
+        return this.show(cfg);
     },
 
     /**
@@ -949,32 +925,28 @@ Ext.define('Ext.window.MessageBox', {
      * and closing the message box when the process is complete.
      *
      * @param {String} title The title bar text
-     * @param {String} message The message box body text
+     * @param {String} msg The message box body text
      * @param {String} [progressText=''] The text to display inside the progress bar
      * @return {Ext.window.MessageBox} this
      */
-    progress : function(title, message, progressText){
-        if (Ext.isString(title)) {
-            title = {
-                title: title,
-                message: message,
+    progress : function(cfg, msg, progressText){
+        if (Ext.isString(cfg)) {
+            cfg = {
+                title: cfg,
+                msg: msg,
                 progress: true,
                 progressText: progressText
             };
         }
-        return this.show(title);
+        return this.show(cfg);
     }
-}, function(MessageBox) {
+}, function() {
     /**
      * @class Ext.MessageBox
      * @alternateClassName Ext.Msg
      * @extends Ext.window.MessageBox
      * @singleton
-     * @inheritdoc Ext.window.MessageBox
+     * Singleton instance of {@link Ext.window.MessageBox}.
      */
-    // We want to defer creating Ext.MessageBox and Ext.Msg instances
-    // until overrides have been applied.
-    Ext.onReady(function() {
-        Ext.MessageBox = Ext.Msg = new MessageBox();
-    });
+    Ext.MessageBox = Ext.Msg = new this();
 });

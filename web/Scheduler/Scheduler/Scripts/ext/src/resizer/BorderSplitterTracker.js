@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * Private utility class for Ext.BorderSplitter.
  * @private
@@ -28,7 +45,7 @@ Ext.define('Ext.resizer.BorderSplitterTracker', {
             bottom = box.bottom,
             size = splitter.vertical ? (right - left) : (bottom - top),
             //neighborSizes = [],
-            i, neighbor, neighborMaxSize, minRange, maxRange, maxGrowth, maxShrink, targetSize;
+            i, neighbor, minRange, maxRange, maxGrowth, maxShrink, targetSize;
 
         // if size=100 and minSize=80, we can reduce by 20 so minRange = minSize-size = -20
         minRange = (collapseTarget[minSizeProp] || Math.min(size,defaultSplitMin)) - size;
@@ -45,16 +62,9 @@ Ext.define('Ext.resizer.BorderSplitterTracker', {
         for (i = 0; i < length; ++i) {
             neighbor = neighbors[i];
             size = neighbor[getSizeMethod]();
-            neighborMaxSize = neighbor[maxSizeProp];
-            if (neighborMaxSize === null) {
-                // calculations that follow expect NaN as a result if max size is undefined
-                // e.g. (10 - undefined) returns NaN
-                // Unfortunately the same is not true for null - (10 - null === 10) so
-                // we convert null into undefined to make sure they both behave the same
-                neighborMaxSize = undefined;
-            }
+            //neighborSizes.push(size);
 
-            maxGrowth = size - neighborMaxSize; // NaN if no maxSize or negative
+            maxGrowth = size - neighbor[maxSizeProp]; // NaN if no maxSize or negative
             maxShrink = size - (neighbor[minSizeProp] || Math.min(size,defaultSplitMin));
 
             if (!isNaN(maxGrowth)) {
@@ -121,8 +131,14 @@ Ext.define('Ext.resizer.BorderSplitterTracker', {
             splitter = me.splitter,
             collapseTarget = splitter.collapseTarget,
             neighbors = splitter.neighbors,
+            collapseEl = me.getSplitter().collapseEl,
+            target = e.getTarget(),
             length = neighbors.length,
             i, neighbor;
+
+        if (collapseEl && target === splitter.collapseEl.dom) {
+            return false;
+        }
 
         if (collapseTarget.collapsed) {
             return false;

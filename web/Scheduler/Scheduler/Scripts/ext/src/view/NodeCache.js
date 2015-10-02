@@ -1,23 +1,32 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * @private
  * A cache of View elements keyed using the index of the associated record in the store.
  * 
  * This implements the methods of {Ext.dom.CompositeElement} which are used by {@link Ext.view.AbstractView}
  * to privide a map of record nodes and methods to manipulate the nodes.
- * @class Ext.view.NodeCache
  */
 Ext.define('Ext.view.NodeCache', {
-    requires: [
-        'Ext.dom.CompositeElementLite'
-    ],
-    statics: {
-        range: document.createRange && document.createRange()
-    },
-
     constructor: function(view) {
         this.view = view;
         this.clear();
-        this.el = new Ext.dom.Fly();
+        this.el = new Ext.dom.AbstractElement.Fly();
     },
 
     /**
@@ -26,20 +35,13 @@ Ext.define('Ext.view.NodeCache', {
     */
     clear: function(removeDom) {
         var me = this,
-            elements = me.elements,
-            i, el,
-            range = me.statics().range;
+            elements = this.elements,
+            i, el;
 
-        if (me.count && removeDom) {
-            if (range) {
-                range.setStartBefore(elements[me.startIndex]);
-                range.setEndAfter(elements[me.endIndex]);
-                range.deleteContents();
-             } else {
-                for (i in elements) {
-                    el = elements[i];
-                    el.parentNode.removeChild(el);
-                }
+        if (removeDom) {
+            for (i in elements) {
+                el = elements[i];
+                el.parentNode.removeChild(el);
             }
         }
         me.elements = {};
@@ -52,18 +54,17 @@ Ext.define('Ext.view.NodeCache', {
     * @param {HTMLElement[]} els An array of DOM elements from which to fill this NodeCache.
     * @return {Ext.view.NodeCache} this
     */
-    fill: function(newElements, startIndex, fixedNodes) {
-        fixedNodes = fixedNodes || 0;
+    fill: function(newElements, startIndex) {
         var me = this,
             elements = me.elements = {},
             i,
-            len = newElements.length - fixedNodes;
+            len = newElements.length;
 
         if (!startIndex) {
             startIndex = 0;
         }
         for (i = 0; i < len; i++) {
-            elements[startIndex + i] = newElements[i + fixedNodes];
+            elements[startIndex + i] = newElements[i];
         }
         me.startIndex = startIndex;
         me.endIndex = startIndex + len - 1;
@@ -108,21 +109,6 @@ Ext.define('Ext.view.NodeCache', {
         me.count += nodeCount;
     },
 
-    invoke: function(fn, args) {
-        var me = this,
-            element,
-            i;
-
-        fn = Ext.dom.Element.prototype[fn];
-        for (i = me.startIndex; i <= me.endIndex; i++) {
-            element = me.item(i);
-            if (element) {
-                fn.apply(element, args);
-            }
-        }
-        return me;
-    },
-
     item: function(index, asDom) {
         var el = this.elements[index],
             result = null;
@@ -141,43 +127,6 @@ Ext.define('Ext.view.NodeCache', {
         return this.item(this.endIndex, asDom);
     },
 
-    // @private
-    // Used by buffered renderer when ading or removing record ranges which are above the
-    // rendered block. The element block must be shuffled up or down the index range,
-    // and the data-recordIndex connector attribute must be updated.
-    moveBlock: function(increment) {
-        var me = this,
-            elements = me.elements,
-            node,
-            end,
-            step,
-            i;
-
-        if (increment < 0) {
-            i = me.startIndex - 1;
-            end = me.endIndex;
-            step = 1;
-        } else {
-            i = me.endIndex + 1;
-            end = me.startIndex;
-            step = -1;
-        }
-        me.startIndex += increment;
-        me.endIndex += increment;
-
-        do {
-            i += step;
-            node = elements[i + increment] = elements[i];
-            node.setAttribute('data-recordIndex', i + increment);
-
-            // "from" element is outside of the new range, then delete it.
-            if (i < me.startIndex || i > me.endIndex) {
-                delete elements[i];
-            }
-        } while (i !== end)
-        delete elements[i];
-    },
-
     getCount : function() {
         return this.count;
     },
@@ -187,7 +136,7 @@ Ext.define('Ext.view.NodeCache', {
             result = [],
             i;
 
-        if (!end) {
+        if (arguments.length < 2) {
             end = this.endIndex;
         } else {
             end = Math.min(this.endIndex, end - 1);
@@ -200,9 +149,9 @@ Ext.define('Ext.view.NodeCache', {
 
     /**
     * Replaces the specified element with the passed element.
-    * @param {String/HTMLElement/Ext.dom.Element/Number} el The id of an element, the Element itself, the index of the
+    * @param {String/HTMLElement/Ext.Element/Number} el The id of an element, the Element itself, the index of the
     * element in this composite to replace.
-    * @param {String/Ext.dom.Element} replacement The id of an element or the Element itself.
+    * @param {String/Ext.Element} replacement The id of an element or the Element itself.
     * @param {Boolean} [domReplace] True to remove and replace the element in the document too.
     */
     replaceElement: function(el, replacement, domReplace) {
@@ -224,7 +173,7 @@ Ext.define('Ext.view.NodeCache', {
 
     /**
     * Find the index of the passed element within the composite collection.
-    * @param {String/HTMLElement/Ext.dom.Element/Number} el The id of an element, or an Ext.dom.Element, or an HTMLElement
+    * @param {String/HTMLElement/Ext.Element/Number} el The id of an element, or an Ext.dom.Element, or an HtmlElement
     * to find within the composite collection.
     * @return {Number} The index of the passed Ext.dom.Element in the composite collection, or -1 if not found.
     */
@@ -244,23 +193,22 @@ Ext.define('Ext.view.NodeCache', {
     removeRange: function(start, end, removeDom) {
         var me = this,
             elements = me.elements,
-            el, i, removeCount, fromPos;
+            el,
+            i, removeCount, fromPos;
 
-        if (end == null) {
-            end = me.endIndex + 1;
+        if (end === undefined) {
+            end = me.count;
         } else {
             end = Math.min(me.endIndex + 1, end + 1);
         }
-        if (start == null) {
-            start = me.startIndex;
+        if (!start) {
+            start = 0;
         }
         removeCount = end - start;
-        for (i = start, fromPos = end; i <= me.endIndex; i++, fromPos++) {
-            el = elements[i];
-
+        for (i = start, fromPos = end; i < me.endIndex; i++, fromPos++) {
             // Within removal range and we are removing from DOM
             if (removeDom && i < end) {
-                el.parentNode.removeChild(el);
+                Ext.removeNode(elements[i]);
             }
             // If the from position is occupied, shuffle that entry back into reference "i"
             if (fromPos <= me.endIndex) {
@@ -278,7 +226,7 @@ Ext.define('Ext.view.NodeCache', {
 
     /**
     * Removes the specified element(s).
-    * @param {String/HTMLElement/Ext.dom.Element/Number} el The id of an element, the Element itself, the index of the
+    * @param {String/HTMLElement/Ext.Element/Number} el The id of an element, the Element itself, the index of the
     * element in this composite or an array of any of those.
     * @param {Boolean} [removeDom] True to also remove the element from the document
     */
@@ -353,122 +301,53 @@ Ext.define('Ext.view.NodeCache', {
      * @param {Number} direction `-1' = scroll up, `0` = scroll down.
      * @param {Number} removeCount The number of records to remove from the end. if scrolling
      * down, rows are removed from the top and the new rows are added at the bottom.
-     * @return {HtmlElement[]} The view item nodes added either at the top or the bottom of the view.
      */
     scroll: function(newRecords, direction, removeCount) {
         var me = this,
-            view = me.view,
-            store = view.store,
             elements = me.elements,
             recCount = newRecords.length,
             i, el, removeEnd,
             newNodes,
-            nodeContainer = view.getNodeContainer(),
-            fireItemRemove = view.hasListeners.itemremove,
-            fireItemAdd = view.hasListeners.itemadd,
-            range = me.statics().range;
+            nodeContainer = me.view.getNodeContainer(),
+            frag = document.createDocumentFragment();
 
         // Scrolling up (content moved down - new content needed at top, remove from bottom)
-        if (direction === -1) {
-            if (removeCount) {
-                if (range) {
-                    range.setStartBefore(elements[(me.endIndex - removeCount) + 1]);
-                    range.setEndAfter(elements[me.endIndex]);
-                    range.deleteContents();
-                    for (i = (me.endIndex - removeCount) + 1; i <= me.endIndex; i++) {
-                        el = elements[i];
-                        delete elements[i];
-                        if (fireItemRemove) {
-                            view.fireEvent('itemremove', store.getByInternalId(el.getAttribute('data-recordId')), i, el, view);
-                        }
-                    }
-                } else {
-                    for (i = (me.endIndex - removeCount) + 1; i <= me.endIndex; i++) {
-                        el = elements[i];
-                        delete elements[i];
-                        el.parentNode.removeChild(el);
-                        if (fireItemRemove) {
-                            view.fireEvent('itemremove', store.getByInternalId(el.getAttribute('data-recordId')), i, el, view);
-                        }
-                    }
-                }
-                me.endIndex -= removeCount;
+        if (direction == -1) {
+            for (i = (me.endIndex - removeCount) + 1; i <= me.endIndex; i++) {
+                el = elements[i];
+                delete elements[i];
+                el.parentNode.removeChild(el);
             }
+            me.endIndex -= removeCount;
 
-            // Only do rendering if there are rows to render.
-            // This could have been a remove only operation due to a view resize event.
-            if (newRecords.length) {
-
-                // grab all nodes rendered, not just the data rows
-                newNodes = view.bufferRender(newRecords, me.startIndex -= recCount);
-                for (i = 0; i < recCount; i++) {
-                    elements[me.startIndex + i] = newNodes.childrenArray[i];
-                }
-                nodeContainer.insertBefore(newNodes, nodeContainer.firstChild);
-
-                // pass the new DOM to any interested parties
-                if (fireItemAdd) {
-                    view.fireEvent('itemadd', newRecords, me.startIndex, newNodes.childrenArray);
-                }
+            // grab all nodes rendered, not just the data rows
+            newNodes = me.view.bufferRender(newRecords, me.startIndex -= recCount);
+            for (i = 0; i < recCount; i++) {
+                elements[me.startIndex + i] = newNodes[i];
+                frag.appendChild(newNodes[i]);
             }
+            nodeContainer.insertBefore(frag, nodeContainer.firstChild);
         }
 
         // Scrolling down (content moved up - new content needed at bottom, remove from top)
         else {
-            if (removeCount) {
-                removeEnd = me.startIndex + removeCount;
-                if (range) {
-                    range.setStartBefore(elements[me.startIndex]);
-                    range.setEndAfter(elements[removeEnd - 1]);
-                    range.deleteContents();
-                    for (i = me.startIndex; i < removeEnd; i++) {
-                        el = elements[i];
-                        delete elements[i];
-                        if (fireItemRemove) {
-                            view.fireEvent('itemremove', store.getByInternalId(el.getAttribute('data-recordId')), i, el, view);
-                        }
-                    }
-                } else {
-                    for (i = me.startIndex; i < removeEnd; i++) {
-                        el = elements[i];
-                        delete elements[i];
-                        el.parentNode.removeChild(el);
-                        if (fireItemRemove) {
-                            view.fireEvent('itemremove', store.getByInternalId(el.getAttribute('data-recordId')), i, el, view);
-                        }
-                    }
-                }
-                me.startIndex = removeEnd;
+            removeEnd = me.startIndex + removeCount;
+            for (i = me.startIndex; i < removeEnd; i++) {
+                el = elements[i];
+                delete elements[i];
+                el.parentNode.removeChild(el);
             }
+            me.startIndex = i;
 
             // grab all nodes rendered, not just the data rows
-            newNodes = view.bufferRender(newRecords, me.endIndex + 1);
+            newNodes = me.view.bufferRender(newRecords, me.endIndex + 1);
             for (i = 0; i < recCount; i++) {
-                elements[me.endIndex += 1] = newNodes.childrenArray[i];
+                elements[me.endIndex += 1] = newNodes[i];
+                frag.appendChild(newNodes[i]);
             }
-            nodeContainer.appendChild(newNodes);
-
-            // pass the new DOM to any interested parties
-            if (fireItemAdd) {
-                view.fireEvent('itemadd', newRecords, me.endIndex + 1, newNodes.childrenArray);
-            }
+            nodeContainer.appendChild(frag);
         }
         // Keep count consistent.
         me.count = me.endIndex - me.startIndex + 1;
-        
-        return newNodes.childrenArray;
-    },
-
-    sumHeights: function() {
-        var result = 0,
-            elements = this.elements,
-            i;
-
-        for (i = this.startIndex; i <= this.endIndex; i++) {
-            result += elements[i].offsetHeight;
-        }
-        return result;
     }
-}, function() {
-    Ext.dom.CompositeElementLite.importElementMethods.call(this);
 });

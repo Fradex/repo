@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * Provides a time input field with a time dropdown and automatic time validation.
  *
@@ -44,7 +61,7 @@ Ext.define('Ext.form.field.Time', {
 
     /**
      * @cfg {String} [triggerCls='x-form-time-trigger']
-     * An additional CSS class used to style the trigger button. The trigger will always get the {@link Ext.form.trigger.Trigger#baseCls}
+     * An additional CSS class used to style the trigger button. The trigger will always get the {@link #triggerBaseCls}
      * by default and triggerCls will be **appended** if specified.
      */
     triggerCls: Ext.baseCSSPrefix + 'form-time-trigger',
@@ -116,13 +133,8 @@ Ext.define('Ext.form.field.Time', {
     //</locale>
 
     /**
-     * @cfg {Number} [increment=15]
+     * @cfg {Number} increment
      * The number of minutes between each time value in the list.
-     *
-     * Note that this only affects the *list of suggested times.*
-     *
-     * To enforce that only times on the list are valid, use {@link #snapToIncrement}. That will coerce
-     * any typed values to the nearest increment point upon blur.
      */
     increment: 15,
 
@@ -137,20 +149,12 @@ Ext.define('Ext.form.field.Time', {
      * Whether the Tab key should select the currently highlighted item.
      */
     selectOnTab: true,
-
+    
     /**
      * @cfg {Boolean} [snapToIncrement=false]
      * Specify as `true` to enforce that only values on the {@link #increment} boundary are accepted.
-     *
-     * Typed values will be coerced to the nearest {@link #increment} point on blur.
      */
     snapToIncrement: false,
-
-    /**
-     * @cfg
-     * @inheritdoc
-     */
-    valuePublishEvent: ['select', 'blur'],
 
     /**
      * @private
@@ -161,6 +165,8 @@ Ext.define('Ext.form.field.Time', {
     initDate: '1/1/2008',
     initDateParts: [2008, 0, 1],
     initDateFormat: 'j/n/Y',
+    
+    ignoreSelection: 0,
 
     queryMode: 'local',
 
@@ -172,7 +178,6 @@ Ext.define('Ext.form.field.Time', {
         var me = this,
             min = me.minValue,
             max = me.maxValue;
-        
         if (min) {
             me.setMinValue(min);
         }
@@ -184,13 +189,19 @@ Ext.define('Ext.form.field.Time', {
                 '{[typeof values === "string" ? values : this.formatDate(values["' + me.displayField + '"])]}' +
                 '<tpl if="xindex < xcount">' + me.delimiter + '</tpl>' +
             '</tpl>', {
-            formatDate: me.formatDate.bind(me)
+            formatDate: Ext.Function.bind(me.formatDate, me)
         });
+        this.callParent();
+    },
 
-        // Create a store of times.
-        me.store = Ext.picker.Time.createStore(me.format, me.increment);
-
-        me.callParent();
+    /**
+     * @private
+     */
+    transformOriginalValue: function (value) {
+        if (Ext.isDefined(value)) {
+            return this.rawToValue(value) || value || null;
+        }
+        return value;
     },
 
     /**
@@ -269,10 +280,9 @@ Ext.define('Ext.form.field.Time', {
         me[isMin ? 'minValue' : 'maxValue'] = val;
     },
     
-    getInitDate: function (hours, minutes, seconds) {
+    getInitDate: function(hours, minutes) {
         var parts = this.initDateParts;
-
-        return new Date(parts[0], parts[1], parts[2], hours || 0, minutes || 0, seconds || 0, 0);    
+        return new Date(parts[0], parts[1], parts[2], hours || 0, minutes || 0, 0, 0);    
     },
 
     valueToRaw: function(value) {
@@ -288,11 +298,9 @@ Ext.define('Ext.form.field.Time', {
      * @return {String[]} All validation errors for this field
      */
     getErrors: function(value) {
-        value = arguments.length > 0 ? value : this.getRawValue();
-
         var me = this,
             format = Ext.String.format,
-            errors = me.callParent([value]),
+            errors = me.callParent(arguments),
             minValue = me.minValue,
             maxValue = me.maxValue,
             data = me.displayTplData,
@@ -403,11 +411,14 @@ Ext.define('Ext.form.field.Time', {
      * Creates the {@link Ext.picker.Time}
      */
     createPicker: function() {
-        var me = this;
+        var me = this,
+            picker;
 
         me.listConfig = Ext.apply({
             xtype: 'timepicker',
-            pickerField: me,
+            selModel: {
+                mode: me.multiSelect ? 'SIMPLE' : 'SINGLE'
+            },
             cls: undefined,
             minValue: me.minValue,
             maxValue: me.maxValue,
@@ -415,10 +426,75 @@ Ext.define('Ext.form.field.Time', {
             format: me.format,
             maxHeight: me.pickerMaxHeight
         }, me.listConfig);
-        return me.callParent();
+        picker = me.callParent();
+        me.bindStore(picker.store);
+        return picker;
+    },
+    
+    onItemClick: function(picker, record){
+        // The selection change events won't fire when clicking on the selected element. Detect it here.
+        var me = this,
+            selected = picker.getSelectionModel().getSelection();
+
+        if (!me.multiSelect && selected.length) {
+            if (selected.length > 0) {
+                selected = selected[0];
+                if (selected && Ext.Date.isEqual(record.get('date'), selected.get('date'))) {
+                    me.collapse();
+                }
+            }
+        }
     },
 
-    completeEdit: function() {
+    /**
+     * @private 
+     * Synchronizes the selection in the picker to match the current value
+     */
+    syncSelection: function() {
+        var me = this,
+            picker = me.picker,
+            isEqual = Ext.Date.isEqual,
+            toSelect = [],
+            selModel,
+            value, values, i, len, item,
+            data, d, dLen, rec;
+            
+        if (picker) {
+            picker.clearHighlight();
+            value = me.getValue();
+            selModel = picker.getSelectionModel();
+            // Update the selection to match
+            me.ignoreSelection++;
+            if (value === null) {
+                selModel.deselectAll();
+            } else {
+                values = Ext.Array.from(value);
+                data = picker.store.data.items;
+                dLen = data.length;
+
+                for (i = 0, len = values.length; i < len; i++) {
+                    item = values[i];
+                    if (Ext.isDate(item)) {
+                        // find value, select it
+                        for (d = 0; d < dLen; d++) {
+                            rec = data[d];
+
+                            if (isEqual(rec.get('date'), item)) {
+                               toSelect.push(rec);
+                               if (!me.multiSelect) {
+                                   break;
+                               }
+                           }
+                        }
+                        selModel.select(toSelect);
+                    }
+                }
+            }
+            me.ignoreSelection--;
+        }
+    },
+
+    postBlur: function() {
         var me = this,
             val = me.getValue();
 
@@ -460,12 +536,11 @@ Ext.define('Ext.form.field.Time', {
         return me.parseDate(item);
     },
 
-    setValue: function (v) {
-        // Store MUST be created for parent setValue to function.
+    setValue: function(v) {
+        // Store MUST be created for parent setValue to function
         this.getPicker();
-
         if (Ext.isDate(v)) {
-            v = this.getInitDate(v.getHours(), v.getMinutes(), v.getSeconds());
+            v = this.getInitDate(v.getHours(), v.getMinutes());
         }
 
         return this.callParent([v]);

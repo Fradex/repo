@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * An abstract class for fields that have a single trigger which opens a "picker" popup below the field, e.g. a combobox
  * menu list or a date picker. It provides a base implementation for toggling the picker's visibility when the trigger
@@ -10,25 +27,10 @@
  * for the field.
  */
 Ext.define('Ext.form.field.Picker', {
-    extend: 'Ext.form.field.Text',
+    extend: 'Ext.form.field.Trigger',
     alias: 'widget.pickerfield',
     alternateClassName: 'Ext.form.Picker',
     requires: ['Ext.util.KeyNav'],
-
-    config: {
-        triggers: {
-            picker: {
-                handler: 'onTriggerClick',
-                scope: 'this'
-            }
-        }
-    },
-
-    /**
-     * @property {Boolean} isPickerField
-     * `true` in this class to identify an object as an instantiated Picker Field, or subclass thereof.
-     */
-    isPickerField: true,
 
     /**
      * @cfg {Boolean} matchFieldWidth
@@ -58,7 +60,6 @@ Ext.define('Ext.form.field.Picker', {
      * @property {Boolean} isExpanded
      * True if the picker is currently expanded, false if not.
      */
-    isExpanded: false,
 
     /**
      * @cfg {Boolean} editable
@@ -68,42 +69,35 @@ Ext.define('Ext.form.field.Picker', {
      */
     editable: true,
 
-    /**
-     * @cfg {String} triggerCls
-     * An additional CSS class used to style the trigger button. The trigger will always
-     * get the class 'x-form-trigger' and triggerCls will be appended if specified.
-     */
 
-    /**
-     * @event expand
-     * Fires when the field's picker is expanded.
-     * @param {Ext.form.field.Picker} field This field instance
-     */
+    initComponent: function() {
+        this.callParent();
 
-    /**
-     * @event collapse
-     * Fires when the field's picker is collapsed.
-     * @param {Ext.form.field.Picker} field This field instance
-     */
-
-    /**
-     * @event select
-     * Fires when a value is selected via the picker.
-     * @param {Ext.form.field.Picker} field This field instance
-     * @param {Object} value The value that was selected. The exact type of this value is dependent on
-     * the individual field and picker implementations.
-     */
-
-    applyTriggers: function(triggers) {
-        var me = this,
-            picker = triggers.picker;
-
-        if (!picker.cls) {
-            picker.cls = me.triggerCls;
-        }
-
-        return me.callParent([triggers]);
+        // Custom events
+        this.addEvents(
+            /**
+             * @event expand
+             * Fires when the field's picker is expanded.
+             * @param {Ext.form.field.Picker} field This field instance
+             */
+            'expand',
+            /**
+             * @event collapse
+             * Fires when the field's picker is collapsed.
+             * @param {Ext.form.field.Picker} field This field instance
+             */
+            'collapse',
+            /**
+             * @event select
+             * Fires when a value is selected via the picker.
+             * @param {Ext.form.field.Picker} field This field instance
+             * @param {Object} value The value that was selected. The exact type of this value is dependent on
+             * the individual field and picker implementations.
+             */
+            'select'
+        );
     },
+
 
     initEvents: function() {
         var me = this;
@@ -141,7 +135,7 @@ Ext.define('Ext.form.field.Picker', {
             // in any other browsers
             e.preventDefault();
         }
-
+        
         if (this.isExpanded) {
             this.collapse();
             e.stopEvent();
@@ -150,9 +144,6 @@ Ext.define('Ext.form.field.Picker', {
 
     onDownArrow: function(e) {
         if (!this.isExpanded) {
-            // Do not let the down arrow event propagate into the picker
-            e.stopEvent();
-
             // Don't call expand() directly as there may be additional processing involved before
             // expanding, e.g. in the case of a ComboBox query.
             this.onTriggerClick();
@@ -164,37 +155,30 @@ Ext.define('Ext.form.field.Picker', {
      */
     expand: function() {
         var me = this,
-            bodyEl, picker, doc, collapseIf;
+            bodyEl, picker, collapseIf;
 
         if (me.rendered && !me.isExpanded && !me.isDestroyed) {
+            me.expanding = true;
             bodyEl = me.bodyEl;
             picker = me.getPicker();
-            doc = Ext.getDoc();
             collapseIf = me.collapseIf;
-            picker.setMaxHeight(picker.initialConfig.maxHeight);
-            
-            if (me.matchFieldWidth) {
-                picker.width = me.bodyEl.getWidth();
-            }
 
-            // Show the picker and set isExpanded flag. alignPicker only works if isExpanded.
+            // show the picker and set isExpanded flag
             picker.show();
             me.isExpanded = true;
             me.alignPicker();
             bodyEl.addCls(me.openCls);
 
-            // monitor touch and mousewheel
-            me.hideListeners = doc.on({
-                mousewheel: me.collapseIf,
-                touchstart: me.collapseIf,
-                scope: me,
-                delegated: false,
-                destroyable: true
+            // monitor clicking and mousewheel
+            me.mon(Ext.getDoc(), {
+                mousewheel: collapseIf,
+                mousedown: collapseIf,
+                scope: me
             });
-            
-            Ext.on('resize', me.alignPicker, me);
+            Ext.EventManager.onWindowResize(me.alignPicker, me);
             me.fireEvent('expand', me);
             me.onExpand();
+            delete me.expanding;
         }
     },
 
@@ -208,7 +192,11 @@ Ext.define('Ext.form.field.Picker', {
         var me = this,
             picker = me.getPicker();
 
-        if (picker.isVisible()) {
+        if (me.isExpanded) {
+            if (me.matchFieldWidth) {
+                // Auto the height (it will be constrained by min and max width) unless there are no records to display.
+                picker.setWidth(me.bodyEl.getWidth());
+            }
             if (picker.isFloating()) {
                 me.doAlign();
             }
@@ -239,11 +227,12 @@ Ext.define('Ext.form.field.Picker', {
      * Collapses this field's picker dropdown.
      */
     collapse: function() {
-        var me = this;
-        
-        if (me.isExpanded && !me.isDestroyed && !me.destroying) {
-            var openCls = me.openCls,
+        if (this.isExpanded && !this.isDestroyed) {
+            var me = this,
+                openCls = me.openCls,
                 picker = me.picker,
+                doc = Ext.getDoc(),
+                collapseIf = me.collapseIf,
                 aboveSfx = '-above';
 
             // hide the picker and set isExpanded flag
@@ -255,8 +244,9 @@ Ext.define('Ext.form.field.Picker', {
             picker.el.removeCls(picker.baseCls + aboveSfx);
 
             // remove event listeners
-            me.hideListeners.destroy();
-            Ext.un('resize', me.alignPicker, me);
+            doc.un('mousewheel', collapseIf, me);
+            doc.un('mousedown', collapseIf, me);
+            Ext.EventManager.removeResizeListener(me.alignPicker, me);
             me.fireEvent('collapse', me);
             me.onCollapse();
         }
@@ -267,14 +257,12 @@ Ext.define('Ext.form.field.Picker', {
 
     /**
      * @private
-     * Runs on mousewheel of doc to check to see if we should collapse the picker
+     * Runs on mousewheel and mousedown of doc to check to see if we should collapse the picker
      */
     collapseIf: function(e) {
         var me = this;
 
-        // If what was mousedowned on is outside of this Field, and is not focusable, then collapse.
-        // If it is focusable, this Field will blur and collapse anyway.
-        if (!me.isDestroyed && !e.within(me.bodyEl, false, true) && !me.owns(e.target) && !Ext.fly(e.target).isFocusable()) {
+        if (!me.isDestroyed && !e.within(me.bodyEl, false, true) && !e.within(me.picker.el, false, true) && !me.isEventWithinPickerLoadMask(e)) {
             me.collapse();
         }
     },
@@ -285,41 +273,15 @@ Ext.define('Ext.form.field.Picker', {
      * @return {Ext.Component} The picker component
      */
     getPicker: function() {
-        var me = this,
-            picker = me.picker;
-
-        if (!picker) {
-            me.picker = picker = me.createPicker();
-            // For upward component searches.
-            picker.ownerCmp = me;
-        }
-
-        return me.picker;
-    },
-
-    // When focus leaves the picker component, if it's to outside of this
-    // Component's hierarchy
-    onFocusLeave: function(e) {
         var me = this;
-        me.collapse();
-        me.callParent([e]);
-    },
-
-    // @private
-    // The CQ interface. Allow drilling down into the picker when it exists.
-    // Important for determining whether an event took place in the bounds of some
-    // higher level containing component. See AbstractComponent#owns
-    getRefItems: function() {
-        var result = [];
-        if (this.picker) {
-            result[0] = this.picker;
-        }
-        return result;
+        return me.picker || (me.picker = me.createPicker());
     },
 
     /**
      * @method
      * Creates and returns the component to be used as this field's picker. Must be implemented by subclasses of Picker.
+     * The current field should also be passed as a configuration option to the picker component as the pickerField
+     * property.
      */
     createPicker: Ext.emptyFn,
 
@@ -327,7 +289,7 @@ Ext.define('Ext.form.field.Picker', {
      * Handles the trigger click; by default toggles between expanding and collapsing the picker component.
      * @protected
      */
-    onTriggerClick: function(e) {
+    onTriggerClick: function() {
         var me = this;
         if (!me.readOnly && !me.disabled) {
             if (me.isExpanded) {
@@ -335,18 +297,52 @@ Ext.define('Ext.form.field.Picker', {
             } else {
                 me.expand();
             }
+            me.inputEl.focus();
+        }
+    },
+    
+    triggerBlur: function() {
+        var picker = this.picker;
+            
+        this.callParent(arguments);
+        if (picker && picker.isVisible()) {
+            picker.hide();
         }
     },
 
-    beforeDestroy : function(){
+    mimicBlur: function(e) {
+        var me = this,
+            picker = me.picker;
+        // ignore mousedown events within the picker element
+        if (!picker || !e.within(picker.el, false, true) && !me.isEventWithinPickerLoadMask(e)) {
+            me.callParent(arguments);
+        }
+    },
+
+    onDestroy : function(){
         var me = this,
             picker = me.picker;
 
-        me.callParent();
-        Ext.un('resize', me.alignPicker, me);
-        Ext.destroy(me.keyNav, picker);
+        Ext.EventManager.removeResizeListener(me.alignPicker, me);
+        Ext.destroy(me.keyNav);
         if (picker) {
-            me.picker = picker.pickerField = null;
+            delete picker.pickerField;
+            picker.destroy();
         }
+        me.callParent();
+    },
+
+    /**
+     * returns true if the picker has a load mask and the passed event is within the load mask
+     * @private
+     * @param {Ext.EventObject} e
+     * @return {Boolean}
+     */
+    isEventWithinPickerLoadMask: function(e) {
+        var loadMask = this.picker.loadMask;
+
+        return loadMask ? e.within(loadMask.maskEl, false, true) || e.within(loadMask.el, false, true) : false;
     }
+
 });
+

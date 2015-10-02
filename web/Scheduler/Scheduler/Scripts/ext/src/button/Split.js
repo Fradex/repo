@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * A split button that provides a built-in dropdown arrow that can fire an event separately from the default click event
  * of the button. Typically this would be used to display a dropdown menu that provides additional options to the
@@ -40,8 +57,6 @@ Ext.define('Ext.button.Split', {
     extend: 'Ext.button.Button',
     alternateClassName: 'Ext.SplitButton',
     /* End Definitions */
-
-    isSplitButton: true,
     
     /**
      * @cfg {Function} arrowHandler
@@ -58,12 +73,17 @@ Ext.define('Ext.button.Split', {
     arrowCls      : 'split',
     split         : true,
 
-    /**
-     * @event arrowclick
-     * Fires when this button's arrow is clicked.
-     * @param {Ext.button.Split} this
-     * @param {Event} e The click event.
-     */
+    // @private
+    initComponent : function(){
+        this.callParent();
+        /**
+         * @event arrowclick
+         * Fires when this button's arrow is clicked.
+         * @param {Ext.button.Split} this
+         * @param {Event} e The click event.
+         */
+        this.addEvents("arrowclick");
+    },
 
     /**
      * Sets this button's arrow click handler.
@@ -78,14 +98,14 @@ Ext.define('Ext.button.Split', {
     // @private
     onClick : function(e) {
         var me = this;
-
+        
         me.doPreventDefault(e);
         if (!me.disabled) {
-            if (me.isWithinTrigger(e)) {
+            if (me.overMenuTrigger) {
                 // Force prevent default here, if we click on the arrow part
                 // we want to trigger the menu, not any link if we have it
                 e.preventDefault();
-                me.maybeShowMenu(e);
+                me.maybeShowMenu();
                 me.fireEvent("arrowclick", me, e);
                 if (me.arrowHandler) {
                     me.arrowHandler.call(me.scope || me, me, e);

@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * A Grid header type which renders an icon, or a series of icons in a grid cell, and offers a scoped click
  * handler for each icon.
@@ -25,14 +42,14 @@
  *                 xtype:'actioncolumn',
  *                 width:50,
  *                 items: [{
- *                     icon: 'extjs-build/examples/shared/icons/fam/cog_edit.png',  // Use a URL in the icon config
+ *                     icon: 'extjs/examples/shared/icons/fam/cog_edit.png',  // Use a URL in the icon config
  *                     tooltip: 'Edit',
  *                     handler: function(grid, rowIndex, colIndex) {
  *                         var rec = grid.getStore().getAt(rowIndex);
  *                         alert("Edit " + rec.get('firstname'));
  *                     }
  *                 },{
- *                     icon: 'extjs-build/examples/restful/images/delete.png',
+ *                     icon: 'extjs/examples/restful/images/delete.png',
  *                     tooltip: 'Delete',
  *                     handler: function(grid, rowIndex, colIndex) {
  *                         var rec = grid.getStore().getAt(rowIndex);
@@ -57,16 +74,12 @@ Ext.define('Ext.grid.column.Action', {
      * @cfg {String} icon
      * The URL of an image to display as the clickable element in the column.
      *
-     * There are no default icons that come with Ext JS.
-     *
      * Defaults to `{@link Ext#BLANK_IMAGE_URL}`.
      */
     /**
      * @cfg {String} iconCls
      * A CSS class to apply to the icon image. To determine the class dynamically, configure the Column with
      * a `{@link #getClass}` function.
-     *
-     * There are no default icon classes that come with Ext JS.
      */
     /**
      * @cfg {Function} handler
@@ -88,23 +101,19 @@ Ext.define('Ext.grid.column.Action', {
      * @cfg {String} tooltip
      * A tooltip message to be displayed on hover. {@link Ext.tip.QuickTipManager#init Ext.tip.QuickTipManager} must
      * have been initialized.
-     *
+     * 
      * The tooltip may also be determined on a row by row basis by configuring a {@link #getTip} method.
      */
     /**
      * @cfg {Boolean} disabled
      * If true, the action will not respond to click events, and will be displayed semi-opaque.
-     *
+     * 
      * This Column may also be disabled on a row by row basis by configuring a {@link #cfg-isDisabled} method.
      */
     /**
      * @cfg {Boolean} [stopSelection=true]
-     * Prevent grid selection upon click.
-     * Beware that if you allow for the selection to happen then the selection model will steal focus from
-     * any possible floating window (like a message box) raised in the handler. This will prevent closing the
-     * window when pressing the Escape button since it will no longer contain a focused component.
+     * Prevent grid selection upon mousedown.
      */
-     stopSelection: true,
     /**
      * @cfg {Function} getClass
      * A function which returns the CSS class to apply to the icon image.
@@ -191,11 +200,11 @@ Ext.define('Ext.grid.column.Action', {
      *
      * @cfg {String} items.tooltip A tooltip message to be displayed on hover.
      * {@link Ext.tip.QuickTipManager#init Ext.tip.QuickTipManager} must have been initialized.
-     *
+     * 
      * The tooltip may also be determined on a row by row basis by configuring a `getTip` method.
      *
      * @cfg {Boolean} items.disabled If true, the action will not respond to click events, and will be displayed semi-opaque.
-     *
+     * 
      * This item may also be disabled on a row by row basis by configuring an `isDisabled` method.
      */
     /**
@@ -223,8 +232,6 @@ Ext.define('Ext.grid.column.Action', {
 
     innerCls: Ext.baseCSSPrefix + 'grid-cell-inner-action-col',
 
-    actionIconCls: Ext.baseCSSPrefix + 'action-col-icon',
-
     constructor: function(config) {
         var me = this,
             cfg = Ext.apply({}, config),
@@ -234,42 +241,35 @@ Ext.define('Ext.grid.column.Action', {
             i,
             len;
 
+
         me.origRenderer = cfg.renderer || me.renderer;
         me.origScope = cfg.scope || me.scope;
-
+        
         me.renderer = me.scope = cfg.renderer = cfg.scope = null;
-
+        
         // This is a Container. Delete the items config to be reinstated after construction.
         cfg.items = null;
         me.callParent([cfg]);
 
         // Items is an array property of ActionColumns
         me.items = items;
-
+        
         for (i = 0, len = items.length; i < len; ++i) {
             if (items[i].getClass) {
                 hasGetClass = true;
                 break;
             }
         }
-
+        
         // Also need to check for getClass, since it changes how the cell renders
         if (me.origRenderer || hasGetClass) {
             me.hasCustomRenderer = true;
         }
     },
-
-    initComponent: function() {
-        var me = this;
-        me.callParent();
-        if (me.sortable && !me.dataIndex) {
-            me.sortable = false;
-        }
-    },
-
+    
     // Renderer closure iterates through items creating an <img> element for each and tagging with an identifying
     // class name x-action-col-{n}
-    defaultRenderer: function(v, cellValues, record, rowIdx, colIdx, store, view) {
+    defaultRenderer: function(v, meta, record, rowIdx, colIdx, store, view){
         var me = this,
             prefix = Ext.baseCSSPrefix,
             scope = me.origScope || me,
@@ -277,13 +277,13 @@ Ext.define('Ext.grid.column.Action', {
             len = items.length,
             i = 0,
             item, ret, disabled, tooltip;
-
+ 
         // Allow a configured renderer to create initial value (And set the other values in the "metadata" argument!)
         // Assign a new variable here, since if we modify "v" it will also modify the arguments collection, meaning
         // we will pass an incorrect value to getClass/getTip
         ret = Ext.isFunction(me.origRenderer) ? me.origRenderer.apply(scope, arguments) || '' : '';
 
-        cellValues.tdCls += ' ' + Ext.baseCSSPrefix + 'action-col-cell';
+        meta.tdCls += ' ' + Ext.baseCSSPrefix + 'action-col-cell';
         for (; i < len; i++) {
             item = items[i];
 
@@ -292,6 +292,7 @@ Ext.define('Ext.grid.column.Action', {
 
             // Only process the item action setup once.
             if (!item.hasActionConfiguration) {
+
                 // Apply our documented default to all items
                 item.stopSelection = me.stopSelection;
                 item.disable = Ext.Function.bind(me.disableAction, me, [i], 0);
@@ -300,17 +301,11 @@ Ext.define('Ext.grid.column.Action', {
             }
 
             ret += '<img role="button" alt="' + (item.altText || me.altText) + '" src="' + (item.icon || Ext.BLANK_IMAGE_URL) +
-                '" class="' + me.actionIconCls + ' ' + prefix + 'action-col-' + String(i) + ' ' + (disabled ? prefix + 'item-disabled' : ' ') +
-                (Ext.isFunction(item.getClass) ? item.getClass.apply(item.scope || scope, arguments) : (item.iconCls || me.iconCls || '')) + '"' +
+                '" class="' + prefix + 'action-col-icon ' + prefix + 'action-col-' + String(i) + ' ' + (disabled ? prefix + 'item-disabled' : ' ') +
+                ' ' + (Ext.isFunction(item.getClass) ? item.getClass.apply(item.scope || scope, arguments) : (item.iconCls || me.iconCls || '')) + '"' +
                 (tooltip ? ' data-qtip="' + tooltip + '"' : '') + ' />';
         }
-        return ret;
-    },
-
-    updater: function(cell, value, record, view, dataSource) {
-        var cellValues = {};
-        cell.firstChild.innerHTML = this.defaultRenderer(value, cellValues, record, null, null, dataSource, view);
-        Ext.fly(cell).addCls(cellValues.tdCls);
+        return ret;    
     },
 
     /**
@@ -353,25 +348,24 @@ Ext.define('Ext.grid.column.Action', {
         }
     },
 
-    beforeDestroy: function() {
-        // Don't delete the items, if we're subclassed with items then we'll be
-        // left with an items array.
-        this.renderer = this.items = null;
+    destroy: function() {
+        delete this.items;
+        delete this.renderer;
         return this.callParent(arguments);
     },
 
     /**
      * @private
-     * Process and refire events routed from the Ext.panel.Table's processEvent method.
+     * Process and refire events routed from the GridView's processEvent method.
      * Also fires any configured click handlers. By default, cancels the mousedown event to prevent selection.
      * Returns the event handler's status to allow canceling of GridView's bubbling process.
      */
     processEvent : function(type, view, cell, recordIndex, cellIndex, e, record, row){
         var me = this,
             target = e.getTarget(),
-            key = type === 'keydown' && e.getKey(),
             match,
-            item,
+            item, fn,
+            key = type == 'keydown' && e.getKey(),
             disabled;
 
         // If the target was not within a cell (ie it's a keydown event from the View), then
@@ -386,25 +380,16 @@ Ext.define('Ext.grid.column.Action', {
             item = me.items[parseInt(match[1], 10)];
             disabled = item.disabled || (item.isDisabled ? item.isDisabled.call(item.scope || me.origScope || me, view, recordIndex, cellIndex, item, record) : false);
             if (item && !disabled) {
-                // Don't process mousedown events anymore!
-                if (type === 'mousedown') {
-                    if (item.stopSelection) {
-                        e.preventDefault();
+                if (type == 'click' || (key == e.ENTER || key == e.SPACE)) {
+                    fn = item.handler || me.handler;
+                    if (fn) {
+                        fn.call(item.scope || me.origScope || me, view, recordIndex, cellIndex, item, e, record, row);
                     }
+                } else if (type == 'mousedown' && item.stopSelection !== false) {
                     return false;
-                }
-
-                if (type === 'click' || (key === e.ENTER || key === e.SPACE)) {
-                    Ext.callback(item.handler || me.handler, item.scope || me.origScope, [view, recordIndex, cellIndex, item, e, record, row], undefined, me);
-                    // The default is to stop the event from propagating (thus preventing the selection model from
-                    // selecting and focusing the grid row). See EXTJSIV-11177.
-                    if (item.stopSelection !== false) {
-                        return false;
-                    }
                 }
             }
         }
-
         return me.callParent(arguments);
     },
 
@@ -415,13 +400,5 @@ Ext.define('Ext.grid.column.Action', {
     // Private override because this cannot function as a Container, and it has an items property which is an Array, NOT a MixedCollection.
     getRefItems: function() {
         return [];
-    },
-
-    privates: {
-        getFocusables: function() {
-            // Override is here to prevent the default behaviour which tries to access
-            // this.items.items, which will be null.
-            return [];
-        }
     }
 });

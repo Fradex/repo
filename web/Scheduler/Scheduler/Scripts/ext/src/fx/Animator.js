@@ -1,3 +1,20 @@
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
+*/
 /**
  * @class Ext.fx.Animator
  *
@@ -171,26 +188,6 @@ Ext.define('Ext.fx.Animator', {
      * method to apply the same animation to many targets.
      */
 
-    /**
-     * @event beforeanimate
-     * Fires before the animation starts. A handler can return false to cancel the animation.
-     * @param {Ext.fx.Animator} this
-     */
-
-    /**
-      * @event keyframe
-      * Fires at each keyframe.
-      * @param {Ext.fx.Animator} this
-      * @param {Number} keyframe step number
-      */
-
-    /**
-     * @event afteranimate
-     * Fires when the animation is complete.
-     * @param {Ext.fx.Animator} this
-     * @param {Date} startTime
-     */
-
      /**
       * @cfg {Object} keyframes
       * Animation keyframes follow the CSS3 Animation configuration pattern. 'from' is always considered '0%' and 'to'
@@ -220,7 +217,28 @@ keyframes : {
         config = Ext.apply(me, config || {});
         me.config = config;
         me.id = Ext.id(null, 'ext-animator-');
-
+        me.addEvents(
+            /**
+             * @event beforeanimate
+             * Fires before the animation starts. A handler can return false to cancel the animation.
+             * @param {Ext.fx.Animator} this
+             */
+            'beforeanimate',
+            /**
+              * @event keyframe
+              * Fires at each keyframe.
+              * @param {Ext.fx.Animator} this
+              * @param {Number} keyframe step number
+              */
+            'keyframe',
+            /**
+             * @event afteranimate
+             * Fires when the animation is complete.
+             * @param {Ext.fx.Animator} this
+             * @param {Date} startTime
+             */
+            'afteranimate'
+        );
         me.mixins.observable.constructor.call(me, config);
         me.timeline = [];
         me.createTimeline(me.keyframes);
