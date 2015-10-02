@@ -9,7 +9,7 @@ namespace Scheduler.Models.Autorization
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-           : base("DefaultConnection")
+           : base("db")
         {
         }
     }

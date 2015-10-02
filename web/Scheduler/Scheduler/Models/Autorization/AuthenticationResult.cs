@@ -66,7 +66,7 @@ namespace Scheduler.Models.Autorization
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "Имя пользователя")]
+        [Display(Name = "Логин")]
         public string UserName { get; set; }
 
         [Required]
@@ -74,14 +74,14 @@ namespace Scheduler.Models.Autorization
         [Display(Name = "Пароль")]
         public string Password { get; set; }
 
-        [Display(Name = "Напомнить?")]
+        [Display(Name = "Запомнить?")]
         public bool RememberMe { get; set; }
     }
 
     public class RegisterViewModel
     {
         [Required]
-        [Display(Name = "ТИмя пользователя")]
+        [Display(Name = "Логин")]
         public string UserName { get; set; }
 
         [Required]

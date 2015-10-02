@@ -30,42 +30,45 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 
-    .wrapper {
-        width: 303px;
-        height: 300px;
-        display: block;
-        position: relative;
-        margin: -160px 0 0 -160px;
-        top: 50%;
-        left: 50%;
-        padding: 5px;
-    }
+.centered {
+    text-align:center;
+    align-content:center;
+    align-items:center;
+    align-self:center;
+}
 
-    .container {
-        position: relative;
-        z-index: 5;
-        width: 300px;
-        height: 220px;
-        -webkit-border-radius: 6px;
-        -moz-border-radius: 6px;
-        border-radius: 6px;
-        background: url(../Content/img/white.png) 0 0 transparent;
-        -webkit-box-shadow: 0 1px 1px 0 black;
-        -moz-box-shadow: 0 1px 1px 0 black;
-        box-shadow: 0 1px 1px 0 black;
+.wrapper {
+    width: 403px;
+    height: 300px;
+    display: block;
+    position: relative;
+    margin: -160px 0 0 -160px;
+    top: 50%;
+    left: 50%;
+    padding: 5px;
+}
+
+.container {
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    background: url(../Content/img/white.png) 0 0 transparent;
+    -webkit-box-shadow: 0 1px 1px 0 black;
+    -moz-box-shadow: 0 1px 1px 0 black;
+    box-shadow: 0 1px 1px 0 black;
 }
 
 
-    .content {
-        width: 250px;
-        margin: 0 auto;
-        padding: 15px 5px 5px 0;
+.content {
+    width: 350px;
+    margin: 0 auto;
+    padding: 15px 5px 5px 0;
+}
+
+
+    .content input:focus {
+        outline: none;
     }
-
-
-        .content input:focus {
-            outline: none;
-        }
 
 .errorMessage {
     font-size: 13px;
@@ -76,4 +79,8 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 .footer {
     margin-top: 10px;
     text-align: center;
+}
+
+.control-label{
+    margin-left:-50px;
 }
