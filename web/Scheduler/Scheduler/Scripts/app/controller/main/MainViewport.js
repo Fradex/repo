@@ -16,8 +16,10 @@
 
         // контектное меню для кнопок тулбара на рабочем столе
         this.contextMenu = new Ext.menu.Menu({
+            cls: 'btn-group',
             items: [
                 {
+                    cls: "btn btn-default btn-xs dropdown-toggle",
                     text: 'Закрыть все окна',
                     handler: function (btn) {
                         var tbar = _this.currentDesktop.down('toolbar[name=decktopTBar]');
@@ -28,6 +30,7 @@
                     }
                 },
                 {
+                    cls: "btn btn-default btn-xs dropdown-toggle",
                     text: 'Закрыть окно',
                     handler: function (btn) {
                         btn.up().win.close();
@@ -88,9 +91,6 @@
     },
 
     onLoad: function (main) {
-        debugger;
-        //main.down('tbtext[name=curPeriod]').setText(Ext.Date.format(main.dateFrom, 'F Y') + ' - ' + Ext.Date.format(main.dateTo, 'F Y'));
-        //main.down('tbtext[name=curVersion]').setText('Версия ' + (main.version == 'Выполнено' ? '' : main.version) + ' от ' + main.versionDate);
         this.onShowMainDesktop(main);
     },
 
@@ -118,23 +118,22 @@
         } else {
             main.down('panel[name=subsystem]').update('<header><span class="subsystem"></span></header>');
         }
-        
+
         if (!panel) {
 
             Main.utils.ControllerLoader.load(xtype);
 
             var style = '';
-            if (arm_id) style = 'style=\"bottom:58px;\"';
+            if (arm_id) style = 'style=\"bottom:58px;color:red\"';
             panel = Ext.widget(xtype, {
                 anchor: '0 -50',
                 bodyCls: ['html_body_1', 'html_body_2'],
-                html: '<div ' + style + ' class="background-image background-image-left-bottom"></div>' +
+                html: '<div ' + style + ' class="btn-group" role="group"></div>' +
                 '<div ' + style + ' class="background-image background-image-right-bottom"></div>' +
                 '<a class="background-image-sakha main_bgicon_right"></a><div class="long-logo main_bgicon_right"></div>',
                 border: false,
                 arm_id: arm_id
             });
-            debugger;
             main.add(panel);
             this.openDesktops.add(xtype, panel);
         }
@@ -193,15 +192,15 @@
         _this.currentDesktop = null;
 
         mainPanel.close();
-        view.down('panel[name=loginPanel]').show();
-        if (!alreadyLogOff) Ext.widget('login.Login');
+        if (!alreadyLogOff) window.location.href = 'Login';
         view.getEl().unmask(true);
     },
 
     onOpenWindow: function (desktop, xtype, options) {
+        debugger;
         var _this = this;
         desktop.setLoading();
-        Main.utils.ControllerLoader.load(/*'Main.controller.' +*/ xtype);
+        Main.utils.ControllerLoader.load(xtype);
         var wins = new Array();
         if (!desktop.openWindows) desktop.openWindows = new Ext.util.MixedCollection();
 
@@ -294,18 +293,17 @@
                 pressed: true,
                 win: win,
                 style: {
-                    borderColor: '#98C8FF',
-                    borderStyle: 'solid',
-                    backgroundColor: '#D5EAFF'//'#D7E8F0'//'#B0C4DE'
+                    //borderColor: '#98C8FF',
+                    //borderStyle: 'solid',
+                    //backgroundColor: '#D5EAFF'//'#D7E8F0'//'#B0C4DE'
                 },
-
+                cls: 'btn btn-default',
                 handler: function () {
                     if (b.pressed) win.show();
                     else if (_this.lastActivateWindow.id === win.id) win.hide();
                     else {
                         win.toFront();
                         b.toggle(true, true);
-                        b.style.backgroundColor = '#98C8FF';
                     }
                 }
             });

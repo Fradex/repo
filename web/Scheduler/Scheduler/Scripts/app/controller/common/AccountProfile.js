@@ -40,25 +40,25 @@ function loadUser(panel, person) {
     //if (person.otch) user += ' ' + person.otch;
     //user += ')';
     var user = 'Здесь должен быть пользователь';
-    var html =
-        '<header>' +
-            '<div class="info">' +
-            '<div class="controls">' +
-            '<span class="control-logout">' +
-            '<a href="#" onclick="' +
-            'Ext.ComponentQuery.query(\'[xtype=desktop.MainViewport]\')[0].fireEvent(\'programExit\')' +
-            '">выйти</a>' +
-            '</span>' +
-            '</div>' +
-            '<div class="user">' +
-            '<span class="userlink">' +
-            '<a href="#">' + user + '</a>' + //person.appointments.appointment + person.contractors.short_name +
-            '</span>' +
-            '</div>' +
-            '</div>' +
-            '<div class="left"></div>' +
-            '<div class="right"></div>' +
-            '<div class="container-wrapper"></div>' +
-            '</header>';
+    var html = '';
+        //'<header>' +
+        //    '<div class="info">' +
+        //    '<div class="controls">' +
+        //    '<span class="control-logout">' +
+        //    '<a href="#" onclick="' +
+        //    'Ext.ComponentQuery.query(\'[xtype=desktop.MainViewport]\')[0].fireEvent(\'programExit\')' +
+        //    '">выйти</a>' +
+        //    '</span>' +
+        //    '</div>' +
+        //    '<div class="user">' +
+        //    '<span class="userlink">' +
+        //    '<a href="#">' + user + '</a>' + //person.appointments.appointment + person.contractors.short_name +
+        //    '</span>' +
+        //    '</div>' +
+        //    '</div>' +
+        //    '<div class="left"></div>' +
+        //    '<div class="right"></div>' +
+        //    '<div class="container-wrapper"></div>' +
+        //    '</header>';
     panel.update(html);
 }

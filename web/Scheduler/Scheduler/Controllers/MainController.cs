@@ -13,5 +13,10 @@ namespace Scheduler.Controllers
         {
             return PartialView();
         }
+
+        public ActionResult GetUsers()
+        {
+            return Json(new object());
+        }
     }
 }

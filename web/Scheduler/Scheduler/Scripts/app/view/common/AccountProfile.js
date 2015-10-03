@@ -5,9 +5,6 @@
         type: 'absolute'
     },
     border: false,
-
-    bodyCls: 'main_header',
-    height: 55,
     fio: '',
 
     initComponent: function () {
@@ -15,47 +12,58 @@
 
         Ext.applyIf(me, {
             html:
-                '<header>' +
-                    '<div class="info">' +
-                    '<div class="controls">' +
-                    '<span class="control-logout">' +
-                    '<input type="button" value="Выйти" class="close" href="#" onclick="' +
+                //'<nav class="navbar navbar-inverse navbar-fixed-top" style="width:200px;">' +
+                //    '<div class="container-fluid">' +
+                //     '<span><input type="button" value="Назад на главную" class="btn btn-info" href="Main" onclick="' +
+                //        'Ext.ComponentQuery.query(\'[xtype=main.MainViewport]\')[0].fireEvent(\'showMainDesktop\')' +
+                //        '"></input></span>' +
+
+                //    '<span>' +
+                //    '<input type="button" value="Выйти" class="btn btn-primary" href="Login" onclick="' +
+                //    'Ext.ComponentQuery.query(\'[xtype=main.MainViewport]\')[0].fireEvent(\'programExit\')' +
+                //    '"></input>' +
+                //     '</span>' +
+                //      '</div>' +
+
+                //    //'<div class="user">' +
+                //    //'<span class="userlink">' +
+                //    //'<a href="#">' + this.fio + '</a>  | ' +
+                //    //'</span>' +
+                //    //'</div>' +
+                //    //'</div>' +
+                //    //'<div class="left"></div>' +
+                //    //'<div class="right"></div>' +
+                //    //'<div class="container-wrapper"></div>' +
+                //    '</nav>',
+
+            '<nav class="navbar navbar-inverse navbar-fixed-top">' +
+            '  <div class="container-fluid">' +
+                '<ul class="nav navbar-nav navbar-left">' +
+                    '<li><a href="#" onclick="' +
+                  'Ext.ComponentQuery.query(\'[xtype=main.MainViewport]\')[0].fireEvent(\'showMainDesktop\')">' +
+                  '<span class="glyphicon glyphicon-home"></span> Назад на главную </a></li>' +
+                  '</ul>' +
+                 '<ul class="nav navbar-nav navbar-right">'+
+                    '<li><a href="#"><span class="glyphicon glyphicon-user"></span> Пользователь </a></li>'+
+                    '<li><a href="#" onclick="' +
                     'Ext.ComponentQuery.query(\'[xtype=main.MainViewport]\')[0].fireEvent(\'programExit\')' +
-                    '"></input>' +
-                    '</span>' +
-                    '</div>' +
-                    '<div class="user">' +
-                    '<span class="userlink">' +
-                    '<a href="#">' + this.fio + '</a>  | ' +
-                    '</span>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="left"></div>' +
-                    '<div class="right"></div>' +
-                    '<div class="container-wrapper"></div>' +
-                    '</header>',
+                    '"></input>' +'<span class="glyphicon glyphicon-log-in"></span> Выйти </a></li>'+
+                  '</ul>'+
+            '</nav>',
             items: [
-                {
-                    xtype: 'panel',
-                    border: false,
-                    html: '<header><span class="back"><input type="button" value="Назад на главную" class="close" href="#" onclick="' +
-                        'Ext.ComponentQuery.query(\'[xtype=main.MainViewport]\')[0].fireEvent(\'showMainDesktop\')' +
-                        '"></input></span></header>',
-                    name: 'backLinkPanel'
-                },
                 {
                     xtype: 'panel',
                     border: false,
                     name: 'subsystem'
                 },
-                {
-                    xtype: 'panel',
-                    border: false,
-                    html: '<header><a href="#" onclick="' +
-                        'Ext.ComponentQuery.query(\'[xtype=main.MainViewport]\')[0].fireEvent(\'showMainDesktop\')' +
-                        '"></a></header>',
-                    name: 'mainImagePanel'
-                }
+                //{
+                //    xtype: 'panel',
+                //    border: false,
+                //    html: '<nav class="navbar navbar-inverse navbar-fixed-top"><a href="#" onclick="' +
+                //        'Ext.ComponentQuery.query(\'[xtype=main.MainViewport]\')[0].fireEvent(\'showMainDesktop\')' +
+                //        '"></a></nav>',
+                //    name: 'mainImagePanel'
+                //}
             ]
         });
         me.callParent(arguments);

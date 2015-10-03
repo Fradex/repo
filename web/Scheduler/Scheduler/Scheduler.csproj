@@ -178,6 +178,13 @@
     <Content Include="Content\bootstrap.min.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\calendar.css" />
+    <Content Include="Content\img\default\arrow.gif" />
+    <Content Include="Content\img\default\bg.gif" />
+    <Content Include="Content\img\default\calendar-sprites.gif" />
+    <Content Include="Content\img\default\ext-cal-edit-hd.png" />
+    <Content Include="Content\img\default\page-next.gif" />
+    <Content Include="Content\img\default\page-prev.gif" />
     <Content Include="Content\Site.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -717,6 +724,39 @@
     <Content Include="Scripts\ext\src\button\Cycle.js" />
     <Content Include="Scripts\ext\src\button\Manager.js" />
     <Content Include="Scripts\ext\src\button\Split.js" />
+    <Content Include="Scripts\ext\src\calendar\App.js" />
+    <Content Include="Scripts\ext\src\calendar\CalendarPanel.js" />
+    <Content Include="Scripts\ext\src\calendar\data\CalendarMappings.js" />
+    <Content Include="Scripts\ext\src\calendar\data\CalendarModel.js" />
+    <Content Include="Scripts\ext\src\calendar\data\Calendars.js" />
+    <Content Include="Scripts\ext\src\calendar\data\EventMappings.js" />
+    <Content Include="Scripts\ext\src\calendar\data\EventModel.js" />
+    <Content Include="Scripts\ext\src\calendar\data\Events.js" />
+    <Content Include="Scripts\ext\src\calendar\data\MemoryCalendarStore.js" />
+    <Content Include="Scripts\ext\src\calendar\data\MemoryEventStore.js" />
+    <Content Include="Scripts\ext\src\calendar\dd\DayDragZone.js" />
+    <Content Include="Scripts\ext\src\calendar\dd\DayDropZone.js" />
+    <Content Include="Scripts\ext\src\calendar\dd\DragZone.js" />
+    <Content Include="Scripts\ext\src\calendar\dd\DropZone.js" />
+    <Content Include="Scripts\ext\src\calendar\dd\StatusProxy.js" />
+    <Content Include="Scripts\ext\src\calendar\form\EventDetails.js" />
+    <Content Include="Scripts\ext\src\calendar\form\EventWindow.js" />
+    <Content Include="Scripts\ext\src\calendar\form\field\CalendarCombo.js" />
+    <Content Include="Scripts\ext\src\calendar\form\field\DateRange.js" />
+    <Content Include="Scripts\ext\src\calendar\form\field\ReminderCombo.js" />
+    <Content Include="Scripts\ext\src\calendar\template\BoxLayout.js" />
+    <Content Include="Scripts\ext\src\calendar\template\DayBody.js" />
+    <Content Include="Scripts\ext\src\calendar\template\DayHeader.js" />
+    <Content Include="Scripts\ext\src\calendar\template\Month.js" />
+    <Content Include="Scripts\ext\src\calendar\util\Date.js" />
+    <Content Include="Scripts\ext\src\calendar\util\WeekEventRenderer.js" />
+    <Content Include="Scripts\ext\src\calendar\view\AbstractCalendar.js" />
+    <Content Include="Scripts\ext\src\calendar\view\Day.js" />
+    <Content Include="Scripts\ext\src\calendar\view\DayBody.js" />
+    <Content Include="Scripts\ext\src\calendar\view\DayHeader.js" />
+    <Content Include="Scripts\ext\src\calendar\view\Month.js" />
+    <Content Include="Scripts\ext\src\calendar\view\MonthDayDetail.js" />
+    <Content Include="Scripts\ext\src\calendar\view\Week.js" />
     <Content Include="Scripts\ext\src\chart\axis\Abstract.js" />
     <Content Include="Scripts\ext\src\chart\axis\Axis.js" />
     <Content Include="Scripts\ext\src\chart\axis\Category.js" />
@@ -1235,6 +1275,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MainController.cs" />
+    <Compile Include="DomainService\SystemService.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

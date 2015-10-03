@@ -13,17 +13,18 @@
         Ext.applyIf(me, {
             dockedItems: [
                 {
+                    cls: 'btn-toolbar',
                     xtype: 'toolbar',
                     dock: 'bottom',
                     name: 'decktopTBar',
-                    height: 35
+                    height: 50
                 }
             ],
             items: [
                 {
                     xtype: 'common.ButtonsContainer',
-                    Names: ['Пользователи'],
-                    Images: ['icon-image-8'],
+                    Names: ['Календарь'],
+                    Images: ['icon-image-20'],
                     XTypes: ['Main'],
                     columnWidth: .80
                 }

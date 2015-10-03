@@ -34,7 +34,6 @@
 
 .html_body_2 {
     color: #000000;
-    background: #f8f9f8 url('../images/background.gif') repeat;
     font-family: Tahoma;
     color: #797979;
     font-size: 12px;
@@ -58,14 +57,6 @@
     color: #797979 !important;
 }
 
-.main_bottom_body {
-    bottom:0px;
-    height: 100%;
-    border-top: 1px solid #bcbcbc !important;
-    background:#d3d3d3 url('../images/pattern.png') repeat;
-    display: block;
-    padding: 0px 0px 2px 2px;
-}
 
 .main_bgicon_right {
     bottom: 9px !important;
