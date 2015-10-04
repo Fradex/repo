@@ -1,16 +1,19 @@
-Ext.define('Ext.calendar.data.Calendars', {
+﻿Ext.define('Ext.calendar.data.Calendars', {
     statics: {
         getData: function(){
             return {
                 "calendars":[{
                     "id":    1,
-                    "title": "Home"
+                    "title": "Дом"
                 },{
                     "id":    2,
-                    "title": "Work"
+                    "title": "Работа"
                 },{
                     "id":    3,
-                    "title": "School"
+                    "title": "Школа"
+                }, {
+                    "id":   4,
+                    "title": "Университет"
                 }]
             };    
         }

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @class Ext.calendar.view.Month
  * @extends Ext.calendar.CalendarView
  * <p>Displays a calendar view by month. This class does not usually need ot be used directly as you can
@@ -32,7 +32,7 @@ Ext.define('Ext.calendar.view.Month', {
      * @cfg {String} todayText
      * The text to display in the current day's box in the calendar when {@link #showTodayText} is true (defaults to 'Today')
      */
-    todayText: 'Today',
+    todayText: 'Сегодня',
     /**
      * @cfg {Boolean} showHeader
      * True to display a header beneath the navigation bar containing the week names above each week's column, false not to 

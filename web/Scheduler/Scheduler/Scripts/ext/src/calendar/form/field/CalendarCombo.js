@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @class Ext.calendar.form.field.CalendarCombo
  * @extends Ext.form.ComboBox
  * <p>A custom combo used for choosing from the list of available calendars to assign an event to.</p>
@@ -20,8 +20,8 @@ Ext.define('Ext.calendar.form.field.CalendarCombo', {
     requires: [
         'Ext.calendar.data.CalendarMappings'
     ],
-
-    fieldLabel: 'Calendar',
+    labelWidth: 100,
+    fieldLabel: 'Календарь',
     triggerAction: 'all',
     queryMode: 'local',
     forceSelection: true,

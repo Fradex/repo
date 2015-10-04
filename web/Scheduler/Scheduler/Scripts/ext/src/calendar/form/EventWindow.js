@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @class Ext.calendar.form.EventWindow
  * @extends Ext.Window
  * <p>A custom window containing a basic edit form used for quick editing of events.</p>
@@ -18,10 +18,10 @@ Ext.define('Ext.calendar.form.EventWindow', {
         'Ext.calendar.data.EventMappings'
     ],
 
-    DeleteEvent: 'DeleteEvent',
-    Save: 'Save',
-    Cancel: 'Cancel',
-    EditDetails: 'Edit Details',
+    DeleteEvent: 'Удалить событие',
+    Save: 'Сохранить',
+    Cancel: 'Закрыть',
+    EditDetails: 'Дополнительно',
 
     constructor: function(config) {
         var formPanelCfg = {
@@ -37,10 +37,10 @@ Ext.define('Ext.calendar.form.EventWindow', {
             items: [{
                 itemId: 'title',
                 name: Ext.calendar.data.EventMappings.Title.name,
-                fieldLabel: 'Title',
+                fieldLabel: 'Название',
                 xtype: 'textfield',
                 allowBlank: false,
-                emptyText: 'Event Title',
+                emptyText: 'Наименование события',
                 anchor: '100%'
             },
             {
@@ -48,7 +48,7 @@ Ext.define('Ext.calendar.form.EventWindow', {
                 itemId: 'date-range',
                 name: 'dates',
                 anchor: '100%',
-                fieldLabel: 'When'
+                fieldLabel: 'Когда'
             }]
         };
     
@@ -66,8 +66,8 @@ Ext.define('Ext.calendar.form.EventWindow', {
         }
     
         this.callParent([Ext.apply({
-            titleTextAdd: 'Add Event',
-            titleTextEdit: 'Edit Event',
+            titleTextAdd: 'Добавить событие',
+            titleTextEdit: 'Редактировать событие',
             width: 600,
             autocreate: true,
             border: true,
@@ -75,8 +75,8 @@ Ext.define('Ext.calendar.form.EventWindow', {
             modal: false,
             resizable: false,
             buttonAlign: 'left',
-            savingMessage: 'Saving changes...',
-            deletingMessage: 'Deleting event...',
+            savingMessage: 'Сохранение изменений...',
+            deletingMessage: 'Удаление события...',
             layout: 'fit',
     
             defaultFocus: 'title',
@@ -163,11 +163,7 @@ Ext.define('Ext.calendar.form.EventWindow', {
              * @param {Ext.calendar.form.EventWindow} this
              * @param {Ext.calendar.EventRecord} rec The {@link Ext.calendar.EventRecord record} that is currently being edited
              */
-            editdetails: true,
-            DeleteEvent: 'DeleteEvent',
-            Save: 'Save',
-            Cancel: 'Cancel',
-            EditDetails: 'Edit Details',
+            editdetails: true
         });
     },
 

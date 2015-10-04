@@ -711,6 +711,28 @@ td.ext-cal-dtitle-today div {
     border-color: #306da6;
 }
 
+
+.ext-color-4,
+.x-ie7m .ext-color-4-ad,
+.x-opera .ext-operaLT11.ext-color-4-ad {
+	color: red;
+}
+.ext-cal-day-col .ext-color-4,
+.ext-dd-drag-proxy .ext-color-4,
+.ext-color-4-ad,
+.ext-color-4-ad .ext-cal-evm,
+.ext-color-4 .ext-cal-picker-icon,
+.ext-color-4-x dl,
+.ext-color-4-x .ext-cal-evb {
+	background: red;
+}
+.ext-color-4-x .ext-cal-evb,
+.ext-color-4-ad .ext-cal-evm,
+.ext-color-4-ad,
+.ext-color-4-x dl {
+    border-color: red;
+}
+
 .ext-color-2,
 .x-ie7m .ext-color-2-ad,
 .x-opera .ext-operaLT11.ext-color-2-ad {

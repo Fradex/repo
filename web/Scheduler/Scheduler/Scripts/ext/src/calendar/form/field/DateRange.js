@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @class Ext.form.field.DateRange
  * @extends Ext.form.Field
  * <p>A combination field that includes start and end dates and times, as well as an optional all-day checkbox.</p>
@@ -21,12 +21,12 @@ Ext.define('Ext.calendar.form.field.DateRange', {
      * @cfg {String} toText
      * The text to display in between the date/time fields (defaults to 'to')
      */
-    toText: 'to',
+    toText: 'по',
     /**
      * @cfg {String} allDayText
      * The text to display as the label for the all day checkbox (defaults to 'All day')
      */
-    allDayText: 'All day',
+    allDayText: 'Весь день',
     /**
      * @cfg {String/Boolean} singleLine
      * `true` to render the fields all on one line, `false` to break the start date/time and end date/time
@@ -37,14 +37,14 @@ Ext.define('Ext.calendar.form.field.DateRange', {
      * @cfg {String} dateFormat
      * The date display format used by the date fields (defaults to 'n/j/Y') 
      */
-    dateFormat: 'n/j/Y',
+    dateFormat: 'd.m.Y',//'n/j/Y',
     /**
      * @cfg {String} timeFormat
      * The time display format used by the time fields. By default the DateRange uses the
      * {@link Ext.Date.use24HourTime} setting and sets the format to 'g:i A' for 12-hour time (e.g., 1:30 PM) 
      * or 'G:i' for 24-hour time (e.g., 13:30). This can also be overridden by a static format string if desired.
      */
-    timeFormat: Ext.Date.use24HourTime ? 'G:i' : 'g:i A',
+    timeFormat: 'G:i',//Ext.Date.use24HourTime ? 'G:i' : 'g:i A',
     
     // private
     fieldLayout: {
@@ -205,6 +205,7 @@ Ext.define('Ext.calendar.form.field.DateRange', {
     getAllDayConfig: function() {
         return {
             xtype: 'checkbox',
+            labelWidth: 30,
             itemId: this.id + '-allday',
             hidden: this.showTimes === false || this.showAllDay === false,
             boxLabel: this.allDayText,

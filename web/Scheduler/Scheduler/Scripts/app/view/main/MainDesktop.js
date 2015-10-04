@@ -16,17 +16,22 @@
         this.calendarStore = Ext.create('Ext.calendar.data.MemoryCalendarStore', {
             data: Ext.calendar.data.Calendars.getData()
         });
-
+        var height = Ext.getBody().getViewSize().height / 1.4,
+            width = Ext.getBody().getViewSize().width / 1.8;
         // A sample event store that loads static JSON from a local file. Obviously a real
         // implementation would likely be loading remote data via an HttpProxy, but the
         // underlying store functionality is the same.
         this.eventStore = Ext.create('Ext.calendar.data.MemoryEventStore', {
-            data: Ext.calendar.data.Events.getData()
+            //data: Ext.calendar.data.Events.getData()
         });
+        this.eventStore.loadData(Ext.calendar.data.Events.getData(), false);
+        this.eventStore.initRecs();
+       // this.eventStore.data = Ext.calendar.data.Events.getData();
         var config = {
 
         };
         Ext.applyIf(me, {
+            //layout: 'relative',
             layout: 'absolute',
             headers: { 'Content-Type': 'multipart/form-data; charset=UTF-8' },
             items: [
@@ -43,17 +48,18 @@
                 {
                     xtype: 'panel',
                     id: 'calendar',
+                    dock: 'right',
                     title: "Календарь",
-                    width: 1000,
-                    height: 600,
+                    width: width,
+                    height: height,
                     maxHeight: 600,
                     maxWidth: 1024,
-                    modal: true,
                     resizable: true,
                     animCollapse: true,
                     closeAction: 'hide',
                     collapsible: true,
                     border: true,
+                    constrain: true,
                     constrainHeader: true,
                     layout: 'fit',
                     items: [
@@ -73,19 +79,36 @@
                                      id: 'app-west',
                                      region: 'west',
                                      width: 214,
-                                     items: [{
-                                         xtype: 'datepicker',
-                                         id: 'app-nav-picker',
-                                         cls: 'ext-cal-nav-picker',
-                                         listeners: {
-                                             'select': {
-                                                 fn: function (dp, dt) {
-                                                     Ext.getCmp('app-calendar').setStartDate(dt);
-                                                 },
-                                                 scope: this
+                                     items: [
+                                         {
+                                             xtype: 'datepicker',
+                                             id: 'app-nav-picker',
+                                             cls: 'ext-cal-nav-picker',
+                                             listeners: {
+                                                 'select': {
+                                                     fn: function (dp, dt) {
+                                                         Ext.getCmp('app-calendar').setStartDate(dt);
+                                                     },
+                                                     scope: this
+                                                 }
                                              }
-                                         }
-                                     }]
+                                         },
+                                         {
+                                             margin: 15,
+                                             xtype: 'button',
+                                             text: 'Синхронизировать',
+                                             style: {
+                                                 background: 'green'
+                                             },
+                                             listeners: {
+                                                 'click': {
+                                                     fn: function (dp, dt) {
+                                                         
+                                                     },
+                                                     scope: this
+                                                 }
+                                             }
+                                         }]
                                  },
                                 {
                                     border: false,
@@ -233,6 +256,7 @@
                 overrideNotes: 'Комментарий',
                 overideLocation: 'Место',
                 overrideWebLink: 'Ссылка',
+                modal: true,
                 EditDetails: 'Редактировать...',
                 calendarStore: this.calendarStore,
                 DeleteEvent: 'Удалить событие',

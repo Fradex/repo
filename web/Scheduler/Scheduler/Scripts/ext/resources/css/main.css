@@ -3,9 +3,9 @@
     right: 0px;
     bottom: 200px;
     background: 0px 0px no-repeat url('../images/system/calendar.png');
-    background-size: 200px 200px;
-    width: 250px;
-    height: 200px;
+    background-size: 100px 100px;
+    width: 150px;
+    height: 100px;
 }
 
 .x-column-header-inner, .x-column-header-inner span { white-space:normal !important; text-align: center;}

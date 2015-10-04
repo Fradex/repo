@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @class Ext.calendar.form.EventDetails
  * @extends Ext.form.Panel
  * <p>A custom form used for detailed editing of events.</p>
@@ -27,31 +27,31 @@
 Ext.define('Ext.calendar.form.EventDetails', {
     extend: 'Ext.form.Panel',
     alias: 'widget.eventeditform',
-    
+
     requires: [
         'Ext.calendar.form.field.DateRange',
         'Ext.calendar.form.field.ReminderCombo',
         'Ext.calendar.data.EventMappings',
         'Ext.calendar.form.field.CalendarCombo'
     ],
-    
+
     fieldDefaults: {
         msgTarget: 'side',
         labelWidth: 65
     },
-    title: 'Event Form',
-    titleTextAdd: 'Add Event',
-    titleTextEdit: 'Edit Event',
-    DeleteEvent: 'DeleteEvent',
-    Save: 'Save',
-    Cancel: 'Cancel',
-    overrideWhen: 'When',
-    overrideTitle: 'Title',
-    overridetitleField: 'Event Title',
-    overrideReminder: 'Reminder',
-    overrideNotes: 'Notes',
-    overideLocation:'Location',
-    overrideWebLink: 'Web Link',
+    title: 'Форма события',
+    titleTextAdd: 'Добавить событие',
+    titleTextEdit: 'Редактировать событие',
+    DeleteEvent: 'Удалить событие',
+    Save: 'Сохранить',
+    Cancel: 'Закрыть',
+    overrideWhen: 'Когда',
+    overrideTitle: 'Заголовок',
+    overridetitleField: 'Заголовок события',
+    overrideReminder: 'Напоминание',
+    overrideNotes: 'Комментарий',
+    overideLocation: 'Место',
+    overrideWebLink: 'Ссылка',
 
     bodyStyle: 'background:transparent;padding:20px 20px 10px;',
     border: false,
@@ -65,7 +65,7 @@ Ext.define('Ext.calendar.form.EventDetails', {
     layout: 'column',
 
     // private
-    initComponent: function() {
+    initComponent: function () {
 
         this.addEvents({
             /**
@@ -100,6 +100,7 @@ Ext.define('Ext.calendar.form.EventDetails', {
 
         this.titleField = new Ext.form.Text({
             fieldLabel: this.overrideTitle,
+            labelWidth: 100,
             name: Ext.calendar.data.EventMappings.Title.name,
             emptyText: this.overridetitleField,
             allowBlank: false,
@@ -107,27 +108,32 @@ Ext.define('Ext.calendar.form.EventDetails', {
         });
         this.dateRangeField = new Ext.calendar.form.field.DateRange({
             fieldLabel: this.overrideWhen,
+            labelWidth: 70,
             singleLine: false,
             anchor: '90%'
         });
         this.reminderField = new Ext.calendar.form.field.ReminderCombo({
             name: this.overrideReminder,
+            labelWidth: 100,
             anchor: '70%'
         });
         this.notesField = new Ext.form.TextArea({
             fieldLabel: this.overrideNotes,
             name: Ext.calendar.data.EventMappings.Notes.name,
+            labelWidth: 100,
             grow: true,
             growMax: 150,
             anchor: '100%'
         });
         this.locationField = new Ext.form.Text({
             fieldLabel: this.overideLocation,
+            labelWidth: 100,
             name: Ext.calendar.data.EventMappings.Location.name,
             anchor: '100%'
         });
         this.urlField = new Ext.form.Text({
             fieldLabel: this.overrideWebLink,
+            labelWidth: 100,
             name: Ext.calendar.data.EventMappings.Url.name,
             anchor: '100%'
         });
@@ -138,6 +144,7 @@ Ext.define('Ext.calendar.form.EventDetails', {
         if (this.calendarStore) {
             this.calendarField = new Ext.calendar.form.field.CalendarCombo({
                 store: this.calendarStore,
+                labelWidth: 100,
                 anchor: '70%',
                 name: Ext.calendar.data.EventMappings.CalendarId.name
             });
@@ -161,7 +168,7 @@ Ext.define('Ext.calendar.form.EventDetails', {
 
         this.fbar = [{
             cls: 'ext-del-btn',
-            itemId: this.id+'-del-btn',
+            itemId: this.id + '-del-btn',
             text: this.DeleteEvent,
             scope: this,
             handler: this.onDelete,
@@ -182,17 +189,17 @@ Ext.define('Ext.calendar.form.EventDetails', {
     },
 
     // inherited docs
-    loadRecord: function(rec){
+    loadRecord: function (rec) {
         this.form.reset().loadRecord.apply(this.form, arguments);
         this.activeRecord = rec;
         this.dateRangeField.setValue(rec.data);
-        
-        if(this.calendarStore){
+
+        if (this.calendarStore) {
             this.form.setValues({
                 'calendar': rec.data[Ext.calendar.data.EventMappings.CalendarId.name]
             });
         }
-        
+
         if (rec.phantom) {
             this.setTitle(this.titleTextAdd);
             this.down('#' + this.id + '-del-btn').hide();
@@ -203,17 +210,17 @@ Ext.define('Ext.calendar.form.EventDetails', {
         }
         this.titleField.focus();
     },
-    
+
     // inherited docs
-    updateRecord: function(){
+    updateRecord: function () {
         var dates = this.dateRangeField.getValue(),
             M = Ext.calendar.data.EventMappings,
             rec = this.activeRecord,
             fs = rec.fields,
             dirty = false;
-            
+
         rec.beginEdit();
-        
+
         //TODO: This block is copied directly from BasicForm.updateRecord.
         // Unfortunately since that method internally calls begin/endEdit all
         // updates happen and the record dirty status is reset internally to
@@ -221,34 +228,34 @@ Ext.define('Ext.calendar.form.EventDetails', {
         // does not map directly to the record values, so for now we'll duplicate
         // the setter logic here (we need to be able to pick up any custom-added 
         // fields generically). Need to revisit this later and come up with a better solution.
-        fs.each(function(f){
+        fs.each(function (f) {
             var field = this.form.findField(f.name);
-            if(field){
+            if (field) {
                 var value = field.getValue();
                 if (value.getGroupValue) {
                     value = value.getGroupValue();
-                } 
+                }
                 else if (field.eachItem) {
                     value = [];
-                    field.eachItem(function(item){
+                    field.eachItem(function (item) {
                         value.push(item.getValue());
                     });
                 }
                 rec.set(f.name, value);
             }
         }, this);
-        
+
         rec.set(M.StartDate.name, dates[0]);
         rec.set(M.EndDate.name, dates[1]);
         rec.set(M.IsAllDay.name, dates[2]);
-        
+
         dirty = rec.dirty;
         rec.endEdit();
-        
+
         return dirty;
     },
 
-    setStartDate: function(d) {
+    setStartDate: function (d) {
         var me = this,
             duration = me.dateRangeField.getDuration();
 
@@ -258,18 +265,18 @@ Ext.define('Ext.calendar.form.EventDetails', {
         me.dateRangeField.setDT(new Date(me.dateRangeField.getDT('start').getTime() + duration), 'end');
     },
 
-    setEndDate: function(d) {
+    setEndDate: function (d) {
         this.dateRangeField.setDT(d, 'end');
     },
 
     // private
-    onCancel: function() {
+    onCancel: function () {
         this.cleanup(true);
         this.fireEvent('eventcancel', this, this.activeRecord);
     },
 
     // private
-    cleanup: function(hide) {
+    cleanup: function (hide) {
         if (this.activeRecord && this.activeRecord.dirty) {
             this.activeRecord.reject();
         }
@@ -281,11 +288,11 @@ Ext.define('Ext.calendar.form.EventDetails', {
     },
 
     // private
-    onSave: function(){
-        if(!this.form.isValid()){
+    onSave: function () {
+        if (!this.form.isValid()) {
             return;
         }
-        if(!this.updateRecord()){
+        if (!this.updateRecord()) {
             this.onCancel();
             return;
         }
@@ -293,7 +300,7 @@ Ext.define('Ext.calendar.form.EventDetails', {
     },
 
     // private
-    onDelete: function() {
+    onDelete: function () {
         this.fireEvent('eventdelete', this, this.activeRecord);
     }
 });
