@@ -55,9 +55,7 @@ namespace Scheduler.Controllers
         public ActionResult GetUserScheduleMobilesByUserId(string UserId)
         {
             var service = new UserScheduleService();
-            return Json(
-                new { success = true, data = service.GetUserScheduleMobilesByUserId(UserId) },
-                JsonRequestBehavior.AllowGet);
+            return Json(service.GetUserScheduleMobilesByUserId(UserId));
         }
 
         [AllowJsonGet]
