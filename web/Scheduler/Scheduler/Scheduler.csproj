@@ -662,6 +662,9 @@
     <EmbeddedResource Include="Migrations\201511041027244_InsertUserRoles.resx">
       <DependentUpon>201511041027244_InsertUserRoles.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511041313424_Migration1234.resx">
+      <DependentUpon>201511041313424_Migration1234.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511041311395_AlterUserId.resx">
       <DependentUpon>201511041311395_AlterUserId.cs</DependentUpon>
     </EmbeddedResource>
@@ -1307,6 +1310,10 @@
     <Compile Include="Migrations\201511041311395_AlterUserId.cs" />
     <Compile Include="Migrations\201511041311395_AlterUserId.Designer.cs">
       <DependentUpon>201511041311395_AlterUserId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511041313424_Migration1234.cs" />
+    <Compile Include="Migrations\201511041313424_Migration1234.Designer.cs">
+      <DependentUpon>201511041313424_Migration1234.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Autorization\ApplicationUser.cs" />

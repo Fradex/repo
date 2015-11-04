@@ -32,7 +32,20 @@
         //this.eventStore.loadRecords(eventList);
         // this.eventStore.load();
         // this.eventStore.data = Ext.calendar.data.Events.getData();
-
+        Ext.Ajax.request({
+            url: '/Main/GetUserScheduleByUserId',
+            method: 'GET',
+            failure: function () {
+                Ext.MessageBox.show({ title: 'Ошибка', msg: 'Не удалось выполнить запрос', buttons: Ext.MessageBox.OK }); return;
+            },
+            success: function (response) {
+                var result = Ext.decode(response.responseText);
+                debugger;
+                me.eventStore.removeAll();
+                me.eventStore.add(result);
+                me.eventStore.load();
+            }
+        });
         var config = {
 
         };

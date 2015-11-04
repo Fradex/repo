@@ -16,38 +16,42 @@ namespace Scheduler.Controllers
             return PartialView();
         }
 
-        [HttpGet]
+        [AllowJsonGet]
         public ActionResult GetUsers()
         {
             var service = new UsersService();
-            return Json(service.GetAllUsers());
+
+            return Json(new {success = true, data = service.GetAllUsers()});
         }
 
+        [AllowJsonGet]
         public ActionResult GetCurrentUser()
         {
             var service = new UsersService();
-            return Json(service.GetUserDataById(Session["currentUserID"].ToString()));
+            return Json(new { success = true, data = service.GetUserDataById(Session["currentUserID"].ToString())});
         }
 
-        [HttpGet]
+        [AllowJsonGet]
         public ActionResult GetAllUserSchedules()
         {
             var service = new UserScheduleService();
-            return Json(service.GetAllUserSchedules());
+            return Json(new { success = true, data = service.GetAllUserSchedules()});
         }
 
-        [HttpGet]
+        [AllowJsonGet]
         public ActionResult GetUserScheduleByUserId()
         {
             var service = new UserScheduleService();
-            return Json(service.GetUserScheduleByUserId(Session["currentUserID"].ToString()));
+            return Json(new { success = true, data = service.GetUserScheduleByUserId(Session["currentUserID"].ToString())});
         }
 
-        [HttpGet]
+        [AllowJsonGet]
         public ActionResult GetUserScheduleMobilesByUserId(string UserId)
         {
             var service = new UserScheduleService();
-            return Json(service.GetUserScheduleMobilesByUserId(UserId));
+            return Json(
+                new { success = true, data = service.GetUserScheduleMobilesByUserId(UserId)},
+                JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -59,7 +63,7 @@ namespace Scheduler.Controllers
         public ActionResult SaveListUserSchedule(List<UserSchedule> schedules)
         {
             var service = new UserScheduleService();
-            return Json(service.SaveListUserSchedule(schedules, Session["currentUserID"].ToString()));
+            return Json(new { success = true, data = service.SaveListUserSchedule(schedules, Session["currentUserID"].ToString())});
         }
 
     }
