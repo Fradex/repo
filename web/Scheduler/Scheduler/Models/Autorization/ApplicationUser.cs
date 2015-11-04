@@ -12,7 +12,6 @@ namespace Scheduler.Models.Autorization
 
         public AppDbContext() : base("db")
         {
-            //Database.SetInitializer(new DropCreateDatabaseAlways<AppDbContext>());
         }
     }
 
@@ -24,10 +23,12 @@ namespace Scheduler.Models.Autorization
 
     public class OwnerDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<UserRole> UserRole { get; set; }
 
         public OwnerDbContext()
            : base("db")
         {
+            
         }
     }
 
@@ -43,8 +44,7 @@ namespace Scheduler.Models.Autorization
     {
         public virtual int Id { get; set; }
         public virtual string Role { get; set; }
-
-        public virtual int UserId { get; set; }
-        public virtual ICollection<ApplicationUser> ApplicationUsers { get; set; }
+        // public virtual int UserId { get; set; }
+        //public virtual ICollection<ApplicationUser> ApplicationUsers { get; set; }
     }
 }

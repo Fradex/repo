@@ -32,7 +32,7 @@ namespace MobileScheduler
 		{
 			
 			// aapt resource value: 0x7f050000
-			public const int ScheduleArray = 2131034112;
+			public const int MainMenuArray = 2131034112;
 			
 			static Array()
 			{
@@ -57,6 +57,22 @@ namespace MobileScheduler
 			}
 		}
 		
+		public partial class Color
+		{
+			
+			// aapt resource value: 0x7f060000
+			public const int my_blue = 2131099648;
+			
+			static Color()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Color()
+			{
+			}
+		}
+		
 		public partial class Drawable
 		{
 			
@@ -76,20 +92,59 @@ namespace MobileScheduler
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f060004
-			public const int BtnLogin = 2131099652;
+			// aapt resource value: 0x7f080011
+			public const int BtnLogin = 2131230737;
 			
-			// aapt resource value: 0x7f060002
-			public const int EtName = 2131099650;
+			// aapt resource value: 0x7f08000f
+			public const int EtName = 2131230735;
 			
-			// aapt resource value: 0x7f060003
-			public const int EtPassword = 2131099651;
+			// aapt resource value: 0x7f080010
+			public const int EtPassword = 2131230736;
 			
-			// aapt resource value: 0x7f060000
-			public const int relativeLayout1 = 2131099648;
+			// aapt resource value: 0x7f08000d
+			public const int relativeLayout1 = 2131230733;
 			
-			// aapt resource value: 0x7f060001
-			public const int textView1 = 2131099649;
+			// aapt resource value: 0x7f080001
+			public const int relativeLayout2 = 2131230721;
+			
+			// aapt resource value: 0x7f080004
+			public const int relativeLayout3 = 2131230724;
+			
+			// aapt resource value: 0x7f080007
+			public const int relativeLayout44 = 2131230727;
+			
+			// aapt resource value: 0x7f08000a
+			public const int relativeLayout5 = 2131230730;
+			
+			// aapt resource value: 0x7f08000e
+			public const int textView1 = 2131230734;
+			
+			// aapt resource value: 0x7f080008
+			public const int textViewEnd = 2131230728;
+			
+			// aapt resource value: 0x7f080009
+			public const int textViewEndText = 2131230729;
+			
+			// aapt resource value: 0x7f080000
+			public const int textViewEventText = 2131230720;
+			
+			// aapt resource value: 0x7f08000b
+			public const int textViewNote = 2131230731;
+			
+			// aapt resource value: 0x7f08000c
+			public const int textViewNoteText = 2131230732;
+			
+			// aapt resource value: 0x7f080005
+			public const int textViewStart = 2131230725;
+			
+			// aapt resource value: 0x7f080006
+			public const int textViewStartText = 2131230726;
+			
+			// aapt resource value: 0x7f080002
+			public const int textViewType = 2131230722;
+			
+			// aapt resource value: 0x7f080003
+			public const int textViewTypeText = 2131230723;
 			
 			static Id()
 			{
@@ -105,10 +160,13 @@ namespace MobileScheduler
 		{
 			
 			// aapt resource value: 0x7f030000
-			public const int Main = 2130903040;
+			public const int EventInfo = 2130903040;
 			
 			// aapt resource value: 0x7f030001
-			public const int MainMenu = 2130903041;
+			public const int Main = 2130903041;
+			
+			// aapt resource value: 0x7f030002
+			public const int MainMenu = 2130903042;
 			
 			static Layout()
 			{
@@ -126,32 +184,68 @@ namespace MobileScheduler
 			// aapt resource value: 0x7f040001
 			public const int ApplicationName = 2130968577;
 			
+			// aapt resource value: 0x7f040014
+			public const int Attention = 2130968596;
+			
 			// aapt resource value: 0x7f040003
-			public const int Login = 2130968579;
+			public const int Dates = 2130968579;
+			
+			// aapt resource value: 0x7f040011
+			public const int EndDate = 2130968593;
+			
+			// aapt resource value: 0x7f04000d
+			public const int Event = 2130968589;
+			
+			// aapt resource value: 0x7f040005
+			public const int EventInfo = 2130968581;
+			
+			// aapt resource value: 0x7f040004
+			public const int Events = 2130968580;
+			
+			// aapt resource value: 0x7f04000f
+			public const int Location = 2130968591;
+			
+			// aapt resource value: 0x7f040006
+			public const int Login = 2130968582;
 			
 			// aapt resource value: 0x7f040002
 			public const int MainMenu = 2130968578;
 			
-			// aapt resource value: 0x7f040008
-			public const int Name = 2130968584;
+			// aapt resource value: 0x7f04000b
+			public const int Name = 2130968587;
 			
-			// aapt resource value: 0x7f040009
-			public const int Password = 2130968585;
+			// aapt resource value: 0x7f040015
+			public const int NoConnection = 2130968597;
+			
+			// aapt resource value: 0x7f040013
+			public const int NotSpecified = 2130968595;
+			
+			// aapt resource value: 0x7f040012
+			public const int Note = 2130968594;
+			
+			// aapt resource value: 0x7f04000c
+			public const int Password = 2130968588;
 			
 			// aapt resource value: 0x7f040000
 			public const int Schedule = 2130968576;
 			
+			// aapt resource value: 0x7f04000a
+			public const int ServerUnavailable = 2130968586;
+			
 			// aapt resource value: 0x7f040007
-			public const int ServerUnavailable = 2130968583;
+			public const int SigningIn = 2130968583;
 			
-			// aapt resource value: 0x7f040004
-			public const int SigningIn = 2130968580;
+			// aapt resource value: 0x7f040010
+			public const int StartDate = 2130968592;
 			
-			// aapt resource value: 0x7f040005
-			public const int Warning = 2130968581;
+			// aapt resource value: 0x7f04000e
+			public const int Type = 2130968590;
 			
-			// aapt resource value: 0x7f040006
-			public const int WrongInput = 2130968582;
+			// aapt resource value: 0x7f040008
+			public const int Warning = 2130968584;
+			
+			// aapt resource value: 0x7f040009
+			public const int WrongInput = 2130968585;
 			
 			static String()
 			{
@@ -159,6 +253,22 @@ namespace MobileScheduler
 			}
 			
 			private String()
+			{
+			}
+		}
+		
+		public partial class Style
+		{
+			
+			// aapt resource value: 0x7f070000
+			public const int CustomTheme = 2131165184;
+			
+			static Style()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Style()
 			{
 			}
 		}
