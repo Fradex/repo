@@ -18,12 +18,10 @@ namespace Scheduler.Migrations
 
         protected override void Seed(OwnerDbContext context)
         {
-            context.UserRole.AddOrUpdate(r => r.Id,
-                new UserRole { Id = 1, Role = "Администратор" },
-                new UserRole { Id = 2, Role = "Пользователь" });
+            //context.UserRole.AddOrUpdate(r => r.Id,
+            //    new UserRole { Id = 1, Role = "Администратор" },
+            //    new UserRole { Id = 2, Role = "Пользователь" });
         }
     }
-
-
 
 }
