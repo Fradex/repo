@@ -686,6 +686,7 @@
     <Content Include="Scripts\ext\resources\images\system\calendar.png" />
     <Content Include="Scripts\ext\resources\images\system\header.jpg" />
     <Content Include="Scripts\ext\resources\images\system\scheduler.jpg" />
+    <None Include="Properties\PublishProfiles\web2.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\ext\ext-lang-ru.js" />
     <Content Include="Scripts\ext\ext-all-debug-w-comments.js" />
