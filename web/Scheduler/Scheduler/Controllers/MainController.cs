@@ -50,8 +50,7 @@ namespace Scheduler.Controllers
         {
             var service = new UserScheduleService();
             return Json(
-                new { success = true, data = service.GetUserScheduleMobilesByUserId(UserId)},
-                JsonRequestBehavior.AllowGet);
+                new { success = true, data = service.GetUserScheduleMobilesByUserId(UserId)});
         }
 
         /// <summary>

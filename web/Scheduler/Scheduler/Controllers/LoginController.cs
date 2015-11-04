@@ -105,7 +105,9 @@ namespace Scheduler.Controllers
         {
             if (this.ModelState.IsValid)
             {
-                var user = new ApplicationUser() { UserName = model.UserName };
+                var user = new ApplicationUser() {
+                    UserName = model.UserName, RegisterDate = DateTime.Now,
+                    Role = new UserRole() {Id = 1} };
                 var result = await this.UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
