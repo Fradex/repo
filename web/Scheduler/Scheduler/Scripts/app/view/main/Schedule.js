@@ -48,7 +48,7 @@
                              flex: 3
                          },
                          {
-                             xtype: 'datecolumn',
+                             xtype: 'gridcolumn',
                              text: 'Дата начала события',
                              dataIndex: 'StartDate',
                              flex: 2,
