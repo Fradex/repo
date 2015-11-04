@@ -9,7 +9,11 @@ namespace Scheduler.Models.Autorization
     public class AppDbContext : DbContext
     {
         public DbSet<UserSchedule> UserSchedule { get; set; }
-        public AppDbContext() : base("db") { }
+
+        public AppDbContext() : base("db")
+        {
+            Database.SetInitializer(new DropCreateDatabaseAlways<AppDbContext>());
+        }
     }
 
     public class ApplicationUser : IdentityUser

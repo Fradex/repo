@@ -32,7 +32,7 @@ namespace Scheduler.DomainService
             using (var db = new AppDbContext())
             {
                 return db.UserSchedule.
-                    Where(x => x.UserId.Id == UserId).ToList();
+                    Where(x => x.UserId== UserId).ToList();
             }
         }
 

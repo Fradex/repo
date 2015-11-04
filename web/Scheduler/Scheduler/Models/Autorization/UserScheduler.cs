@@ -12,7 +12,7 @@ namespace Scheduler.Models.Autorization
         /// <summary>
         /// Идентификатор пользователя
         /// </summary>
-        public virtual ApplicationUser UserId { get; set; }
+        public virtual string UserId { get; set; }
         /// <summary>
         /// Идентификатор записи
         /// </summary>
