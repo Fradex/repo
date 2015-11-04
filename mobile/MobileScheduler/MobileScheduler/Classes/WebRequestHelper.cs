@@ -10,7 +10,7 @@ namespace MobileScheduler.Classes
     {
         public async static Task<T> FetchWebResult<T>(string url)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(new Uri("http://192.168.0.8/scheduler" + url));
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(new Uri("http://192.168.0.6/scheduler" + url));
             request.ContentType = "application/json";
             request.Method = "GET";
 

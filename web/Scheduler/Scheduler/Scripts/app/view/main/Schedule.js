@@ -16,7 +16,7 @@
             pageSize: 25, // items per page
             proxy: {
                 type: 'ajax',
-                url: '/Main/GetUserScheduleMobilesByUser',  // url that will load data with respect to start and limit params
+                url: 'Main/GetUserScheduleMobilesByUser',  // url that will load data with respect to start and limit params
                 reader: {
                     type: 'json',
                     root: 'data',

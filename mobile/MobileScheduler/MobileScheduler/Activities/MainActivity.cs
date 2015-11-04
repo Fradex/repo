@@ -65,17 +65,27 @@ namespace MobileScheduler.Activities
             try
             {
                 var userId = await WebRequestHelper.FetchWebResult<string>($"/Login/ApiLogin?userName={name}&password={password}");
-                progressDialog.Hide();
 
                 if (userId != null)
                 {
                     //Обновляем данные
-                    UpdateEventsData(userId);
+                    var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), $"{userId}.txt");
+
+                    //Загрузка данных
+                    var eventsList = await WebRequestHelper.FetchWebResult<List<EventInfo>>($"/Main/GetUserScheduleMobilesByUserId?UserId={userId}");
+                    
+                    //Сохранение данных
+                    using (var writer = new StreamWriter(File.Create(filePath)))
+                    {
+                        writer.Write(JsonConvert.SerializeObject(eventsList));
+                    }
                     StartActivity(typeof(MainMenuActivity));
+                    progressDialog.Hide();
                 }
                 else
                 {
                     MessageHelper.ShowMessage(this, Resource.String.Warning, Resource.String.WrongInput);
+                    progressDialog.Hide();
                 }
             }
             catch (Exception e)
@@ -85,30 +95,9 @@ namespace MobileScheduler.Activities
             }
         }
 
-        private void UpdateEventsData(string userId)
+        private async void UpdateEventsData(string userId)
         {
-            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), $"{userId}.txt");
-
-            //Загрузка данных
-            var data = WebRequestHelper.FetchWebResult<string>($"/Login/ApiLogin?");
-            var eventsList = JsonConvert.DeserializeObject<List<EventInfo>>(data.Result);
-
-            //List<EventInfo> eventsList = new List<EventInfo>
-            //    {
-            //        new EventInfo
-            //        {
-            //            Id = 1,
-            //            Title = "Title",
-            //            StartDate = new DateTime(2015, 1, 1, 12, 0, 0),
-            //            EndDate = new DateTime(2015, 1, 1, 16, 0, 0)
-            //        }
-            //    };
-
-            //Сохранение данных
-            using (var writer = new StreamWriter(File.Create(filePath)))
-            {
-                writer.Write(JsonConvert.SerializeObject(eventsList));
-            }
+            
         }
     }
 }
