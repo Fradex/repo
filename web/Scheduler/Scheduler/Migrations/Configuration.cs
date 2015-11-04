@@ -32,35 +32,35 @@ namespace Scheduler.Migrations
             //
         }
     }
-    internal sealed class AppDbContextInitializer : DropCreateDatabaseAlways<AppDbContext>
-    {
-        protected override void Seed(AppDbContext context)
-        {
+    //internal sealed class AppDbContextInitializer : DropCreateDatabaseAlways<AppDbContext>
+    //{
+    //    protected override void Seed(AppDbContext context)
+    //    {
            
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
-        }
-    }
+    //        //    context.People.AddOrUpdate(
+    //        //      p => p.FullName,
+    //        //      new Person { FullName = "Andrew Peters" },
+    //        //      new Person { FullName = "Brice Lambson" },
+    //        //      new Person { FullName = "Rowan Miller" }
+    //        //    );
+    //        //
+    //    }
+    //}
 
-    internal sealed class OwnerDbContextInitializer : DropCreateDatabaseAlways<OwnerDbContext>
-    {
-        protected override void Seed(OwnerDbContext context)
-        {
+    //internal sealed class OwnerDbContextInitializer : DropCreateDatabaseAlways<OwnerDbContext>
+    //{
+    //    protected override void Seed(OwnerDbContext context)
+    //    {
             
-            //    new IdentityRole {Id = 1,Name = "Администратор"});
-            ////    context.People.AddOrUpdate(
-            ////      p => p.FullName,
-            ////      new Person { FullName = "Andrew Peters" },
-            ////      new Person { FullName = "Brice Lambson" },
-            ////      new Person { FullName = "Rowan Miller" }
-            ////    );
-            ////
-        }
-    }
+    //        //    new IdentityRole {Id = 1,Name = "Администратор"});
+    //        ////    context.People.AddOrUpdate(
+    //        ////      p => p.FullName,
+    //        ////      new Person { FullName = "Andrew Peters" },
+    //        ////      new Person { FullName = "Brice Lambson" },
+    //        ////      new Person { FullName = "Rowan Miller" }
+    //        ////    );
+    //        ////
+    //    }
+    //}
 
 }

@@ -63,5 +63,10 @@ Ext.calendar.data.EventMappings = {
         name: 'IsNew',
         mapping: 'n',
         type: 'boolean'
+    },
+    Id: {
+        name: 'Id',
+        mapping: 'id',
+        type: 'int'
     }
 };

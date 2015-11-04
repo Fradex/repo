@@ -12,7 +12,7 @@ namespace Scheduler.Models.Autorization
 
         public AppDbContext() : base("db")
         {
-            Database.SetInitializer(new DropCreateDatabaseAlways<AppDbContext>());
+            //Database.SetInitializer(new DropCreateDatabaseAlways<AppDbContext>());
         }
     }
 

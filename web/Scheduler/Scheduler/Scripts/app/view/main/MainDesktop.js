@@ -26,7 +26,13 @@
         });
         this.eventStore.loadData(Ext.calendar.data.Events.getData(), false);
         this.eventStore.initRecs();
-       // this.eventStore.data = Ext.calendar.data.Events.getData();
+        // this.eventStore.data = Ext.calendar.data.Events.getData();
+
+
+        //this.eventStore.loadRecords(eventList);
+        // this.eventStore.load();
+        // this.eventStore.data = Ext.calendar.data.Events.getData();
+
         var config = {
 
         };
@@ -103,7 +109,55 @@
                                              listeners: {
                                                  'click': {
                                                      fn: function (dp, dt) {
-                                                         
+                                                         var today = Ext.Date.clearTime(new Date()),
+                                                           makeDate = function (d, h, m, s) {
+                                                               d = d * 86400;
+                                                               h = (h || 0) * 3600;
+                                                               m = (m || 0) * 60;
+                                                               s = (s || 0);
+                                                               return Ext.Date.add(today, Ext.Date.SECOND, d + h + m + s);
+                                                           };
+                                                         var schedules =Ext.JSON.encode( me.eventStore.getRange().map(function (item) {
+                                                             return {
+                                                                 CalendarId: item.data.CalendarId,
+                                                                 EndDate: item.data.EndDate,
+                                                                 IsAllDay: item.data.IsAllDay,
+                                                                 Location: item.data.Location,
+                                                                 Notes: item.data.Notes,
+                                                                 Reminder: item.data.Reminder,
+                                                                 StartDate: item.data.StartDate,
+                                                                 Title: item.data.Title,
+                                                                 Url: item.data.Url,
+                                                                 Id: item.data.Id
+                                                             };
+                                                         }));
+                                                         debugger;
+                                                         Ext.Ajax.request({
+                                                             url: '/Main/SaveListUserSchedule',
+                                                             method: 'POST',
+                                                             jsonData: schedules,
+                                                             failure: function () {
+                                                                 Ext.MessageBox.show({ title: 'Ошибка', msg: 'Не удалось выполнить запрос', buttons: Ext.MessageBox.OK }); return;
+                                                             },
+                                                             success: function (response) {
+                                                                 var result = Ext.decode(response.responseText);
+                                                                 debugger;
+                                                                 Ext.Ajax.request({
+                                                                     url: '/Main/GetUserScheduleByUserId',
+                                                                     method: 'GET',
+                                                                     failure: function () {
+                                                                         Ext.MessageBox.show({ title: 'Ошибка', msg: 'Не удалось выполнить запрос', buttons: Ext.MessageBox.OK }); return;
+                                                                     },
+                                                                     success: function (response) {
+                                                                         var result = Ext.decode(response.responseText);
+                                                                         debugger;
+                                                                         me.eventStore.add(result);
+                                                                         me.eventStore.load();
+                                                                     }
+                                                                 });
+                                                             }
+                                                         });
+                                                        
                                                      },
                                                      scope: this
                                                  }
