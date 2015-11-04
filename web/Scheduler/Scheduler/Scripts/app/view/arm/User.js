@@ -1,6 +1,6 @@
-﻿Ext.define('Main.view.arm.Administrator', {
+﻿Ext.define('Main.view.arm.User', {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.arm.Administrator',
+    alias: 'widget.arm.User',
 
     layout: {
         type: 'column'
@@ -23,9 +23,9 @@
             items: [
                 {
                     xtype: 'common.ButtonsContainer',
-                    Names: ['Пользователи'],
-                    Images: ['icon-image-9'],
-                    XTypes: ['UserList'],
+                    Names: ['Расписание'],
+                    Images: ['icon-image-20'],
+                    XTypes: ['Schedule'],
                     columnWidth: .80
                 }
             ]

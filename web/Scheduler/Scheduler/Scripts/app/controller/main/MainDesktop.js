@@ -30,7 +30,8 @@
     onLoad: function (panel) {
         var main = panel.up('[xtype=desktop.MainViewport]');
         var btnCont = panel.down('container[name=buttons]');
-        var arms = [{ image_url: 'icon-image-8', controller: 'arm.Administrator', id: 1, arm_name: 'Администратор' }];
+        var arms = [{ image_url: 'icon-image-8', controller: 'arm.Administrator', id: 1, arm_name: 'Администратор' },
+                     { image_url: 'icon-image-9', controller: 'arm.User', id: 2, arm_name: 'Пользователь' }];
         for (var i in arms) {
             var but = Ext.create('Ext.button.Button', {
                 xtype: 'button',

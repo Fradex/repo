@@ -36,7 +36,6 @@
 
     onOpen: function (button) {
         if (!button.nameXtype) return;
-        debugger;
         var mv = Main.utils.ControllerLoader.load('main.MainViewport');
         mv.onOpenWindow(button.up().up(), button.nameXtype, {
             mainCall: true

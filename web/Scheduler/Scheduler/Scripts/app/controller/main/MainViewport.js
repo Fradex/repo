@@ -43,12 +43,10 @@
             '[xtype=main.MainViewport]': {
                 loadArms: this.onLoad,
                 showMainDesktop: function () {
-                    debugger;
                     this.onShowMainDesktop(this.currentDesktop.up('[xtype=main.MainViewport]'));
                 },
                 programExit: this.on_ProgramExit,
                 afterrender: function (view) {
-                    debugger;
                     view.fireEvent('loadArms', view);
                 }
             },
@@ -197,7 +195,6 @@
     },
 
     onOpenWindow: function (desktop, xtype, options) {
-        debugger;
         var _this = this;
         desktop.setLoading();
         Main.utils.ControllerLoader.load(xtype);
