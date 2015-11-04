@@ -9,7 +9,7 @@ using Scheduler.Models.Autorization;
 
 namespace Scheduler.DomainService
 {
-    public class SystemService
+    public class UserScheduleService
     {
         /// <summary>
         /// Получение всех расписаний
@@ -27,12 +27,12 @@ namespace Scheduler.DomainService
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public UserSchedule GetUserScheduleByUserId(int UserId)
+        public UserSchedule GetUserScheduleByUserId(string UserId)
         {
             using (var db = new AppDbContext())
             {
                 return db.UserSchedule.
-                    FirstOrDefault(x => x.UserId.Id == UserId.ToString());
+                    FirstOrDefault(x => x.UserId.Id == UserId);
             }
         }
 

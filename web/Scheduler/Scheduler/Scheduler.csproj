@@ -659,6 +659,9 @@
     <EmbeddedResource Include="Migrations\201511040901533_Second.resx">
       <DependentUpon>201511040901533_Second.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511041027244_InsertUserRoles.resx">
+      <DependentUpon>201511041027244_InsertUserRoles.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Scripts\app.js" />
     <Content Include="Scripts\app\controller\arm\Administrator.js" />
     <Content Include="Scripts\app\controller\common\AccountProfile.js" />
@@ -1281,7 +1284,8 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MainController.cs" />
-    <Compile Include="DomainService\SystemService.cs" />
+    <Compile Include="DomainService\UsersService.cs" />
+    <Compile Include="DomainService\UserScheduleService.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -1292,6 +1296,10 @@
     <Compile Include="Migrations\201511040901533_Second.cs" />
     <Compile Include="Migrations\201511040901533_Second.Designer.cs">
       <DependentUpon>201511040901533_Second.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511041027244_InsertUserRoles.cs" />
+    <Compile Include="Migrations\201511041027244_InsertUserRoles.Designer.cs">
+      <DependentUpon>201511041027244_InsertUserRoles.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Autorization\ApplicationUser.cs" />

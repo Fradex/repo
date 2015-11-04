@@ -55,11 +55,12 @@ namespace Scheduler.Controllers
                 if (user != null)
                 {
                     await SignInAsync(user, model.RememberMe);
+                    Session["currentUserID"] = user.Id;
                     return RedirectToLocal(returnUrl);
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Не верные логин или пароль!");
+                    ModelState.AddModelError("", "Неверные логин или пароль!");
                 }
             }
 
@@ -109,6 +110,7 @@ namespace Scheduler.Controllers
                 if (result.Succeeded)
                 {
                     await this.SignInAsync(user, isPersistent: false);
+                    Session["currentUserID"] = user.Id;
                     return this.RedirectToAction("Index", "Main");
                 }
                 else

@@ -28,4 +28,5 @@ namespace Scheduler.Migrations
             //
         }
     }
+
 }
