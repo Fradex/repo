@@ -17,7 +17,7 @@ namespace Scheduler.DomainService
         /// <returns></returns>
         public List<ApplicationUser> GetAllUsers()
         {
-            using (var db = new OwnerDbContext())
+            using (var db = new ApplicationDbContext())
             {
                 return db.Users.ToList();
             }
@@ -30,7 +30,7 @@ namespace Scheduler.DomainService
         /// <returns></returns>
         public ApplicationUser GetUserDataById(string Id)
         {
-            using (var db = new OwnerDbContext())
+            using (var db = new ApplicationDbContext())
             {
                 var res = db.Users.FirstOrDefault(x => x.Id == Id);
                 res.PasswordHash = null;

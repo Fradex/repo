@@ -656,17 +656,8 @@
     <EmbeddedResource Include="Migrations\201510081827523_First.resx">
       <DependentUpon>201510081827523_First.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201511040901533_Second.resx">
-      <DependentUpon>201511040901533_Second.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511041027244_InsertUserRoles.resx">
       <DependentUpon>201511041027244_InsertUserRoles.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201511041313424_Migration1234.resx">
-      <DependentUpon>201511041313424_Migration1234.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201511041311395_AlterUserId.resx">
-      <DependentUpon>201511041311395_AlterUserId.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Scripts\app.js" />
     <Content Include="Scripts\app\controller\arm\User.js" />
@@ -695,8 +686,6 @@
     <Content Include="Scripts\ext\resources\images\system\calendar.png" />
     <Content Include="Scripts\ext\resources\images\system\header.jpg" />
     <Content Include="Scripts\ext\resources\images\system\scheduler.jpg" />
-    <Content Include="Scripts\ext\resources\images\system\vssver2.scc" />
-    <Content Include="Scripts\ext\resources\images\vssver2.scc" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\ext\ext-lang-ru.js" />
     <Content Include="Scripts\ext\ext-all-debug-w-comments.js" />
@@ -1305,21 +1294,9 @@
     <Compile Include="Migrations\201510081827523_First.Designer.cs">
       <DependentUpon>201510081827523_First.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201511040901533_Second.cs" />
-    <Compile Include="Migrations\201511040901533_Second.Designer.cs">
-      <DependentUpon>201511040901533_Second.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\201511041027244_InsertUserRoles.cs" />
     <Compile Include="Migrations\201511041027244_InsertUserRoles.Designer.cs">
       <DependentUpon>201511041027244_InsertUserRoles.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201511041311395_AlterUserId.cs" />
-    <Compile Include="Migrations\201511041311395_AlterUserId.Designer.cs">
-      <DependentUpon>201511041311395_AlterUserId.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201511041313424_Migration1234.cs" />
-    <Compile Include="Migrations\201511041313424_Migration1234.Designer.cs">
-      <DependentUpon>201511041313424_Migration1234.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Autorization\ApplicationUser.cs" />

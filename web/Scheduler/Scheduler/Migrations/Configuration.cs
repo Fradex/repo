@@ -9,14 +9,14 @@ namespace Scheduler.Migrations
     using System.Linq;
 
 
-    internal sealed class Configuration : DbMigrationsConfiguration<OwnerDbContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<ApplicationDbContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
         }
 
-        protected override void Seed(OwnerDbContext context)
+        protected override void Seed(ApplicationDbContext context)
         {
             //context.UserRole.AddOrUpdate(r => r.Id,
             //    new UserRole { Id = 1, Role = "Администратор" },
