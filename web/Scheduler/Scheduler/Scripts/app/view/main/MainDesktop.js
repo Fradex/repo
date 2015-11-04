@@ -27,7 +27,7 @@
         this.eventStore.loadData(Ext.calendar.data.Events.getData(), false);
         this.eventStore.initRecs();
         Ext.Ajax.request({
-            url: '/Main/GetUserScheduleByUserId',
+            url: 'Main/GetUserScheduleByUserId',
             method: 'GET',
             failure: function () {
                 el.unmask();
@@ -139,7 +139,7 @@
                                                          el.mask('Синхронизация');
 
                                                          Ext.Ajax.request({
-                                                             url: '/Main/SaveListUserSchedule',
+                                                             url: 'Main/SaveListUserSchedule',
                                                              method: 'POST',
                                                              jsonData: schedules,
                                                              failure: function () {
@@ -148,7 +148,7 @@
                                                              },
                                                              success: function (response) {
                                                                  Ext.Ajax.request({
-                                                                     url: '/Main/GetUserScheduleByUserId',
+                                                                     url: 'Main/GetUserScheduleByUserId',
                                                                      method: 'GET',
                                                                      failure: function () {
                                                                          el.unmask();
