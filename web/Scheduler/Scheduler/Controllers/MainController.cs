@@ -59,7 +59,7 @@ namespace Scheduler.Controllers
         public ActionResult SaveListUserSchedule(List<UserSchedule> schedules)
         {
             var service = new UserScheduleService();
-            return Json(service.SaveListUserSchedule(schedules));
+            return Json(service.SaveListUserSchedule(schedules, Session["currentUserID"].ToString()));
         }
 
     }

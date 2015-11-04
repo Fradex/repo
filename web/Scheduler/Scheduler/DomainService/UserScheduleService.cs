@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Metadata.Edm;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Text;
@@ -29,11 +30,20 @@ namespace Scheduler.DomainService
         /// <returns></returns>
         public List<UserSchedule> GetUserScheduleByUserId(string UserId)
         {
-            using (var db = new AppDbContext())
+            try
             {
-                return db.UserSchedule.
-                    Where(x => x.UserId== UserId).ToList();
+                using (var db = new AppDbContext())
+                {
+                    var res = db.UserSchedule.
+                        Where(x => x.UserId == UserId).ToList();
+                    return res;
+                }
             }
+            catch (Exception ex)
+            {
+                return null;
+            }
+           
         }
 
         public List<UserScheduleMobile> GetUserScheduleMobilesByUserId(string UserId)
@@ -60,7 +70,7 @@ namespace Scheduler.DomainService
         /// </summary>
         /// <param name="schedules"></param>
         /// <returns></returns>
-        public string SaveListUserSchedule(List<UserSchedule> schedules)
+        public string SaveListUserSchedule(List<UserSchedule> schedules, string UserId)
         {
             using (var db = new AppDbContext())
             {
@@ -68,12 +78,20 @@ namespace Scheduler.DomainService
                 {
                     foreach (var schedule in schedules)
                     {
-                        db.UserSchedule.AddOrUpdate(x => x.Id, schedule);
+                        schedule.UserId = UserId;
+                        if (schedule.Id ==null || schedule.Id==0)
+                        {
+                            db.UserSchedule.Add(schedule);
+                        }
+                        else
+                        {
+                            db.Entry(schedule).State = EntityState.Modified;
+                        }
                     }
                     db.SaveChanges();
                     return "Данные успешно сохранены!";
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     return "Ошибка при сохранении данных!";
                 }
