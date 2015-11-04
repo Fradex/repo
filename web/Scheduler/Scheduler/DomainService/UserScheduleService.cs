@@ -23,18 +23,37 @@ namespace Scheduler.DomainService
             }
         }
         /// <summary>
-        /// Получение расписания по идентификатору
+        /// Получение расписаний по идентификатору пользователя
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public UserSchedule GetUserScheduleByUserId(string UserId)
+        public List<UserSchedule> GetUserScheduleByUserId(string UserId)
         {
             using (var db = new AppDbContext())
             {
                 return db.UserSchedule.
-                    FirstOrDefault(x => x.UserId.Id == UserId);
+                    Where(x => x.UserId.Id == UserId).ToList();
             }
         }
+
+        public List<UserScheduleMobile> GetUserScheduleMobilesByUserId(string UserId)
+        {
+            var res = from t in GetUserScheduleByUserId(UserId)
+                select
+                    new UserScheduleMobile()
+                    {
+                        EndDate = t.EndDate,
+                        Id = t.Id.Value,
+                        Location = t.Location,
+                        Notes = t.Notes,
+                        StartDate = t.StartDate,
+                        Title = t.Title,
+                        Type = string.Empty
+                    };
+            return res.ToList();
+
+        }
+
 
         /// <summary>
         /// Сохранение/Добавление списка расписаний

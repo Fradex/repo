@@ -43,6 +43,13 @@ namespace Scheduler.Controllers
             return Json(service.GetUserScheduleByUserId(Session["currentUserID"].ToString()));
         }
 
+        [HttpGet]
+        public ActionResult GetUserScheduleMobilesByUserId(string UserId)
+        {
+            var service = new UserScheduleService();
+            return Json(service.GetUserScheduleMobilesByUserId(UserId));
+        }
+
         /// <summary>
         /// Сохранение расписаний
         /// </summary>
