@@ -30,36 +30,31 @@ namespace Scheduler.DomainService
         /// <returns></returns>
         public List<UserSchedule> GetUserScheduleByUserId(string UserId)
         {
-            try
-            {
-                using (var db = new AppDbContext())
+             using (var db = new AppDbContext())
                 {
+                    if (UserId==null)
+                    {
+                        throw new EntryPointNotFoundException("ololo");
+                    }
                     var res = db.UserSchedule.
                         Where(x => x.UserId == UserId).ToList();
                     return res;
                 }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-           
         }
 
         public List<UserScheduleMobile> GetUserScheduleMobilesByUserId(string UserId)
         {
-            var res = from t in GetUserScheduleByUserId(UserId)
-                select
-                    new UserScheduleMobile()
+            var noMobile = GetUserScheduleByUserId(UserId);
+            var res = noMobile.Select(t => new UserScheduleMobile()
                     {
                         EndDate = t.EndDate,
-                        Id = t.Id.Value,
+                        Id = t.Id??0,
                         Location = t.Location,
                         Notes = t.Notes,
                         StartDate = t.StartDate,
                         Title = t.Title,
-                        Type = string.Empty
-                    };
+                        Type = ""
+                    });
             return res.ToList();
 
         }
