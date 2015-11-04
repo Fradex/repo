@@ -653,6 +653,9 @@
     <Content Include="Content\style.scss" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <EmbeddedResource Include="Migrations\201510081827523_First.resx">
+      <DependentUpon>201510081827523_First.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Scripts\app.js" />
     <Content Include="Scripts\app\controller\arm\Administrator.js" />
     <Content Include="Scripts\app\controller\common\AccountProfile.js" />
@@ -1279,8 +1282,14 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201510081827523_First.cs" />
+    <Compile Include="Migrations\201510081827523_First.Designer.cs">
+      <DependentUpon>201510081827523_First.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Autorization\ApplicationUser.cs" />
     <Compile Include="Models\Autorization\AuthenticationResult.cs" />
+    <Compile Include="Models\Autorization\UserScheduler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1305,12 +1314,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Scripts\app\model\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Model\Model.csproj">
-      <Project>{d5901267-1a7a-4bc2-95c0-87862ca404bd}</Project>
-      <Name>Model</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

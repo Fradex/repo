@@ -152,14 +152,14 @@ Ext.define('Ext.calendar.form.EventDetails', {
         }
 
         this.items = [{
-            id: 'left-col',
+            //id: 'left-col',
             columnWidth: 0.65,
             layout: 'anchor',
             border: false,
             items: leftFields
         },
         {
-            id: 'right-col',
+            //id: 'right-col',
             columnWidth: 0.35,
             layout: 'anchor',
             border: false,
