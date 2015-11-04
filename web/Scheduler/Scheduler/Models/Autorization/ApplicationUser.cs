@@ -21,14 +21,12 @@ namespace Scheduler.Models.Autorization
         public virtual DateTime? RegisterDate { get; set; }
     }
 
-    public class OwnerDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<UserRole> UserRole { get; set; }
-
-        public OwnerDbContext()
+        public ApplicationDbContext()
            : base("db")
         {
-            
+            Database.SetInitializer<ApplicationDbContext>(null);
         }
     }
 

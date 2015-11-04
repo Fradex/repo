@@ -7,6 +7,7 @@ namespace Scheduler.Migrations
     {
         public override void Up()
         {
+            Sql("DELETE FROM dbo.AspNetRoles");
             Sql("INSERT INTO dbo.AspNetRoles (Id,Name) VALUES (1, N'Администратор')");
             Sql("INSERT INTO dbo.AspNetRoles (Id,Name) VALUES (2, N'Пользователь')");
         }

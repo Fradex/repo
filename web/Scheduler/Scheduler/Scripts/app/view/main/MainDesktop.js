@@ -42,7 +42,7 @@
                 var result = Ext.decode(response.responseText);
                 debugger;
                 me.eventStore.removeAll();
-                me.eventStore.add(result);
+                me.eventStore.add(result.data[0]);
                 me.eventStore.load();
             }
         });
@@ -164,7 +164,7 @@
                                                                      success: function (response) {
                                                                          var result = Ext.decode(response.responseText);
                                                                          debugger;
-                                                                         me.eventStore.add(result);
+                                                                         me.eventStore.add(result.data[0]);
                                                                          me.eventStore.load();
                                                                      }
                                                                  });

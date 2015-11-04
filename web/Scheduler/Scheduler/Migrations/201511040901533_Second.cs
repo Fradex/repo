@@ -7,6 +7,7 @@ namespace Scheduler.Migrations
     {
         public override void Up()
         {
+         
             CreateTable(
                "dbo.UserSchedules",
                c => new
@@ -22,18 +23,18 @@ namespace Scheduler.Migrations
                    Reminder = c.String(),
                    Title = c.String(),
                    Url = c.String(),
-                   UserId_Id = c.String(maxLength: 128),
+                   UserId= c.String(maxLength: 128),
                })
                .PrimaryKey(t => t.Id);
 
-            CreateIndex("dbo.UserSchedules", "UserId_Id");
-            AddForeignKey("dbo.UserSchedules", "UserId_Id", "dbo.AspNetUsers", "Id");
+            CreateIndex("dbo.UserSchedules", "UserId");
+            AddForeignKey("dbo.UserSchedules", "UserId", "dbo.AspNetUsers", "Id");
         }
         
         public override void Down()
         {
-            DropForeignKey("dbo.UserSchedules", "UserId_Id", "dbo.AspNetUsers");
-            DropIndex("dbo.UserSchedules", new[] { "UserId_Id" });
+            DropForeignKey("dbo.UserSchedules", "UserId", "dbo.AspNetUsers");
+            DropIndex("dbo.UserSchedules", new[] { "UserId" });
             DropTable("dbo.UserSchedules");
         }
     }
