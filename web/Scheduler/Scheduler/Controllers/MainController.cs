@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -17,32 +18,37 @@ namespace Scheduler.Controllers
         }
 
         [AllowJsonGet]
-        public ActionResult GetUsers()
+        public ActionResult GetUsers(int start, int limit)
         {
             var service = new UsersService();
-
-            return Json(new {success = true, data = service.GetAllUsers()});
+            var list = service.GetAllUsers();
+            var items = new List<User>();
+            foreach (var user in list.Skip(start).Take(limit))
+            {
+                items.Add(new User { UserRole = user.Role?.Role, UserName = user.UserName, DateRegister = user.RegisterDate });
+            }
+            return Json(new { success = true, data = items, total = list.Count });
         }
 
         [AllowJsonGet]
         public ActionResult GetCurrentUser()
         {
             var service = new UsersService();
-            return Json(new { success = true, data = service.GetUserDataById(Session["currentUserID"].ToString())});
+            return Json(new { success = true, data = service.GetUserDataById(Session["currentUserID"].ToString()) });
         }
 
         [AllowJsonGet]
         public ActionResult GetAllUserSchedules()
         {
             var service = new UserScheduleService();
-            return Json(new { success = true, data = service.GetAllUserSchedules()});
+            return Json(new { success = true, data = service.GetAllUserSchedules() });
         }
 
         [AllowJsonGet]
         public ActionResult GetUserScheduleByUserId()
         {
             var service = new UserScheduleService();
-            return Json(new { success = true, data = service.GetUserScheduleByUserId(Session["currentUserID"].ToString())});
+            return Json(new { success = true, data = service.GetUserScheduleByUserId(Session["currentUserID"].ToString()) });
         }
 
         [AllowJsonGet]
@@ -50,7 +56,30 @@ namespace Scheduler.Controllers
         {
             var service = new UserScheduleService();
             return Json(
-                new { success = true, data = service.GetUserScheduleMobilesByUserId(UserId)});
+                new { success = true, data = service.GetUserScheduleMobilesByUserId(UserId) },
+                JsonRequestBehavior.AllowGet);
+        }
+
+        [AllowJsonGet]
+        public ActionResult GetUserScheduleMobilesByUser(int start, int limit)
+        {
+            var service = new UserScheduleService();
+            var list = service.GetUserScheduleMobilesByUserId(Session["currentUserID"].ToString());
+            return Json(new
+            {
+                success = true,
+                data = list.Skip(start).Take(limit).Select(x => new
+                {
+                    x.Id,
+                    x.Location,
+                    x.Notes,
+                    x.Title,
+                    x.Type,
+                    EndDate = x.EndDate.ToShortDateString(),
+                    StartDate = x.StartDate.ToShortDateString()
+                }).ToList(),
+                total = list.Count
+            });
         }
 
         /// <summary>
@@ -62,7 +91,7 @@ namespace Scheduler.Controllers
         public ActionResult SaveListUserSchedule(List<UserSchedule> schedules)
         {
             var service = new UserScheduleService();
-            return Json(new { success = true, data = service.SaveListUserSchedule(schedules, Session["currentUserID"].ToString())});
+            return Json(new { success = true, data = service.SaveListUserSchedule(schedules, Session["currentUserID"].ToString()) });
         }
 
     }

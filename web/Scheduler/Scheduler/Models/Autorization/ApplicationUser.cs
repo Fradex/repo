@@ -45,4 +45,11 @@ namespace Scheduler.Models.Autorization
         // public virtual int UserId { get; set; }
         //public virtual ICollection<ApplicationUser> ApplicationUsers { get; set; }
     }
+
+    public class User
+    {
+        public string UserName { get; set; }
+        public DateTime? DateRegister { get; set; }
+        public string UserRole { get; set; }
+    }
 }
