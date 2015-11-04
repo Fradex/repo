@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="ApplicationName">Расписдневник</string>
+  <string name="ApplicationName">Ежедневник</string>
   <string name="MainMenu">Главное меню</string>
   <string name="Schedule">Расписание</string>
+  <string name="Dates">Даты</string>
+  <string name="Events">События</string>
+  <string name="EventInfo">Информация о событии</string>
   <string name="Login">Войти</string>
   <string name="SigningIn">Выполняется вход...</string>
   <string name="Warning">Внимание</string>
@@ -12,9 +15,19 @@
   <string name="Name">Имя</string>
   <string name="Password">Пароль</string>
 
-  <string-array name="ScheduleArray">
-    <item>Понедельник</item>
-    <item>Вторник</item>
-    <item>Невяка</item>
+  <string name="Event">Событие</string>
+  <string name="Type">Тип</string>
+  <string name="Location">Место</string>
+  <string name="StartDate">Начало</string>
+  <string name="EndDate">Окончание</string>
+  <string name="Note">Примечание</string>
+
+  <string name="NotSpecified">Не указано</string>
+
+  <string name="Attention">Внимание</string>
+  <string name="NoConnection">Интернет соединение не обнаружено</string>
+
+  <string-array name="MainMenuArray">
+    <item>Расписание</item>
   </string-array>
 </resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="my_blue">#157FCC</color>
+
+  <style name="CustomTheme" parent="android:style/Theme.Material.Light.DarkActionBar">
+    <item name="android:colorPrimary">@color/my_blue</item>
+    <item name="android:colorAccent">@color/my_blue</item>
+    <item name="android:colorPrimaryDark">@color/my_blue</item>
+    <item name="android:statusBarColor">@color/my_blue</item>
+  </style>
+</resources>

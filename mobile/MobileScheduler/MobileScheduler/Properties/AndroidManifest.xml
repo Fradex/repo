@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="MobileScheduler.MobileScheduler" android:versionCode="1" android:versionName="1.0">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="MobileScheduler.MobileScheduler" android:versionCode="1" android:versionName="1.0" android:installLocation="auto">
 	<uses-sdk />
-	<application android:label="MobileScheduler" android:icon="@drawable/Icon" android:theme="@android:style/Theme.Material.Light.DarkActionBar"></application>
+	<application android:label="MobileScheduler" android:icon="@drawable/Icon" android:theme="@style/CustomTheme"></application>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 </manifest>
