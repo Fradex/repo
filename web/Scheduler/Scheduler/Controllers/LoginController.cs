@@ -24,7 +24,7 @@ namespace Scheduler.Controllers
         }
 
         public LoginController()
-            : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
+            : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new OwnerDbContext())))
         {
         }
 

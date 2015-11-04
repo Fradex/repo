@@ -59,15 +59,4 @@ namespace Scheduler.Models.Autorization
         public virtual string Url { get; set; }
     }
 
-    public class UserScheduleDbContext : DbContext
-    {
-        public UserScheduleDbContext()
-            : base("db")
-        {
-        }
-
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-        }
-    }
 }

@@ -1,18 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Data.Entity;
 
 namespace Scheduler.Models.Autorization
 {
+
+    public class AppDbContext : DbContext
+    {
+        public DbSet<UserSchedule> UserSchedule { get; set; }
+        public AppDbContext() : base("db") { }
+    }
+
     public class ApplicationUser : IdentityUser
     {
         public virtual UserRole Role { get; set; }
         public virtual DateTime? RegisterDate { get; set; }
     }
 
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class OwnerDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext()
+
+        public OwnerDbContext()
            : base("db")
         {
         }

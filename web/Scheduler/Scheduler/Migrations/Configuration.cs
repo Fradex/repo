@@ -5,14 +5,14 @@ namespace Scheduler.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<Scheduler.Models.Autorization.ApplicationDbContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<Scheduler.Models.Autorization.OwnerDbContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
         }
 
-        protected override void Seed(Scheduler.Models.Autorization.ApplicationDbContext context)
+        protected override void Seed(Scheduler.Models.Autorization.OwnerDbContext context)
         {
             //  This method will be called after migrating to the latest version.
 

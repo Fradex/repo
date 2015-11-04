@@ -13,7 +13,7 @@ namespace Scheduler.DomainService
         //public List<ApplicationUser> GetUsers()
         //{
         //    List< ApplicationUser >
-        //    using (var context = new ApplicationDbContext())
+        //    using (var context = new OwnerDbContext())
         //    {
         //    }
         //}

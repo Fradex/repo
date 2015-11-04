@@ -656,6 +656,9 @@
     <EmbeddedResource Include="Migrations\201510081827523_First.resx">
       <DependentUpon>201510081827523_First.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511040901533_Second.resx">
+      <DependentUpon>201511040901533_Second.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Scripts\app.js" />
     <Content Include="Scripts\app\controller\arm\Administrator.js" />
     <Content Include="Scripts\app\controller\common\AccountProfile.js" />
@@ -1285,6 +1288,10 @@
     <Compile Include="Migrations\201510081827523_First.cs" />
     <Compile Include="Migrations\201510081827523_First.Designer.cs">
       <DependentUpon>201510081827523_First.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511040901533_Second.cs" />
+    <Compile Include="Migrations\201511040901533_Second.Designer.cs">
+      <DependentUpon>201511040901533_Second.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Autorization\ApplicationUser.cs" />
