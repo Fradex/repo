@@ -202,7 +202,6 @@
                                     listeners: {
                                         'eventclick': {
                                             fn: function (vw, rec, el) {
-                                                debugger;
                                                 this.showEditWindow(rec, el);
                                                 this.clearMsg();
                                             },

@@ -12,7 +12,7 @@ namespace Scheduler.Migrations
         
         public override void Down()
         {
-            DropForeignKey("dbo.AspNetUsers", "Role_Id");
+            DropForeignKey("dbo.AspNetUsers", "Roles_Role_Id");
         }
     }
 }
