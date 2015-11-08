@@ -106,5 +106,23 @@ namespace Scheduler.Controllers
         }
 
 
+
+        [AllowJsonGet]
+        public ActionResult GetCurrentSmallUser()
+        {
+            var service = new UsersService();
+            var res = service.GetUserDataById(Session["currentUserID"].ToString());
+            var small = new User
+            {
+                DateRegister = res.RegisterDate?.ToShortDateString() ?? DateTime.MinValue.ToShortDateString(),
+                UserName = res.UserName,
+                UserRole = res.Role.Name
+            };
+            var resStr =
+                $"Пользователь:{small.UserName}  {Environment.NewLine}" +
+                $" Дата регистрации:small.DateRegister  {Environment.NewLine}  Роль:{small.UserRole}";
+            return Json(new { success = true, data = resStr });
+        }
+
     }
 }

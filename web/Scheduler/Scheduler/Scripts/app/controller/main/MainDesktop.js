@@ -39,7 +39,8 @@
                 Ext.MessageBox.show({ title: 'Ошибка', msg: 'Не удалось выполнить запрос', buttons: Ext.MessageBox.OK }); return;
             },
             success: function (response) {
-                var arms = Ext.decode(response.responseText);
+                debugger;
+                var arms = Ext.decode(response.responseText).data;
                 var but = Ext.create('Ext.button.Button', {
                     xtype: 'button',
                     text: '<span class="icon-caption" style="bottom: 8px; color:"red" position: absolute; text-align: center; white-space: normal; width: 100%; left: 0">' + arms.ArmName + '</span>',

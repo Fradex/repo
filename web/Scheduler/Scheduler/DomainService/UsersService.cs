@@ -43,7 +43,7 @@ namespace Scheduler.DomainService
         {
             using (var db = new ApplicationDbContext())
             {
-                var RoleId = db.Users.Include(x => x.Role).FirstOrDefault().Role.Id;
+                var RoleId = db.Users.Include(x => x.Role).FirstOrDefault(x=>x.Id==UserId).Role.Id;
                 return db.Roles.FirstOrDefault(x => x.Id == RoleId);
             }
         }

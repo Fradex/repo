@@ -30,31 +30,31 @@ namespace Scheduler.DomainService
         /// <returns></returns>
         public List<UserSchedule> GetUserScheduleByUserId(string UserId)
         {
-             using (var db = new AppDbContext())
+            using (var db = new AppDbContext())
+            {
+                if (UserId == null)
                 {
-                    if (UserId==null)
-                    {
-                        throw new EntryPointNotFoundException("ololo");
-                    }
-                    var res = db.UserSchedule.
-                        Where(x => x.UserId == UserId).ToList();
-                    return res;
+                    throw new EntryPointNotFoundException("ololo");
                 }
+                var res = db.UserSchedule.
+                    Where(x => x.UserId == UserId).ToList();
+                return res;
+            }
         }
 
         public List<UserScheduleMobile> GetUserScheduleMobilesByUserId(string UserId)
         {
             var noMobile = GetUserScheduleByUserId(UserId);
             var res = noMobile.Select(t => new UserScheduleMobile()
-                    {
-                        EndDate = t.EndDate,
-                        Id = t.Id??0,
-                        Location = t.Location,
-                        Notes = t.Notes,
-                        StartDate = t.StartDate,
-                        Title = t.Title,
-                        Type = ""
-                    });
+            {
+                EndDate = t.EndDate,
+                Id = t.Id ?? 0,
+                Location = t.Location,
+                Notes = t.Notes,
+                StartDate = t.StartDate,
+                Title = t.Title,
+                Type = GetTypeNameById(t.CalendarId)
+            });
             return res.ToList();
 
         }
@@ -74,7 +74,7 @@ namespace Scheduler.DomainService
                     foreach (var schedule in schedules)
                     {
                         schedule.UserId = UserId;
-                        if (schedule.Id ==null || schedule.Id==0)
+                        if (schedule.Id == null || schedule.Id == 0)
                         {
                             db.UserSchedule.Add(schedule);
                         }
@@ -92,5 +92,19 @@ namespace Scheduler.DomainService
                 }
             }
         }
-    }
+
+        //todo переделать на табличку
+        public string GetTypeNameById(long CalendarId)
+        {
+            switch (CalendarId)
+            {
+                case 1: return "Дом";
+                case 2: return "Работа";
+                case 3: return "Школа";
+                case 4: return "Университет";
+            }
+            return "Тип неопределен";
+        }
+
+}
 }
