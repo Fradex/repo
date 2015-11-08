@@ -40,23 +40,20 @@
             },
             success: function (response) {
                 var arms = Ext.decode(response.responseText);
-               
-                for (var i in arms) {
-                    var but = Ext.create('Ext.button.Button', {
-                        xtype: 'button',
-                        text: '<span class="icon-caption" style="bottom: 8px; color:"red" position: absolute; text-align: center; white-space: normal; width: 100%; left: 0">' + arms[i].ArmName + '</span>',
-                        iconAlign: 'top',
-                        iconCls: 'icon-image ' + arms[i].ImageUrl + ' main_buttons_icons',
-                        cls: ['icons', 'main_buttons'],
-                        nameXtype: arms[i].Controller,
-                        margin: '20 0 0 20',
-                        border: false,
-                        arm_id: arms[i].Id,
-                        arm_name: arms[i].ArmName,
-                        height: 180
-                    });
-                    btnCont.add(but);
-                }
+                var but = Ext.create('Ext.button.Button', {
+                    xtype: 'button',
+                    text: '<span class="icon-caption" style="bottom: 8px; color:"red" position: absolute; text-align: center; white-space: normal; width: 100%; left: 0">' + arms.ArmName + '</span>',
+                    iconAlign: 'top',
+                    iconCls: 'icon-image ' + arms.ImageUrl + ' main_buttons_icons',
+                    cls: ['icons', 'main_buttons'],
+                    nameXtype: arms.Controller,
+                    margin: '20 0 0 20',
+                    border: false,
+                    arm_id: arms.Id,
+                    arm_name: arms.ArmName,
+                    height: 180
+                });
+                btnCont.add(but);
             }
         });
     }
