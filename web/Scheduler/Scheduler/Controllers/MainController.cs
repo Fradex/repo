@@ -25,7 +25,11 @@ namespace Scheduler.Controllers
             var items = new List<User>();
             foreach (var user in list.Skip(start).Take(limit))
             {
-                items.Add(new User { UserRole = user.Role?.Role, UserName = user.UserName, DateRegister = user.RegisterDate });
+                items.Add(new User {
+                    UserRole = user.Role.Name,
+                    UserName = user.UserName,
+                    DateRegister = user.RegisterDate?.ToShortDateString() ?? DateTime.MinValue.ToShortDateString()
+                });
             }
             return Json(new { success = true, data = items, total = list.Count });
         }
