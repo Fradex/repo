@@ -35,7 +35,6 @@
         for (var i in arms) {
             var but = Ext.create('Ext.button.Button', {
                 xtype: 'button',
-                border: true,
                 text: '<span class="icon-caption" style="bottom: 8px; color:"red" position: absolute; text-align: center; white-space: normal; width: 100%; left: 0">' + arms[i].arm_name + '</span>',
                 iconAlign: 'top',
                 iconCls: 'icon-image ' + arms[i].image_url + ' main_buttons_icons',
