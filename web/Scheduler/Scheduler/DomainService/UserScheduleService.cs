@@ -16,11 +16,25 @@ namespace Scheduler.DomainService
         /// Получение всех расписаний
         /// </summary>
         /// <returns></returns>
-        public List<UserSchedule> GetAllUserSchedules()
+        public List<UserScheduleMobile> GetAllUserSchedules()
         {
-            using (var db = new AppDbContext())
+            using (var dbApp = new ApplicationDbContext())
             {
-                return db.UserSchedule.ToList();
+                using (var db = new AppDbContext())
+                {
+                    var noMobile = db.UserSchedule.ToList();
+                    return noMobile.Select(t => new UserScheduleMobile()
+                    {
+                        User = dbApp.Users.FirstOrDefault(x=>x.Id == t.UserId)?.UserName,
+                        EndDate = t.EndDate,
+                        Id = t.Id ?? 0,
+                        Location = t.Location,
+                        Notes = t.Notes,
+                        StartDate = t.StartDate,
+                        Title = t.Title,
+                        Type = GetTypeNameById(t.CalendarId)
+                    }).ToList();
+                }
             }
         }
         /// <summary>

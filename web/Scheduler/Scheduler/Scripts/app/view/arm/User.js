@@ -23,7 +23,7 @@
             items: [
                 {
                     xtype: 'common.ButtonsContainer',
-                    Names: ['Расписание'],
+                    Names: ['Мое расписание'],
                     Images: ['icon-image-20'],
                     XTypes: ['Schedule'],
                     columnWidth: .80

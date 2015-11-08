@@ -11,6 +11,7 @@
         var me = this;
 
         Ext.applyIf(me, {
+            layout: 'hbox',
             dockedItems: [
                 {
                     cls: 'btn-toolbar',
@@ -23,9 +24,9 @@
             items: [
                 {
                     xtype: 'common.ButtonsContainer',
-                    Names: ['Пользователи'],
-                    Images: ['icon-image-9'],
-                    XTypes: ['UserList'],
+                    Names: ['Пользователи', 'Расписание','Расписания всех</br> пользователей'],
+                    Images: ['icon-image-9', 'icon-image-20', 'icon-image-5'],
+                    XTypes: ['UserList', 'Schedule', 'UsersSchedules'],
                     columnWidth: .80
                 }
             ]
@@ -33,6 +34,4 @@
 
         me.callParent(arguments);
     }
-
-
 });

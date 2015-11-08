@@ -670,6 +670,7 @@
     <Content Include="Scripts\app\controller\arm\Administrator.js" />
     <Content Include="Scripts\app\controller\common\AccountProfile.js" />
     <Content Include="Scripts\app\controller\common\ButtonsContainer.js" />
+    <Content Include="Scripts\app\controller\UsersSchedules.js" />
     <Content Include="Scripts\app\controller\Schedule.js" />
     <Content Include="Scripts\app\controller\UserList.js" />
     <Content Include="Scripts\app\controller\main\MainDesktop.js" />
@@ -682,6 +683,7 @@
     <Content Include="Scripts\app\view\common\AccountProfile.js" />
     <Content Include="Scripts\app\view\common\ButtonsContainer.js" />
     <Content Include="Scripts\app\view\main\Schedule.js" />
+    <Content Include="Scripts\app\view\main\UsersSchedules.js" />
     <Content Include="Scripts\app\view\main\UserList.js" />
     <Content Include="Scripts\app\view\main\Main.js" />
     <Content Include="Scripts\app\view\main\MainDesktop.js" />

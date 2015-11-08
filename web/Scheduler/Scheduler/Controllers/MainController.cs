@@ -43,9 +43,26 @@ namespace Scheduler.Controllers
         }
 
         [AllowJsonGet]
-        public ActionResult GetAllUserSchedules()
+        public ActionResult GetAllUserSchedules(int start, int limit)
         {
             var service = new UserScheduleService();
+            var list = service.GetAllUserSchedules();
+            return Json(new
+            {
+                success = true,
+                data = list.Skip(start).Take(limit).Select(x => new
+                {
+                    x.User,
+                    x.Id,
+                    x.Location,
+                    x.Notes,
+                    x.Title,
+                    x.Type,
+                    EndDate = x.EndDate.ToShortDateString(),
+                    StartDate = x.StartDate.ToShortDateString()
+                }).ToList(),
+                total = list.Count
+            });
             return Json(new { success = true, data = service.GetAllUserSchedules() });
         }
 

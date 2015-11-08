@@ -78,6 +78,7 @@ namespace Scheduler.Models.Autorization
         public string Location { get; set; }
 
         public string Notes { get; set; }
+        public string User { get; set; }
     }
 
     public class AllowJsonGetAttribute : ActionFilterAttribute

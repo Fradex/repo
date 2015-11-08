@@ -105,20 +105,29 @@ namespace Scheduler.Controllers
         {
             if (this.ModelState.IsValid)
             {
-                var user = new ApplicationUser() {
-                    UserName = model.UserName, RegisterDate = DateTime.Now,
-                    Role = new Role() {Id = 2} };
+                var user = new ApplicationUser();
+                using (var dbContext = new ApplicationDbContext())
+                {
+                    user = new ApplicationUser()
+                    {
+                        UserName = model.UserName,
+                        RegisterDate = DateTime.Now,
+                        Role = dbContext.Roles.FirstOrDefault(x=>x.Id==2)
+                    };
+                }
                 var result = await this.UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    await this.SignInAsync(user, isPersistent: false);
-                    Session["currentUserID"] = user.Id;
-                    return this.RedirectToAction("Index", "Main");
-                }
-                else
-                {
-                    this.AddErrors(result);
-                }
+                    if (result.Succeeded)
+                    {
+                        await this.SignInAsync(user, isPersistent: false);
+                        Session["currentUserID"] = user.Id;
+                        return this.RedirectToAction("Index", "Main");
+                    }
+                    else
+                    {
+                        this.AddErrors(result);
+                    }
+              
+               
             }
 
             // If we got this far, something failed, redisplay form
