@@ -33,7 +33,7 @@ namespace Scheduler.DomainService
         {
             using (var db = new ApplicationDbContext())
             {
-                var res = db.Users.FirstOrDefault(x => x.Id == Id);
+                var res = db.Users.Include(x => x.Role).FirstOrDefault(x => x.Id == Id);
                 res.PasswordHash = null;
                 return res;
             }

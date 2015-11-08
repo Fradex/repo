@@ -30,7 +30,6 @@
             url: 'Main/GetUserScheduleByUserId',
             method: 'GET',
             failure: function () {
-                el.unmask();
                 Ext.MessageBox.show({ title: 'Ошибка', msg: 'Не удалось выполнить запрос', buttons: Ext.MessageBox.OK }); return;
             },
             success: function (response) {

@@ -119,8 +119,8 @@ namespace Scheduler.Controllers
                 UserRole = res.Role.Name
             };
             var resStr =
-                $"Пользователь:{small.UserName}  {Environment.NewLine}" +
-                $" Дата регистрации:small.DateRegister  {Environment.NewLine}  Роль:{small.UserRole}";
+                $"Пользователь:{small.UserName}  </br>" +
+                $"Дата регистрации:{small.DateRegister}  </br>Роль:{small.UserRole}";
             return Json(new { success = true, data = resStr });
         }
 

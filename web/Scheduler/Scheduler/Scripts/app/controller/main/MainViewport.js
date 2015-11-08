@@ -48,6 +48,19 @@
                 programExit: this.on_ProgramExit,
                 afterrender: function (view) {
                     view.fireEvent('loadArms', view);
+                },
+                OpenUser: function() {
+                    Ext.Ajax.request({
+                        url: 'Main/GetCurrentSmallUser',
+                        method: 'GET',
+                        failure: function () {
+                            Ext.MessageBox.show({ title: 'Ошибка', msg: 'Не удалось выполнить запрос', buttons: Ext.MessageBox.OK }); return;
+                        },
+                        success: function (response) {
+                            var result = Ext.decode(response.responseText);
+                            Ext.MessageBox.show({ title: 'Информация о пользователе', msg: result.data, buttons: Ext.MessageBox.OK });
+                        }
+                    });
                 }
             },
             '[xtype=main.MainDesktop] button': {
