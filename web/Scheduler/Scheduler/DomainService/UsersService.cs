@@ -19,7 +19,8 @@ namespace Scheduler.DomainService
         {
             using (var db = new ApplicationDbContext())
             {
-                return db.Users.ToList();
+                var res = db.Users.ToList();
+                return res;
             }
         }
 
