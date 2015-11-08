@@ -65,9 +65,9 @@
     <Compile Include="Classes\WebRequestHelper.cs" />
     <Compile Include="Entities\DateInfo.cs" />
     <Compile Include="Entities\EventInfo.cs" />
-    <Compile Include="Entities\SystemInfo.cs" />
     <Compile Include="Entities\Login.cs" />
     <Compile Include="Activities\MainActivity.cs" />
+    <Compile Include="Entities\RequestData.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Activities\MainMenuActivity.cs" />

@@ -659,6 +659,12 @@
     <EmbeddedResource Include="Migrations\201511041027244_InsertUserRoles.resx">
       <DependentUpon>201511041027244_InsertUserRoles.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511081024144_AddRoles.resx">
+      <DependentUpon>201511081024144_AddRoles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511081050073_AddFK.resx">
+      <DependentUpon>201511081050073_AddFK.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Scripts\app.js" />
     <Content Include="Scripts\app\controller\arm\User.js" />
     <Content Include="Scripts\app\controller\arm\Administrator.js" />
@@ -1298,6 +1304,14 @@
     <Compile Include="Migrations\201511041027244_InsertUserRoles.cs" />
     <Compile Include="Migrations\201511041027244_InsertUserRoles.Designer.cs">
       <DependentUpon>201511041027244_InsertUserRoles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511081024144_AddRoles.cs" />
+    <Compile Include="Migrations\201511081024144_AddRoles.Designer.cs">
+      <DependentUpon>201511081024144_AddRoles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511081050073_AddFK.cs" />
+    <Compile Include="Migrations\201511081050073_AddFK.Designer.cs">
+      <DependentUpon>201511081050073_AddFK.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Autorization\ApplicationUser.cs" />

@@ -19,7 +19,8 @@ namespace Scheduler.DomainService
         {
             using (var db = new ApplicationDbContext())
             {
-                return db.Users.ToList();
+                var res = db.Users.Include(x=>x.Role).ToList();
+                return res;
             }
         }
 
@@ -35,6 +36,14 @@ namespace Scheduler.DomainService
                 var res = db.Users.FirstOrDefault(x => x.Id == Id);
                 res.PasswordHash = null;
                 return res;
+            }
+        }
+
+        public Role GetUserRole(int RoleId)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                return db.Roles.FirstOrDefault(x => x.Id == RoleId);
             }
         }
     }

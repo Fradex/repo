@@ -33,7 +33,20 @@ namespace MobileScheduler.Adapters
             view.SetPadding(40, 40, 40, 40);
             var eventInfo = List[position];
 
-            view.Text = $"{eventInfo.Title}\n{eventInfo.StartDate} - {eventInfo.EndDate}";
+            string start = "", end = "";
+
+            if (eventInfo.StartDate.Day == eventInfo.EndDate.Day)
+            {
+                start = eventInfo.StartDate.ToShortTimeString();
+                end = eventInfo.EndDate.ToShortTimeString();
+            }
+            else
+            {
+                start = eventInfo.StartDate.ToString();
+                end = eventInfo.EndDate.ToString();
+            }
+
+            view.Text = $"{eventInfo.Title}\n{start} - {end}";
 
             return view;
         }

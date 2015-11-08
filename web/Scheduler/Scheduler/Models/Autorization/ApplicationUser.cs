@@ -17,39 +17,37 @@ namespace Scheduler.Models.Autorization
 
     public class ApplicationUser : IdentityUser
     {
-        public virtual UserRole Role { get; set; }
+        public virtual Role Role { get; set; }
         public virtual DateTime? RegisterDate { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<Role> Roles { get; set; }
+ 
         public ApplicationDbContext()
            : base("db")
         {
+            Configuration.LazyLoadingEnabled = false;
             Database.SetInitializer<ApplicationDbContext>(null);
         }
     }
 
-    public class UserRoleDbContext : IdentityDbContext<ApplicationUser>
-    {
-        public UserRoleDbContext()
-            : base("db")
-        {
-        }
-    }
 
-    public class UserRole
+    public class Role
     {
         public virtual int Id { get; set; }
-        public virtual string Role { get; set; }
-        // public virtual int UserId { get; set; }
-        //public virtual ICollection<ApplicationUser> ApplicationUsers { get; set; }
+        public virtual string Name { get; set; }
+        public virtual string ImageUrl { get; set; }
+        public virtual string Controller { get; set; }
+        public virtual string ArmName { get; set; }
     }
+
 
     public class User
     {
         public string UserName { get; set; }
-        public DateTime? DateRegister { get; set; }
+        public string DateRegister { get; set; }
         public string UserRole { get; set; }
     }
 }
