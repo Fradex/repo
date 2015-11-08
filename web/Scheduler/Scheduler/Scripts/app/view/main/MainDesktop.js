@@ -24,8 +24,8 @@
         this.eventStore = Ext.create('Ext.calendar.data.MemoryEventStore', {
             //data: Ext.calendar.data.Events.getData()
         });
-        this.eventStore.loadData(Ext.calendar.data.Events.getData(), false);
-        this.eventStore.initRecs();
+        //this.eventStore.loadData(Ext.calendar.data.Events.getData(), false);
+        //this.eventStore.initRecs();
         Ext.Ajax.request({
             url: 'Main/GetUserScheduleByUserId',
             method: 'GET',
@@ -41,7 +41,7 @@
                     item.StartDate = new Date(item.StartDate.match(/\d+/)[0] * 1);
                     me.eventStore.add(item);
                 });
-                me.eventStore.load();
+                me.eventStore.sync();
             }
         });
         var config = {
@@ -162,6 +162,8 @@
                                                                              item.StartDate = new Date(item.StartDate.match(/\d+/)[0] * 1);
                                                                              me.eventStore.add(item);
                                                                          });
+                                                                         //me.eventStore.load();
+                                                                         me.eventStore.sync();
                                                                          el.unmask();
                                                                          Ext.MessageBox.show({ title: 'Оповещение', msg: 'Данные успешно синхронизированны', buttons: Ext.MessageBox.OK });
                                                                      }

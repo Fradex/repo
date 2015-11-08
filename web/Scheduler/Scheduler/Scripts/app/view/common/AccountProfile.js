@@ -9,7 +9,18 @@
 
     initComponent: function () {
         var me = this;
-
+        var ajax = Ext.Ajax.request({
+            url: 'Main/GetUserScheduleByUserId',
+            method: 'GET',
+            failure: function () {
+                el.unmask();
+                Ext.MessageBox.show({ title: 'Ошибка', msg: 'Не удалось выполнить запрос', buttons: Ext.MessageBox.OK }); return;
+            },
+            success: function (response) {
+                var result = Ext.decode(response.responseText);
+             
+            }
+        });
         Ext.applyIf(me, {
             html:
                 //'<nav class="navbar navbar-inverse navbar-fixed-top" style="width:200px;">' +
@@ -44,7 +55,9 @@
                   '<span class="glyphicon glyphicon-home"></span> Назад на главную </a></li>' +
                   '</ul>' +
                  '<ul class="nav navbar-nav navbar-right">'+
-                    '<li><a href="#"><span class="glyphicon glyphicon-user"></span> Пользователь </a></li>'+
+                    '<li><a href="#"onclick="' +
+                    'Ext.ComponentQuery.query(\'[xtype=main.MainViewport]\')[0].fireEvent(\'programExit\')' +
+                    '><span class="glyphicon glyphicon-user"></span> Пользователь </a></li>' +
                     '<li><a href="#" onclick="' +
                     'Ext.ComponentQuery.query(\'[xtype=main.MainViewport]\')[0].fireEvent(\'programExit\')' +
                     '"></input>' +'<span class="glyphicon glyphicon-log-in"></span> Выйти </a></li>'+

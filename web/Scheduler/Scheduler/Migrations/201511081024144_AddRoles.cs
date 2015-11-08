@@ -1,4 +1,4 @@
-namespace Scheduler.Migrations
+п»їnamespace Scheduler.Migrations
 {
     using System;
     using System.Data.Entity.Migrations;
@@ -20,9 +20,9 @@ namespace Scheduler.Migrations
                 .PrimaryKey(t => t.Id);
 
             Sql(" INSERT INTO dbo.Roles (Name,ImageUrl,Controller,ArmName)" +
-                " VALUES (N'Администратор', 'icon-image-8','arm.Administrator','Администратор')");
+                " VALUES (N'РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ', 'icon-image-8','arm.Administrator',N'РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ')");
             Sql(" INSERT INTO dbo.Roles (Name,ImageUrl,Controller,ArmName)" +
-                " VALUES (N'Пользователь', 'icon-image-9','arm.User', 'Пользователь')");
+                " VALUES (N'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ', 'icon-image-9','arm.User', N'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ')");
 
             DropForeignKey("dbo.AspNetUsers", "Role_Id", "dbo.UserRoles");
             DropTable("dbo.UserRoles");
