@@ -36,6 +36,7 @@ namespace MobileScheduler.Activities
             var eventsList = FileHelper.GetUserEventList(userId);
             return eventsList
                 .GroupBy(x => x.StartDate)
+                .OrderBy(x=>x.Key)
                 .Select(x => new DateInfo
                 {
                     Date = x.Key,

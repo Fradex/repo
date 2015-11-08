@@ -72,14 +72,17 @@ namespace MobileScheduler.Activities
                     var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), $"{userId}.txt");
 
                     //Загрузка данных
-                    var eventsList = await WebRequestHelper.FetchWebResult<List<EventInfo>>($"/Main/GetUserScheduleMobilesByUserId?UserId={userId}");
+                    var eventsList = await WebRequestHelper.FetchWebResult<RequestData<List<EventInfo>>>($"/Main/GetUserScheduleMobilesByUserId?UserId={userId}");
                     
                     //Сохранение данных
                     using (var writer = new StreamWriter(File.Create(filePath)))
                     {
-                        writer.Write(JsonConvert.SerializeObject(eventsList));
+                        writer.Write(JsonConvert.SerializeObject(eventsList.data));
                     }
-                    StartActivity(typeof(MainMenuActivity));
+
+                    var activity = new Intent(this, typeof(MainMenuActivity));
+                    activity.PutExtra("UserId", userId);
+                    StartActivity(activity);
                     progressDialog.Hide();
                 }
                 else

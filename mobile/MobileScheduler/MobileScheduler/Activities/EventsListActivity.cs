@@ -36,6 +36,7 @@ namespace MobileScheduler.Activities
             return FileHelper
                 .GetUserEventList(userId)
                 .Where(x => x.StartDate.ToShortDateString() == date.ToShortDateString())
+                .OrderBy(x=>x.StartDate)
                 .ToList();
         }
 
