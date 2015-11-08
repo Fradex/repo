@@ -25,7 +25,8 @@ namespace Scheduler.Controllers
             var items = new List<User>();
             foreach (var user in list.Skip(start).Take(limit))
             {
-                items.Add(new User {
+                items.Add(new User
+                {
                     UserRole = user.Role.Name,
                     UserName = user.UserName,
                     DateRegister = user.RegisterDate?.ToShortDateString() ?? DateTime.MinValue.ToShortDateString()
@@ -95,6 +96,15 @@ namespace Scheduler.Controllers
             var service = new UserScheduleService();
             return Json(new { success = true, data = service.SaveListUserSchedule(schedules, Session["currentUserID"].ToString()) });
         }
+
+        [AllowJsonGet]
+        public ActionResult GetUserRole()
+        {
+            var service = new UsersService();
+            var res = service.GetUserRole(Session["currentUserID"].ToString());
+            return Json(new { success = true, data = res });
+        }
+
 
     }
 }

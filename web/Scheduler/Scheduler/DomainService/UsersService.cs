@@ -39,10 +39,11 @@ namespace Scheduler.DomainService
             }
         }
 
-        public Role GetUserRole(int RoleId)
+        public Role GetUserRole(string UserId)
         {
             using (var db = new ApplicationDbContext())
             {
+                var RoleId = db.Users.Include(x => x.Role).FirstOrDefault().Role.Id;
                 return db.Roles.FirstOrDefault(x => x.Id == RoleId);
             }
         }
